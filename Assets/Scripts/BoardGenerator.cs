@@ -3,13 +3,8 @@ using UnityEngine;
 
 public class BoardGenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject[] tilePrefabs;
+    [SerializeField] private LevelData levelData;
     [SerializeField] private Transform tileParent;
-
-    [SerializeField] private int totalTiles = 30;
-
-    [SerializeField] private Vector2 spawnAreaMin;
-    [SerializeField] private Vector2 spawnAreaMax;
 
     void Start()
     {
@@ -20,11 +15,12 @@ public class BoardGenerator : MonoBehaviour
     {
         List<GameObject> tilesToSpawn = new List<GameObject>();
 
-        int typeCount = totalTiles / 3;
+        int typeCount = levelData.totalTiles / 3;
 
+        //tile list (3 of each)
         for(int i = 0; i < typeCount; i++)
         {
-            GameObject prefab = tilePrefabs[Random.Range(0, tilePrefabs.Length)];
+            GameObject prefab = levelData.tilePrefabs[Random.Range(0, levelData.tilePrefabs.Length)];
 
             for(int j = 0; j < 3; j++)
             {
@@ -41,17 +37,40 @@ public class BoardGenerator : MonoBehaviour
             tilesToSpawn[randomIndex] = temp;
         }
 
-        //spawm
-        foreach(GameObject tile in tilesToSpawn)
+        SpawnGrid(tilesToSpawn);
+    }
+
+    void SpawnGrid(List<GameObject> tiles)
+    {
+        int index = 0;
+
+        float startX = -(levelData.gridCols / 2f) * levelData.spacing;
+        float startY = (levelData.gridRows / 2f) * levelData.spacing;
+
+        for(int row = 0; row < levelData.gridRows; row++)
         {
-            GameObject obj = Instantiate(tile, tileParent);
+            for (int col = 0; col < levelData.gridCols; col++)
+            {
+                if(index >= tiles.Count)
+                    return;
 
-            RectTransform rect = obj.GetComponent<RectTransform>();
+                GameObject obj = Instantiate(tiles[index], tileParent);
 
-            float x = Random.Range(spawnAreaMin.x, spawnAreaMin.x);
-            float y = Random.Range(spawnAreaMin.y, spawnAreaMax.y);
+                int randomIndex = Random.Range(0, tileParent.childCount);
+                obj.transform.SetSiblingIndex(randomIndex);
+                RectTransform rect = obj.GetComponent<RectTransform>();
+                
+                float x = startX + col * levelData.spacing;
+                float y = startY - row * levelData.spacing;
 
-            rect.anchoredPosition = new Vector2(x, y);
+                x += Random.Range(-30f, 30f);
+                y += Random.Range(-30f, 30f);
+
+                rect.anchoredPosition = new Vector2(x,y);
+
+                obj.GetComponent<UnityEngine.UI.Image>().canvasRenderer.SetAlpha(1f);
+                index++;
+            }
         }
     }
 }

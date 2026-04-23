@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef0dd9f412bf46348b8a4d74c19f83e, type: 3}
+  m_Name: Level_1
+  m_EditorClassIdentifier: Assembly-CSharp::LevelData
+  tilePrefabs:
+  - {fileID: 5565711687149617185, guid: a62b8f0847d7145d9a735d082c4f432c, type: 3}
+  - {fileID: 3716950635253988004, guid: 89ba02f7dfa764d54925bcbd2270d54d, type: 3}
+  - {fileID: 7463598509151866610, guid: b4c1b30585e2d4d0fb5da65c8b8205b6, type: 3}
+  - {fileID: 1093344039239268608, guid: 5437f94c0bade4165aeca9a4724a401f, type: 3}
+  - {fileID: 1856488690321741762, guid: 65eb0cd7d81504e4cbd168b2ea4984a1, type: 3}
+  - {fileID: 7737346076949395658, guid: 396b4c952a3134bfe98489e930130d86, type: 3}
+  - {fileID: 8610434401579118626, guid: 3c4dd2c05da10444784d0a0fb3667d7e, type: 3}
+  - {fileID: 8387658839642231776, guid: 13e8b827b3dd9476e9857adeba92e616, type: 3}
+  - {fileID: 7394214982522249966, guid: 185ba6db79314424692cd7fe60babfda, type: 3}
+  - {fileID: 2153097784608717426, guid: 349ccf70d68b04d3bba9cf735e8a459a, type: 3}
+  totalTiles: 30
+  gridRows: 6
+  gridCols: 5
+  spacing: 120
