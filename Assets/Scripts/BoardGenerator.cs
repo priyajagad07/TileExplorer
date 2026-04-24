@@ -5,6 +5,7 @@ public class BoardGenerator : MonoBehaviour
 {
     [SerializeField] private LevelData levelData;
     [SerializeField] private Transform tileParent;
+    public static int totalTilesInLevel;
 
     void Start()
     {
@@ -38,6 +39,7 @@ public class BoardGenerator : MonoBehaviour
         }
 
         SpawnGrid(tilesToSpawn);
+        totalTilesInLevel = tilesToSpawn.Count;
     }
 
     void SpawnGrid(List<GameObject> tiles)

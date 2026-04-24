@@ -1,14 +1,10 @@
 fileFormatVersion: 2
-guid: 184fc020424fe944584c02013872e731
-AssetOrigin:
-  serializedVersion: 1
-  productId: 211824
-  packageName: Buttons Set
-  packageVersion: 1.0
-  assetPath: Assets/Buttons/PNG/27Button_Long_Red.png
-  uploadId: 745451
+guid: 58777afbcb2a44f259c41bebdcfd5a10
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 5342882447574761666
+    second: "COLOR MY CANDY\U0001F36C\U0001F308_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -50,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -72,7 +68,7 @@ TextureImporter:
   ignorePngGamma: 0
   applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
@@ -128,12 +124,34 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: "COLOR MY CANDY\U0001F36C\U0001F308_0"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 625
+        height: 1049
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c00d5c374bb52a40800000000000000
+      internalID: 5342882447574761666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -142,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      "COLOR MY CANDY\U0001F36C\U0001F308_0": 5342882447574761666
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

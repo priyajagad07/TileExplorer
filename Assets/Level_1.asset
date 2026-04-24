@@ -23,7 +23,7 @@ MonoBehaviour:
   - {fileID: 8387658839642231776, guid: 13e8b827b3dd9476e9857adeba92e616, type: 3}
   - {fileID: 7394214982522249966, guid: 185ba6db79314424692cd7fe60babfda, type: 3}
   - {fileID: 2153097784608717426, guid: 349ccf70d68b04d3bba9cf735e8a459a, type: 3}
-  totalTiles: 30
+  totalTiles: 42
   gridRows: 6
-  gridCols: 5
-  spacing: 120
+  gridCols: 7
+  spacing: 125
