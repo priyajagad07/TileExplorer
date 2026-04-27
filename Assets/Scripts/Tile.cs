@@ -5,46 +5,45 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 {
     private bool isMoved = false;
     public int tileId;
+    public int row;
+    public int col;
+    public int layer;
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (isMoved)
             return;
 
-        if(IsBlocked())
+        if (IsBlocked())
             return;
 
         bool added = GameManager.instance.matchBoard.AddTile(gameObject);
 
         if (added)
         {
-           isMoved = true;
+            isMoved = true;
         }
     }
 
     bool IsBlocked()
     {
         Transform parent = transform.parent;
-        int myIndex = transform.GetSiblingIndex();
 
-        for(int i = myIndex + 1; i<parent.childCount; i++)
+        foreach (Transform child in parent)
         {
-            Transform other = parent.GetChild(i);
+            if (child == transform)
+                continue;
 
-            if(other.GetComponent<Tile>() != null)
+            Tile other = child.GetComponent<Tile>();
+
+            if (other == null)
+                continue;
+
+            if(other.layer > this.layer && other.row == this.row && other.col == this.col)
             {
-                float distance = Vector2.Distance(
-                    transform.GetComponent<RectTransform>().anchoredPosition,
-                    other.GetComponent<RectTransform>().anchoredPosition
-                );
-
-                if(distance < 100f)
-                {
-                    return true;
-                }
+                return true;
             }
         }
-
         return false;
     }
 }

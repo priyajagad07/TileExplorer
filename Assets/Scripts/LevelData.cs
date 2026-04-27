@@ -4,9 +4,11 @@ using UnityEngine;
 public class LevelData : ScriptableObject
 {
     public GameObject[] tilePrefabs;
-    public int totalTiles;
     public int gridRows;
     public int gridCols;
     public float spacing;
-
+    public int layers;
+    
+    [TextArea]
+    public string[] layout;
 }

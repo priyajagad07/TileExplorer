@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ef0dd9f412bf46348b8a4d74c19f83e, type: 3}
-  m_Name: Level_1
+  m_Name: Level_5
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   tilePrefabs:
   - {fileID: 5565711687149617185, guid: a62b8f0847d7145d9a735d082c4f432c, type: 3}
@@ -23,11 +23,15 @@ MonoBehaviour:
   - {fileID: 8387658839642231776, guid: 13e8b827b3dd9476e9857adeba92e616, type: 3}
   - {fileID: 7394214982522249966, guid: 185ba6db79314424692cd7fe60babfda, type: 3}
   - {fileID: 2153097784608717426, guid: 349ccf70d68b04d3bba9cf735e8a459a, type: 3}
-  gridRows: 3
-  gridCols: 3
-  spacing: 125
-  layers: 1
+  gridRows: 7
+  gridCols: 7
+  spacing: 100
+  layers: 2
   layout:
-  - 111
-  - 111
-  - 111
+  - 1011101
+  - 1010101
+  - 1010101
+  - 1111111
+  - 1010101
+  - 1010101
+  - 1110111
