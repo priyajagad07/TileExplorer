@@ -20,9 +20,9 @@ public class LevelManager : MonoBehaviour
     public void LoadLevel(int index)
     {
         LevelData level = levelDatabase.levels[index];
+        BoardGenerator.instance.SetLevel(level);
 
-        BoardGenerator generator = FindAnyObjectByType<BoardGenerator>();
-        generator.SetLevel(level);
+        GameManager.instance.UpdateLevelText(index);
     }
 
     public void Nextlevel()
@@ -39,6 +39,7 @@ public class LevelManager : MonoBehaviour
 
         Time.timeScale = 1f;
 
+        UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
         LoadLevel(currentLevelIndex);
     }
 }

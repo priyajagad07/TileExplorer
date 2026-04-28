@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class MatchBoardMatch : MonoBehaviour
 {
-    private MatchBoard board;
+    public static MatchBoardMatch instance;
     private int removedTiles = 0;
     private int activePopAnimation = 0;
 
     void Awake()
     {
-        board = GetComponent<MatchBoard>();
+        instance = this;
     }
 
     public void CheckMatch(List<GameObject> placedTiles, int tileID)
@@ -33,7 +33,7 @@ public class MatchBoardMatch : MonoBehaviour
 
             foreach (GameObject matchtile in matched)
             {
-                board.RemoveTile(matchtile);
+                MatchBoard.instance.RemoveTile(matchtile);
                 activePopAnimation++;
                 StartCoroutine(PopAndDestroy(matchtile, isFinalMatch));
             }
@@ -44,7 +44,7 @@ public class MatchBoardMatch : MonoBehaviour
 
     void Rearrange()
     {
-        board.RearrangeBoard();
+        MatchBoard.instance.RearrangeBoard();
     }
 
     IEnumerator PopAndDestroy(GameObject tile, bool checkForWin)
@@ -83,10 +83,16 @@ public class MatchBoardMatch : MonoBehaviour
 
         activePopAnimation--;
 
-        if (checkForWin && activePopAnimation == 0)
+        if (checkForWin && activePopAnimation == 0 && removedTiles >= BoardGenerator.totalTilesInLevel)
         {
             Debug.Log("Level Complete");
             GameManager.instance.LevelComplete();
         }
+    }
+
+    public void ResetBoardState()
+    {
+        removedTiles = 0;
+        activePopAnimation = 0;
     }
 }

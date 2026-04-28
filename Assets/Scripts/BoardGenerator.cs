@@ -3,15 +3,16 @@ using UnityEngine;
 
 public class BoardGenerator : MonoBehaviour
 {
+    public static BoardGenerator instance;
     [SerializeField] private LevelData levelData;
     [SerializeField] private Transform tileParent;
     public static int totalTilesInLevel;
 
-    // void Start()
-    // {
-    //     GenerateTiles();
-    // }
-
+    void Awake()
+    {
+        instance = this;
+    }
+    
     void GenerateTiles()
     {
         List<GameObject> tilesToSpawn = new List<GameObject>();
@@ -49,10 +50,13 @@ public class BoardGenerator : MonoBehaviour
 
         for (int layer = 0; layer < levelData.layers; layer++)
         {
-            float layerOffset = layer * 10f;
+            float layerOffset = layer * 50f;
 
-            float startX = -(levelData.gridCols / 2f) * levelData.spacing;
-            float startY = (levelData.gridRows / 2f) * levelData.spacing;
+            // float startX = -(levelData.gridCols / 2f) * levelData.spacing;
+            // float startY = (levelData.gridRows / 2f) * levelData.spacing;
+
+            float startX = -((levelData.gridCols - 1) * levelData.spacing) / 2f;
+            float startY = ((levelData.gridRows - 1) * levelData.spacing) / 2f;
 
             for (int row = 0; row < levelData.gridRows; row++)
             {
@@ -105,6 +109,8 @@ public class BoardGenerator : MonoBehaviour
     public void SetLevel(LevelData newLevel)
     {
         levelData = newLevel;
+
+        MatchBoardMatch.instance.ResetBoardState();
 
         foreach(Transform child in tileParent)
         {

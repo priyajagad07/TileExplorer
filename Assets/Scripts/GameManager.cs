@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public MatchBoard matchBoard;
+    public TextMeshProUGUI levelText;
 
     void Awake()
     {
@@ -25,10 +27,24 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    public void RestartGame()
+    public void ReplayGame()
     {
         Time.timeScale = 1f;
         Debug.Log(Time.timeScale);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        int currentLevel = PlayerPrefs.GetInt("Level", 0);
+
+        MatchBoard.instance.ResetBoard();
+        MatchBoardMatch.instance.ResetBoardState();
+
+        LevelManager.instance.LoadLevel(currentLevel);
+
+        UIManager.Instance.HidePopup(ScreenType.GameOver);
+        UIManager.Instance.Show(ScreenType.GamePlay);
+    }
+
+    public void UpdateLevelText(int levelIndex)
+    {
+        levelText.text = "Level " + (levelIndex + 1);
     }
 }

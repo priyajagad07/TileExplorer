@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class MatchBoard : MonoBehaviour
 {
+    public static MatchBoard instance;
     public List<Transform> slots = new List<Transform>();
     private List<GameObject> placedTiles = new List<GameObject>();
     private MatchBoardMovement movement;
@@ -10,6 +11,7 @@ public class MatchBoard : MonoBehaviour
 
     void Awake()
     {
+        instance = this;
         movement = GetComponent<MatchBoardMovement>();
         matchSystem = GetComponent<MatchBoardMatch>();
     }
@@ -54,6 +56,20 @@ public class MatchBoard : MonoBehaviour
             movement.MoveTile(placedTiles[i], slots[i]);
         }
     }
+
+    public void ResetBoard()
+    {
+        placedTiles.Clear();
+
+        foreach(Transform slot in slots)
+        {
+           foreach(Transform child in slot)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+
     public List<GameObject> GetPlacedTiles()
     {
         return placedTiles;
@@ -63,6 +79,7 @@ public class MatchBoard : MonoBehaviour
     {
         placedTiles.Remove(tile);
     }
+
     public int GetTileCount()
     {
         return placedTiles.Count;

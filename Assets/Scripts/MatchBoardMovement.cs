@@ -3,13 +3,6 @@ using UnityEngine;
 
 public class MatchBoardMovement : MonoBehaviour
 {
-    private MatchBoard board;
-
-    void Awake()
-    {
-        board = GetComponent<MatchBoard>();
-    }
-
     public void MoveTile(GameObject tile, Transform targetSlot)
     {
         StartCoroutine(MoveToSlot(tile, targetSlot));
@@ -38,7 +31,7 @@ public class MatchBoardMovement : MonoBehaviour
         tile.transform.SetParent(targetSlot);
         rect.anchoredPosition = Vector2.zero;
 
-        if (board.GetTileCount() >= board.slots.Count)
+        if (MatchBoard.instance.GetTileCount() >= MatchBoard.instance.slots.Count)
         {
             Debug.Log("Game Over");
             GameManager.instance.GameOver();
