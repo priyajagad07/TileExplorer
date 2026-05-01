@@ -10,18 +10,46 @@ public class UIManager : MonoBehaviour
 
     private BaseScreen currentScreen;
 
+    public void ShowGameStartScreen()
+    {
+        Show(ScreenType.GameStartScreeen);
+    }
+
+    public void ShowHomeScreen()
+    {
+        Show(ScreenType.HomeScreen);
+    }
+
+    public void ShowMapScreen()
+    {
+        Show(ScreenType.MapScreen);
+    }
+
+    public void ShowShopScreen()
+    {
+        Show(ScreenType.ShopScreen);
+    }
+
+    public void ShowSettingsScreen()
+    {
+        Show(ScreenType.SettingsScreen);
+    }
+
+    public void ShowFreeCoinsScreen()
+    {
+        Show(ScreenType.FreeCoinsScreen);
+    }
+
     public void ShowGamePlay()
     {
         Show(ScreenType.GamePlay);
     }
+    
     public void ShowGameOver()
     {
         Show(ScreenType.GameOver);
     }
-    // public void ShowPauseGame()
-    // {
-    //     Show(ScreenType.PauseGame);
-    // }
+
     public void ShowLevelCompleted()
     {
         Show(ScreenType.LevelCompleted);

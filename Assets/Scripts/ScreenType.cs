@@ -1,8 +1,12 @@
 public enum ScreenType
 {
+    GameStartScreeen,
     HomeScreen,
+    MapScreen,
+    ShopScreen,
+    SettingsScreen,
+    FreeCoinsScreen,
     GamePlay,
-    //PauseGame,
     GameOver,
     LevelCompleted,
 }
