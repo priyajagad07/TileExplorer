@@ -1,0 +1,377 @@
+fileFormatVersion: 2
+guid: b324d7c78cb2c4f1899b024fe105bb41
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5955474900731121742
+    second: message-chat-bubble-vectors-removebg-preview_0
+  - first:
+      213: -4144724462775680362
+    second: message-chat-bubble-vectors-removebg-preview_1
+  - first:
+      213: -2250021921040996345
+    second: message-chat-bubble-vectors-removebg-preview_2
+  - first:
+      213: -8082890772334434213
+    second: message-chat-bubble-vectors-removebg-preview_3
+  - first:
+      213: -4321361239064701205
+    second: message-chat-bubble-vectors-removebg-preview_4
+  - first:
+      213: 987023150478901007
+    second: message-chat-bubble-vectors-removebg-preview_5
+  - first:
+      213: 8859285729836869121
+    second: message-chat-bubble-vectors-removebg-preview_6
+  - first:
+      213: 8758822750667905743
+    second: message-chat-bubble-vectors-removebg-preview_7
+  - first:
+      213: 7845094328634352291
+    second: message-chat-bubble-vectors-removebg-preview_8
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_0
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 255
+        width: 134
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bfaa299127e95da0800000000000000
+      internalID: -5955474900731121742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_1
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 261
+        width: 108
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69242609f0bfa76c0800000000000000
+      internalID: -4144724462775680362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_2
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 263
+        width: 170
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7086283ebf056c0e0800000000000000
+      internalID: -2250021921040996345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_3
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 115
+        width: 125
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5829b4eaadc3df80800000000000000
+      internalID: -8082890772334434213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_4
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 112
+        width: 106
+        height: 123
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be6186f39d07704c0800000000000000
+      internalID: -4321361239064701205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 124
+        width: 138
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0fb16d635c92bd00800000000000000
+      internalID: 987023150478901007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_6
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 0
+        width: 121
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1062d9ace6182fa70800000000000000
+      internalID: 8859285729836869121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_7
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 0
+        width: 138
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fca9b20b2e69d8970800000000000000
+      internalID: 8758822750667905743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: message-chat-bubble-vectors-removebg-preview_8
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 0
+        width: 120
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a2aeaf0abf5fdc60800000000000000
+      internalID: 7845094328634352291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      message-chat-bubble-vectors-removebg-preview_0: -5955474900731121742
+      message-chat-bubble-vectors-removebg-preview_1: -4144724462775680362
+      message-chat-bubble-vectors-removebg-preview_2: -2250021921040996345
+      message-chat-bubble-vectors-removebg-preview_3: -8082890772334434213
+      message-chat-bubble-vectors-removebg-preview_4: -4321361239064701205
+      message-chat-bubble-vectors-removebg-preview_5: 987023150478901007
+      message-chat-bubble-vectors-removebg-preview_6: 8859285729836869121
+      message-chat-bubble-vectors-removebg-preview_7: 8758822750667905743
+      message-chat-bubble-vectors-removebg-preview_8: 7845094328634352291
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

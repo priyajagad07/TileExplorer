@@ -35,9 +35,19 @@ public class UIManager : MonoBehaviour
         Show(ScreenType.SettingsScreen);
     }
 
+    public void ShowInfoScreen()
+    {
+        Show(ScreenType.InfoScreen);
+    }
+
     public void ShowFreeCoinsScreen()
     {
         Show(ScreenType.FreeCoinsScreen);
+    }
+
+    public void ShowDailyStreakScreen()
+    {
+        Show(ScreenType.DailyStreakScreen);
     }
 
     public void ShowGamePlay()
