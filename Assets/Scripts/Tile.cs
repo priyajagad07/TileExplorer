@@ -22,6 +22,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (added)
         {
             isMoved = true;
+            SoundManager.instance.PlaySound(SoundName.TileClick);
         }
     }
 

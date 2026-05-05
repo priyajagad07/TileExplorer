@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        SoundManager.instance.PlaySound(SoundName.GameOver);
         UIManager.Instance.ShowPopup(ScreenType.GameOver);
         Debug.Log("Game Over");
         Time.timeScale = 0f;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
+        SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
         Debug.Log("Level Completed");
         Time.timeScale = 0f;

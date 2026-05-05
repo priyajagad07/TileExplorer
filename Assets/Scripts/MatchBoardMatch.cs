@@ -39,6 +39,8 @@ public class MatchBoardMatch : MonoBehaviour
             }
 
             Invoke(nameof(Rearrange), 0.6f);
+
+            SoundManager.instance.PlaySound(SoundName.ThreeTilesMatch);
         }
     }
 

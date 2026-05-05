@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     public ScreenType startScreenType;
 
     private BaseScreen currentScreen;
+    private ScreenType currentScreenType;
+    private Stack<ScreenType> screenHistory = new Stack<ScreenType>();
 
     public void ShowGameStartScreen()
     {
@@ -54,7 +56,7 @@ public class UIManager : MonoBehaviour
     {
         Show(ScreenType.GamePlay);
     }
-    
+
     public void ShowGameOver()
     {
         Show(ScreenType.GameOver);
@@ -86,11 +88,24 @@ public class UIManager : MonoBehaviour
         {
             if (s.screenType == type)
             {
+                if (currentScreen != null && currentScreen != s.screen)
+                {
+                    screenHistory.Push(currentScreenType);
+                }
+
+                if(type == ScreenType.SettingsScreen && currentScreenType == ScreenType.GamePlay)
+                {
+                    Time.timeScale = 0;
+                }
+
                 if (!s.isPopup && currentScreen != null)
                 {
                     currentScreen.Hide();
                 }
+
                 currentScreen = s.screen;
+                currentScreenType = type;
+                
                 currentScreen.Show();
                 return;
             }
@@ -118,6 +133,21 @@ public class UIManager : MonoBehaviour
                 s.screen.Hide();
                 return;
             }
+        }
+    }
+
+    public void GoBack()
+    {
+        if (screenHistory.Count > 0)
+        {
+            ScreenType previous = screenHistory.Pop();
+
+            if (previous == ScreenType.GamePlay)
+            {
+                Time.timeScale = 1f;
+            }
+
+            Show(previous);
         }
     }
 }

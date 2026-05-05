@@ -52,9 +52,6 @@ public class BoardGenerator : MonoBehaviour
         {
             float layerOffset = layer * 50f;
 
-            // float startX = -(levelData.gridCols / 2f) * levelData.spacing;
-            // float startY = (levelData.gridRows / 2f) * levelData.spacing;
-
             float startX = -((levelData.gridCols - 1) * levelData.spacing) / 2f;
             float startY = ((levelData.gridRows - 1) * levelData.spacing) / 2f;
 
