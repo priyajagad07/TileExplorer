@@ -13,26 +13,24 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        currentLevelIndex = PlayerPrefs.GetInt("Level" , 0);
+        currentLevelIndex = PlayerPrefs.GetInt("Level", 0);
         LoadLevel(currentLevelIndex);
+        Debug.Log("Saved Level: " + currentLevelIndex);
+
     }
 
     public void LoadLevel(int index)
     {
-        LevelData level = levelDatabase.levels[index];
-        BoardGenerator.instance.SetLevel(level);
+        currentLevelIndex = index;
+        ProceduralLevelData levelData = ProceduralLevelGenerator.instance.GenerateLevel(index);
 
+        BoardGenerator.instance.SetProceduralLevel(levelData);
         GameManager.instance.UpdateLevelText(index);
     }
 
     public void Nextlevel()
     {
         currentLevelIndex++;
-
-        if(currentLevelIndex >= levelDatabase.levels.Length)
-        {
-            currentLevelIndex = 0;
-        }
 
         PlayerPrefs.SetInt("Level", currentLevelIndex);
         PlayerPrefs.Save();

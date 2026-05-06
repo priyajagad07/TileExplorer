@@ -1,0 +1,46 @@
+{
+    "shapes": [
+        {
+            "shapeName": "Square",
+            "difficulty" : 1,
+            "layout": [
+                "111",
+                "111",
+                "111"
+            ]
+        },
+        {
+            "shapeName": "Diamond",
+            "difficulty" : 2,
+            "layout": [
+                "00100",
+                "01110",
+                "11011",
+                "01110",
+                "00100"
+            ]
+        },
+        {
+            "shapeName": "Cross",
+            "difficulty" : 3,
+            "layout": [
+                "00100",
+                "00100",
+                "11111",
+                "00100",
+                "00100"
+            ]
+        },
+        {
+            "shapeName": "Heart",
+            "difficulty" : 4,
+            "layout": [
+                "01010",
+                "11111",
+                "11111",
+                "01110",
+                "00100"
+            ]
+        }
+    ]
+}

@@ -7,23 +7,25 @@ public class BoardGenerator : MonoBehaviour
     [SerializeField] private LevelData levelData;
     [SerializeField] private Transform tileParent;
     public static int totalTilesInLevel;
+    private ProceduralLevelData proceduralData;
+    [SerializeField] private GameObject[] tilePrefabs;
 
     void Awake()
     {
         instance = this;
     }
-    
-    void GenerateTiles()
+
+    void GenerateProceduralTiles()
     {
         List<GameObject> tilesToSpawn = new List<GameObject>();
 
-        int totalTilesNeeded = CountOnesInLayout() * levelData.layers;
+        int totalTilesNeeded = GetValidTileCount(CountOnesInLayout() * proceduralData.layers);
         int typeCount = totalTilesNeeded / 3;
 
         //tile list (3 of each)
         for (int i = 0; i < typeCount; i++)
         {
-            GameObject prefab = levelData.tilePrefabs[Random.Range(0, levelData.tilePrefabs.Length)];
+            GameObject prefab = tilePrefabs[Random.Range(0, tilePrefabs.Length)];
 
             for (int j = 0; j < 3; j++)
             {
@@ -40,26 +42,26 @@ public class BoardGenerator : MonoBehaviour
             tilesToSpawn[randomIndex] = temp;
         }
 
-        SpawnLayout(tilesToSpawn);
+        SpawnProceduralLayout(tilesToSpawn);
         totalTilesInLevel = tilesToSpawn.Count;
     }
 
-    void SpawnLayout(List<GameObject> tiles)
+    void SpawnProceduralLayout(List<GameObject> tiles)
     {
         int index = 0;
 
-        for (int layer = 0; layer < levelData.layers; layer++)
+        for (int layer = 0; layer < proceduralData.layers; layer++)
         {
             float layerOffset = layer * 50f;
 
-            float startX = -((levelData.gridCols - 1) * levelData.spacing) / 2f;
-            float startY = ((levelData.gridRows - 1) * levelData.spacing) / 2f;
+            float startX = -((proceduralData.cols - 1) * proceduralData.spacing) / 2f;
+            float startY = ((proceduralData.rows - 1) * proceduralData.spacing) / 2f;
 
-            for (int row = 0; row < levelData.gridRows; row++)
+            for (int row = 0; row < proceduralData.rows; row++)
             {
-                string rowData = levelData.layout[row];
+                string rowData = proceduralData.layout[row];
 
-                for (int col = 0; col < levelData.gridCols; col++)
+                for (int col = 0; col < proceduralData.cols; col++)
                 {
                     if (index >= tiles.Count)
                         return;
@@ -76,8 +78,8 @@ public class BoardGenerator : MonoBehaviour
 
                     RectTransform rect = obj.GetComponent<RectTransform>();
 
-                    float x = startX + col * levelData.spacing + layerOffset;
-                    float y = startY - row * levelData.spacing - layerOffset;
+                    float x = startX + col * proceduralData.spacing + layerOffset;
+                    float y = startY - row * proceduralData.spacing - layerOffset;
                     rect.anchoredPosition = new Vector2(x, y);
 
                     obj.transform.SetSiblingIndex(tileParent.childCount);
@@ -92,7 +94,7 @@ public class BoardGenerator : MonoBehaviour
     {
         int count = 0;
 
-        foreach (string row in levelData.layout)
+        foreach (string row in proceduralData.layout)
         {
             foreach (char c in row)
             {
@@ -103,17 +105,22 @@ public class BoardGenerator : MonoBehaviour
         return count;
     }
 
-    public void SetLevel(LevelData newLevel)
+    public void SetProceduralLevel(ProceduralLevelData data)
     {
-        levelData = newLevel;
+        proceduralData = data;
 
         MatchBoardMatch.instance.ResetBoardState();
 
-        foreach(Transform child in tileParent)
+        foreach (Transform child in tileParent)
         {
             Destroy(child.gameObject);
         }
 
-        GenerateTiles();
+        GenerateProceduralTiles();
+    }
+
+    int GetValidTileCount(int count)
+    {
+        return count - (count % 3);
     }
 }

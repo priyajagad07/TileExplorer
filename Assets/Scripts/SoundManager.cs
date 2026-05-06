@@ -29,7 +29,7 @@ public class SoundManager : MonoBehaviour
     {
         if (soundDict.ContainsKey(SoundName.BackGround))
         {
-            PlaySound(SoundName.BackGround);
+            PlayMusic(SoundName.BackGround);
         }
     }
 
