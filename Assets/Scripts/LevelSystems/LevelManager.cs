@@ -3,7 +3,7 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
-    public LevelDatabase levelDatabase;
+    //public LevelDatabase levelDatabase;
     private int currentLevelIndex;
 
     void Awake()

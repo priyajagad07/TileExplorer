@@ -31,6 +31,7 @@ public class MatchBoardMatch : MonoBehaviour
 
             bool isFinalMatch = removedTiles >= BoardGenerator.totalTilesInLevel;
 
+            MatchBoard.instance.ClearUndoStack();
             foreach (GameObject matchtile in matched)
             {
                 MatchBoard.instance.RemoveTile(matchtile);

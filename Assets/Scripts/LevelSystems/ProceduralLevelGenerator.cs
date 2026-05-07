@@ -32,7 +32,7 @@ public class ProceduralLevelGenerator : MonoBehaviour
         //difficulty
         data.layers = GetLayerCount(level);
 
-        data.spacing = 130f;
+        data.spacing = 180f;
 
 
         List<ShapeData> availableShapes = new List<ShapeData>();

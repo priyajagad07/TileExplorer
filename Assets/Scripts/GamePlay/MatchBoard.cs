@@ -8,6 +8,7 @@ public class MatchBoard : MonoBehaviour
     private List<GameObject> placedTiles = new List<GameObject>();
     private MatchBoardMovement movement;
     private MatchBoardMatch matchSystem;
+    private Stack<UndoData> undoStack = new Stack<UndoData>();
 
     void Awake()
     {
@@ -22,6 +23,16 @@ public class MatchBoard : MonoBehaviour
         {
             return false;
         }
+
+        RectTransform rect = tile.GetComponent<RectTransform>();
+        UndoData data = new UndoData(
+            tile,
+            tile.transform.parent,
+            rect.anchoredPosition,
+            tile.transform.GetSiblingIndex()
+        );
+
+        undoStack.Push(data);
 
         int tileID = tile.GetComponent<Tile>().tileId;
         int insertIndex = -1;
@@ -61,9 +72,9 @@ public class MatchBoard : MonoBehaviour
     {
         placedTiles.Clear();
 
-        foreach(Transform slot in slots)
+        foreach (Transform slot in slots)
         {
-           foreach(Transform child in slot)
+            foreach (Transform child in slot)
             {
                 Destroy(child.gameObject);
             }
@@ -83,5 +94,46 @@ public class MatchBoard : MonoBehaviour
     public int GetTileCount()
     {
         return placedTiles.Count;
+    }
+
+    public void UndoMove()
+    {
+        if (undoStack.Count == 0)
+            return;
+
+        UndoData data = undoStack.Pop();
+
+        if (data.tile == null)
+            return;
+
+        placedTiles.Remove(data.tile);
+
+        data.tile.transform.SetParent(data.originalParent);
+        data.tile.transform.SetSiblingIndex(data.siblingIndex);
+
+        RectTransform rect = data.tile.GetComponent<RectTransform>();
+        rect.anchoredPosition = data.originalPosition;
+
+        Tile tileScript = data.tile.GetComponent<Tile>();
+        tileScript.SetMoved(false);
+
+        RearrangeBoard();
+
+        SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
+    }
+
+    public void ClearUndoStack()
+    {
+        undoStack.Clear();
+    }
+
+    public void ShuffleTiles()
+    {
+        BoosterSystem.instance.ShuffleTiles();
+    }
+
+    public void UseMagic()
+    {
+        BoosterSystem.instance.UseMagicBooster();
     }
 }
