@@ -3,7 +3,6 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
-    //public LevelDatabase levelDatabase;
     private int currentLevelIndex;
 
     void Awake()
@@ -16,7 +15,6 @@ public class LevelManager : MonoBehaviour
         currentLevelIndex = PlayerPrefs.GetInt("Level", 0);
         LoadLevel(currentLevelIndex);
         Debug.Log("Saved Level: " + currentLevelIndex);
-
     }
 
     public void LoadLevel(int index)

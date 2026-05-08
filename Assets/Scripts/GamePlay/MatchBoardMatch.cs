@@ -7,6 +7,8 @@ public class MatchBoardMatch : MonoBehaviour
     public static MatchBoardMatch instance;
     private int removedTiles = 0;
     private int activePopAnimation = 0;
+    [SerializeField] private GameObject destroyParticle;
+    [SerializeField] private Transform particleParent;
 
     void Awake()
     {
@@ -81,6 +83,8 @@ public class MatchBoardMatch : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+
+        Instantiate(destroyParticle, rect.position, Quaternion.identity, particleParent);
 
         Destroy(tile);
 
