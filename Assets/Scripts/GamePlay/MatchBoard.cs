@@ -98,6 +98,12 @@ public class MatchBoard : MonoBehaviour
 
     public void UndoMove()
     {
+        if (!BoosterManager.instance.UseUndo())
+        {
+            Debug.Log("No Undo Left");
+            return;
+        }
+
         if (undoStack.Count == 0)
             return;
 
@@ -129,11 +135,23 @@ public class MatchBoard : MonoBehaviour
 
     public void ShuffleTiles()
     {
+        if (!BoosterManager.instance.UseShuffle())
+        {
+            Debug.Log("No Shuffle Left");
+            return;
+        }
+
         BoosterSystem.instance.ShuffleTiles();
     }
 
     public void UseMagic()
     {
+        if (!BoosterManager.instance.UseMagic())
+        {
+            Debug.Log("No Magic Left");
+            return;
+        }
+
         BoosterSystem.instance.UseMagicBooster();
     }
 }

@@ -69,9 +69,6 @@ public class BoosterSystem : MonoBehaviour
             if (tile.IsMoved())
                 continue;
 
-            // if(tile.IsBlocked())
-            //     continue;
-
             if (!tileGroups.ContainsKey(tile.tileId))
             {
                 tileGroups.Add(tile.tileId, new List<Tile>());

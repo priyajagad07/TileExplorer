@@ -59,43 +59,16 @@ public class AudioUIController : MonoBehaviour
 
     public void OnVoiceButton()
     {
-        // if (!SoundManager.instance.IsVolumeMuted())
-        // {
-        //     SoundManager.instance.ForceSfxMute(true);
-        // }
-        // else
-        // {
-        //     SoundManager.instance.ForceSfxMute(false);
-        // }
-
         UpdateIcons();
     }
 
     public void OnVibrationButton()
     {
-        // if (!SoundManager.instance.IsVibrationMuted())
-        // {
-        //     SoundManager.instance.ForceSfxMute(true);
-        // }
-        // else
-        // {
-        //     SoundManager.instance.ForceSfxMute(false);
-        // }
-
         UpdateIcons();
     }
 
     public void OnNotificationButton()
-    {
-        // if (!SoundManager.instance.IsNotificationMuted())
-        // {
-        //     SoundManager.instance.ForceSfxMute(true);
-        // }
-        // else
-        // {
-        //     SoundManager.instance.ForceSfxMute(false);
-        // }
-
+    {      
         UpdateIcons();
     }
 
