@@ -88,6 +88,8 @@ public class MatchBoardMatch : MonoBehaviour
 
         Destroy(tile);
 
+        yield return new WaitForSeconds(2f);
+
         activePopAnimation--;
 
         if (checkForWin && activePopAnimation == 0 && removedTiles >= BoardGenerator.totalTilesInLevel)
@@ -101,5 +103,10 @@ public class MatchBoardMatch : MonoBehaviour
     {
         removedTiles = 0;
         activePopAnimation = 0;
+    }
+
+    public void AddRemovedTile()
+    {
+        removedTiles++;
     }
 }

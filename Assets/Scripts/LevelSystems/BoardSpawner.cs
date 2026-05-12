@@ -5,7 +5,7 @@ public class BoardSpawner : MonoBehaviour
 {
     public static BoardSpawner instance;
 
-    [SerializeField] private Transform tileParent;
+    [SerializeField] private RectTransform tileParent;
 
     void Awake()
     {
@@ -16,12 +16,28 @@ public class BoardSpawner : MonoBehaviour
     {
         int index = 0;
 
+        float areaWidth = tileParent.rect.width;
+        float areaHeight = tileParent.rect.height;
+
+        float spacingX = areaWidth / (proceduralLevelData.cols + 1);
+        float spacingY = areaHeight / (proceduralLevelData.rows + 1);
+
+        float spacing = Mathf.Min(spacingX, spacingY);
+        spacing = Mathf.Clamp(spacing, 60f, 120f);
+
+        float tileScale = spacing / 100f;
+        tileScale = Mathf.Clamp(tileScale, 0.6f, 1f);
+
+        float totalWidth = (proceduralLevelData.cols - 1) * spacing;
+        float totalHeight = (proceduralLevelData.rows - 1) * spacing;
+
+        float startX = -totalWidth / 2f;
+        float startY = totalHeight / 2f;
+
         for (int layer = 0; layer < proceduralLevelData.layers; layer++)
         {
-            float layerOffset = layer * 50f;
-
-            float startX = -((proceduralLevelData.cols - 1) * proceduralLevelData.spacing) / 2f;
-            float startY = ((proceduralLevelData.rows - 1) * proceduralLevelData.spacing) / 2f;
+            float layerOffsetX = layer * 30f;
+            float layerOffsetY = layer * -50f;
 
             for (int row = 0; row < proceduralLevelData.rows; row++)
             {
@@ -36,6 +52,7 @@ public class BoardSpawner : MonoBehaviour
                         continue;
 
                     GameObject obj = Instantiate(tiles[index], tileParent);
+                    obj.transform.localScale = Vector3.one * tileScale;
 
                     Tile tileScript = obj.GetComponent<Tile>();
                     tileScript.row = row;
@@ -44,8 +61,9 @@ public class BoardSpawner : MonoBehaviour
 
                     RectTransform rect = obj.GetComponent<RectTransform>();
 
-                    float x = startX + col * proceduralLevelData.spacing + layerOffset;
-                    float y = startY - row * proceduralLevelData.spacing - layerOffset;
+                    float x = startX + col * spacing + layerOffsetX;
+                    float y = startY - row * spacing + layerOffsetY;
+
                     rect.anchoredPosition = new Vector2(x, y);
 
                     obj.transform.SetSiblingIndex(tileParent.childCount);

@@ -1,12 +1,15 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public MatchBoard matchBoard;
     public TextMeshProUGUI levelText;
+    public Button claimButton;
 
     void Awake()
     {
@@ -23,6 +26,7 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
+        claimButton.interactable = true;
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
         Debug.Log("Level Completed");

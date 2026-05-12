@@ -81,33 +81,63 @@ public class BoosterManager : MonoBehaviour
 
     public void BuyUndo()
     {
+        Debug.Log("Buy Undo Clicked");
+
         if (CoinManager.instance.SpendCoins(1200))
         {
             undoCount += 3;
 
             SaveBoosters();
             UpdateUI();
+
+            UIManager.Instance.HidePopup(ScreenType.BuyUndoScreen);
+
+            Debug.Log("Undo Purchased");
+        }
+        else
+        {
+            Debug.Log("Not Enough Coins");
         }
     }
     public void BuyShuffle()
     {
+         Debug.Log("Buy Shuffle Clicked");
+
         if (CoinManager.instance.SpendCoins(2500))
         {
             shuffleCount += 3;
 
             SaveBoosters();
             UpdateUI();
+
+            UIManager.Instance.HidePopup(ScreenType.BuyShuffleScreen);
+
+            Debug.Log("Shuffle Purchased");
+        }
+        else
+        {
+            Debug.Log("Not Enough Coins");
         }
     }
 
     public void BuyMagic()
     {
+         Debug.Log("Buy Magic Clicked");
+
         if (CoinManager.instance.SpendCoins(3000))
         {
             magicCount += 3;
 
             SaveBoosters();
             UpdateUI();
+
+            UIManager.Instance.HidePopup(ScreenType.BuyMagicScreen);
+
+            Debug.Log("Magic Purchased");
+        }
+        else
+        {
+            Debug.Log("Not Enough Coins");
         }
     }
 

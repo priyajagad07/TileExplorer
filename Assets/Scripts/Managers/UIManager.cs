@@ -93,7 +93,7 @@ public class UIManager : MonoBehaviour
                     screenHistory.Push(currentScreenType);
                 }
 
-                if(type == ScreenType.SettingsScreen && currentScreenType == ScreenType.GamePlay)
+                if (type == ScreenType.SettingsScreen && currentScreenType == ScreenType.GamePlay)
                 {
                     Time.timeScale = 0;
                 }
@@ -105,7 +105,7 @@ public class UIManager : MonoBehaviour
 
                 currentScreen = s.screen;
                 currentScreenType = type;
-                
+
                 currentScreen.Show();
                 return;
             }

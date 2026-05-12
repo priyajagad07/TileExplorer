@@ -11,4 +11,7 @@ public enum ScreenType
     GamePlay,
     GameOver,
     LevelCompleted,
+    BuyUndoScreen,
+    BuyShuffleScreen,
+    BuyMagicScreen,
 }

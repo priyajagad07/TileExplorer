@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -101,6 +102,7 @@ public class MatchBoard : MonoBehaviour
         if (!BoosterManager.instance.UseUndo())
         {
             Debug.Log("No Undo Left");
+            UIManager.Instance.ShowPopup(ScreenType.BuyUndoScreen);
             return;
         }
 
@@ -138,6 +140,7 @@ public class MatchBoard : MonoBehaviour
         if (!BoosterManager.instance.UseShuffle())
         {
             Debug.Log("No Shuffle Left");
+            UIManager.Instance.ShowPopup(ScreenType.BuyShuffleScreen);
             return;
         }
 
@@ -149,9 +152,94 @@ public class MatchBoard : MonoBehaviour
         if (!BoosterManager.instance.UseMagic())
         {
             Debug.Log("No Magic Left");
+            UIManager.Instance.ShowPopup(ScreenType.BuyMagicScreen);
             return;
         }
 
         BoosterSystem.instance.UseMagicBooster();
+    }
+
+    public void ReviveBoard()
+    {
+        List<int> tileIds = new List<int>();
+
+        foreach (GameObject tile in placedTiles)
+        {
+            tileIds.Add(tile.GetComponent<Tile>().tileId);
+        }
+
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        List<GameObject> tilesToRemove = new List<GameObject>();
+
+        Dictionary<int, int> tileCounts = new Dictionary<int, int>();
+
+        foreach (GameObject tile in placedTiles)
+        {
+            int id = tile.GetComponent<Tile>().tileId;
+
+            if (!tileCounts.ContainsKey(id))
+            {
+                tileCounts[id] = 0;
+            }
+
+            tileCounts[id]++;
+        }
+
+        foreach (var pair in tileCounts)
+        {
+            int tileId = pair.Key;
+            int currentCount = pair.Value;
+
+            int needed = 3 - currentCount;
+
+            foreach (Transform child in tileParent)
+            {
+                if (needed <= 0)
+                    break;
+
+                Tile tile = child.GetComponent<Tile>();
+
+                if (tile == null)
+                    continue;
+
+                if (tile.tileId == tileId)
+                {
+                    tilesToRemove.Add(child.gameObject);
+                    MatchBoardMatch.instance.AddRemovedTile();
+                    needed--;
+                }
+            }
+        }
+
+        foreach (GameObject tile in placedTiles)
+        {
+            tilesToRemove.Add(tile);
+        }
+
+        foreach (GameObject tile in tilesToRemove)
+        {
+            Destroy(tile);
+        }
+
+        StartCoroutine(CheckReviveWin());
+
+        placedTiles.Clear();
+        RearrangeBoard();
+
+        Time.timeScale = 1f;
+        UIManager.Instance.HidePopup(ScreenType.GameOver);
+    }
+
+    IEnumerator CheckReviveWin()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        if(tileParent.childCount <= 0)
+        {
+            GameManager.instance.LevelComplete();
+        }
     }
 }
