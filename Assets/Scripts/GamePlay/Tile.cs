@@ -36,7 +36,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             if (other == null)
                 continue;
 
-            if(other.layer <= this.layer) //only checks tiles above this layer
+            if (other.layer <= this.layer)
                 continue;
 
             RectTransform otherRect = other.GetComponent<RectTransform>();
@@ -46,7 +46,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                 otherRect.anchoredPosition
             );
 
-            if(distance < 120f)
+            if (distance < 120f)
             {
                 return true;
             }
@@ -61,10 +61,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void MoveToBoard()
     {
-        if(isMoved)
+        if (isMoved)
             return;
-        
-        bool added = GameManager.instance.matchBoard.AddTile(gameObject);
+
+        BoosterSystem.instance.RecordMove(gameObject);
+        bool added = MatchBoard.instance.AddTile(gameObject);
 
         if (added)
         {

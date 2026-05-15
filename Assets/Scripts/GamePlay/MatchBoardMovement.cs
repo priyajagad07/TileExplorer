@@ -26,9 +26,14 @@ public class MatchBoardMovement : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
-
+        
+        if(tile == null)
+            yield break;
+            
         rect.position = targetSlot.position;
         tile.transform.SetParent(targetSlot);
+        tile.transform.SetAsLastSibling();
+
         rect.anchoredPosition = Vector2.zero;
 
         if (MatchBoard.instance.GetTileCount() >= MatchBoard.instance.slots.Count)

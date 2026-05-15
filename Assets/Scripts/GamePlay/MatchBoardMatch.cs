@@ -33,7 +33,7 @@ public class MatchBoardMatch : MonoBehaviour
 
             bool isFinalMatch = removedTiles >= BoardGenerator.totalTilesInLevel;
 
-            MatchBoard.instance.ClearUndoStack();
+            BoosterSystem.instance.ClearUndoStack();
             foreach (GameObject matchtile in matched)
             {
                 MatchBoard.instance.RemoveTile(matchtile);
@@ -92,15 +92,22 @@ public class MatchBoardMatch : MonoBehaviour
 
         activePopAnimation--;
 
-        if (checkForWin && activePopAnimation == 0 && removedTiles >= BoardGenerator.totalTilesInLevel)
-        {
-            Debug.Log("Level Complete");
-            GameManager.instance.LevelComplete();
-        }
+
+        StartCoroutine(CheckCompletionDelayed());
     }
+
+    IEnumerator CheckCompletionDelayed()
+    {
+        yield return null;
+        yield return null;
+
+        CheckLevelComplete();
+    }
+
 
     public void ResetBoardState()
     {
+        StopAllCoroutines();
         removedTiles = 0;
         activePopAnimation = 0;
     }
@@ -108,5 +115,45 @@ public class MatchBoardMatch : MonoBehaviour
     public void AddRemovedTile()
     {
         removedTiles++;
+    }
+
+    public void CheckLevelComplete()
+    {
+        MatchBoard.instance.CleanBoard();
+
+        if (BoardSpawner.instance == null)
+        {
+            Debug.LogError("Win Check Failed: BoardSpawner is null!");
+            return;
+        }
+
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+        int boardTiles = 0;
+
+        foreach (Transform child in tileParent)
+        {
+            if (child == null)
+                continue;
+
+            Tile tile = child.GetComponent<Tile>();
+
+            if (tile == null)
+                continue;
+
+            if (!tile.IsMoved())
+            {
+                boardTiles++;
+            }
+        }
+
+        int matchTiles = MatchBoard.instance.GetTileCount();
+
+        Debug.Log($"--- WIN CHECK --- Board Tiles Left: {boardTiles} | Match Slots Used: {matchTiles}");
+
+        if (boardTiles <= 0 && matchTiles <= 0)
+        {
+            Debug.Log("level Complete");
+            GameManager.instance.LevelComplete();
+        }
     }
 }

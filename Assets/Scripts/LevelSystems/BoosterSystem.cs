@@ -4,63 +4,79 @@ using UnityEngine;
 public class BoosterSystem : MonoBehaviour
 {
     public static BoosterSystem instance;
+    private Stack<UndoData> undoStack = new Stack<UndoData>();
 
     void Awake()
     {
         instance = this;
     }
 
-    public void ShuffleTiles()
+    public void RecordMove(GameObject tile)
     {
-        Debug.Log("Shuffle is working");
+        RectTransform rect = tile.GetComponent<RectTransform>();
+        UndoData data = new UndoData(
+            tile,
+            tile.transform.parent,
+            rect.anchoredPosition,
+            tile.transform.GetSiblingIndex()
+        );
 
-        List<Tile> remainingTiles = new List<Tile>();
+        undoStack.Push(data);
+    }
 
-        Transform tileParent = BoardSpawner.instance.GetTileParent();
+    public void UndoMove()
+    {
+        if (undoStack.Count == 0)
+            return;
 
-        foreach (Transform child in tileParent)
-        {
-            Tile tile = child.GetComponent<Tile>();
-            if (tile != null)
-            {
-                remainingTiles.Add(tile);
-            }
-        }
+        UndoData data = undoStack.Pop();
 
-        List<Vector2> positions = new List<Vector2>();
+        if (data.tile == null)
+            return;
 
-        foreach (Tile tile in remainingTiles)
-        {
-            RectTransform rect = tile.GetComponent<RectTransform>();
-            positions.Add(rect.anchoredPosition);
-        }
+        MatchBoard.instance.RemoveTile(data.tile);
 
-        for (int i = 0; i < remainingTiles.Count; i++)
-        {
-            Tile temp = remainingTiles[i];
+        data.tile.transform.SetParent(data.originalParent);
+        data.tile.transform.SetSiblingIndex(data.siblingIndex);
 
-            int randomIndex = Random.Range(i, remainingTiles.Count);
-            remainingTiles[i] = remainingTiles[randomIndex];
-            remainingTiles[randomIndex] = temp;
-        }
+        RectTransform rect = data.tile.GetComponent<RectTransform>();
+        rect.anchoredPosition = data.originalPosition;
 
-        for (int i = 0; i < remainingTiles.Count; i++)
-        {
-            RectTransform rect = remainingTiles[i].GetComponent<RectTransform>();
-            rect.anchoredPosition = positions[i];
-        }
+        Tile tileScript = data.tile.GetComponent<Tile>();
+        tileScript.SetMoved(false);
+
+        MatchBoard.instance.RearrangeBoard();
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
     }
 
-    public void UseMagicBooster()
+    public void ClearUndoStack()
     {
-        Dictionary<int, List<Tile>> tileGroups = new Dictionary<int, List<Tile>>();
+        undoStack.Clear();
+    }
+
+    public void ShuffleTiles()
+    {
+        if (BoardSpawner.instance == null)
+        {
+            Debug.Log("BoardSpawner Missing");
+            return;
+        }
 
         Transform tileParent = BoardSpawner.instance.GetTileParent();
+        if (tileParent == null)
+        {
+            Debug.LogError("Tile Parent is NULL");
+            return;
+        }
+
+        List<Tile> tiles = new List<Tile>();
 
         foreach (Transform child in tileParent)
         {
+            if (child == null)
+                continue;
+
             Tile tile = child.GetComponent<Tile>();
 
             if (tile == null)
@@ -69,11 +85,125 @@ public class BoosterSystem : MonoBehaviour
             if (tile.IsMoved())
                 continue;
 
-            if (!tileGroups.ContainsKey(tile.tileId))
-            {
-                tileGroups.Add(tile.tileId, new List<Tile>());
-            }
+            tiles.Add(tile);
+        }
 
+        List<Vector2> positions = new List<Vector2>();
+        List<int> siblingIndices = new List<int>();
+
+        foreach (Tile tile in tiles)
+        {
+            positions.Add(tile.GetComponent<RectTransform>().anchoredPosition);
+            siblingIndices.Add(tile.transform.GetSiblingIndex());
+        }
+
+        for (int i = 0; i < positions.Count; i++)
+        {
+            int randomIndex = Random.Range(i, positions.Count);
+
+            Vector2 tempPos = positions[i];
+            positions[i] = positions[randomIndex];
+            positions[randomIndex] = tempPos;
+
+            int tempIndex = siblingIndices[i];
+            siblingIndices[i] = siblingIndices[randomIndex];
+            siblingIndices[randomIndex] = tempIndex;
+        }
+
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            RectTransform rect = tiles[i].GetComponent<RectTransform>();
+            rect.anchoredPosition = positions[i];
+
+            tiles[i].transform.SetSiblingIndex(siblingIndices[i]);
+        }
+
+        SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
+    }
+
+    public void UseMagicBooster()
+    {
+        if (BoardSpawner.instance == null)
+        {
+            Debug.Log("BoardSpawner Missing");
+            return;
+        }
+
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        if (tileParent == null)
+            return;
+
+        List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
+        Dictionary<int, int> placedCounts = new Dictionary<int, int>();
+
+        foreach (GameObject pTile in placedTiles)
+        {
+            if (pTile == null)
+                continue;
+
+            Tile tile = pTile.GetComponent<Tile>();
+
+            if (tile != null)
+            {
+                if (!placedCounts.ContainsKey(tile.tileId))
+                {
+                    placedCounts[tile.tileId] = 0;
+                }
+                placedCounts[tile.tileId]++;
+            }
+        }
+
+        int targetTileId = -1;
+        int neededToMatch = 3;
+
+        foreach (var kvp in placedCounts)
+        {
+            if (kvp.Value > 0 && kvp.Value < 3)
+            {
+                targetTileId = kvp.Key;
+                neededToMatch = 3 - kvp.Value;
+                break;
+            }
+        }
+
+        List<Tile> availableBoardTiles = new List<Tile>();
+        foreach (Transform child in tileParent)
+        {
+            if (child == null)
+                continue;
+
+            Tile tile = child.GetComponent<Tile>();
+
+            if (tile == null || tile.IsMoved())
+                continue;
+
+            availableBoardTiles.Add(tile);
+        }
+
+        if (targetTileId != -1)
+        {
+            int found = 0;
+            foreach (Tile tile in availableBoardTiles)
+            {
+                if (tile.tileId == targetTileId)
+                {
+                    tile.MoveToBoard();
+                    found++;
+
+                    if (found == neededToMatch)
+                    {
+                        SoundManager.instance.PlaySound(SoundName.ThreeTilesMatch);
+                        return;
+                    }
+                }
+            }
+        }
+
+        Dictionary<int, List<Tile>> tileGroups = new Dictionary<int, List<Tile>>();
+        foreach (Tile tile in availableBoardTiles)
+        {
+            if (!tileGroups.ContainsKey(tile.tileId)) tileGroups[tile.tileId] = new List<Tile>();
             tileGroups[tile.tileId].Add(tile);
         }
 
@@ -85,12 +215,11 @@ public class BoosterSystem : MonoBehaviour
                 {
                     group.Value[i].MoveToBoard();
                 }
-
                 SoundManager.instance.PlaySound(SoundName.ThreeTilesMatch);
                 return;
             }
         }
 
-        Debug.Log("No valid match");
+        Debug.Log("No valid magic match possible on the board");
     }
 }

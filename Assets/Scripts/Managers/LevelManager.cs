@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -12,6 +13,7 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        //PlayerPrefs.DeleteAll();
         currentLevelIndex = PlayerPrefs.GetInt("Level", 0);
         LoadLevel(currentLevelIndex);
         Debug.Log("Saved Level: " + currentLevelIndex);
@@ -21,6 +23,11 @@ public class LevelManager : MonoBehaviour
     {
         currentLevelIndex = index;
         ProceduralLevelData levelData = ProceduralLevelGenerator.instance.GenerateLevel(index);
+
+        if(levelData == null)
+        {
+            Debug.LogError("Level data is null");
+        }
 
         BoardGenerator.instance.SetProceduralLevel(levelData);
         GameManager.instance.UpdateLevelText(index);

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,8 +14,25 @@ public class BoardGenerator : MonoBehaviour
         instance = this;
     }
 
-     public void SetProceduralLevel(ProceduralLevelData data)
+    void OnDestroy()
     {
+        if (instance == this)
+            instance = null;
+    }
+
+    public void SetProceduralLevel(ProceduralLevelData data)
+    {   
+        if(data == null)
+        {
+            Debug.LogError("Procedural data is null");
+        }
+
+        if(data.layerLayouts == null || data.layerLayouts.Count == 0)
+        {
+            Debug.LogError("Procedural level data is missing layer layouts - tiles cannot spawn");
+            return;
+        }
+
         proceduralData = data;
 
         MatchBoardMatch.instance.ResetBoardState();
@@ -27,7 +45,10 @@ public class BoardGenerator : MonoBehaviour
     {
         List<GameObject> tilesToSpawn = new List<GameObject>();
 
-        int totalTilesNeeded = GetValidTileCount(CountOnesInLayout() * proceduralData.layers);
+        int totalTilesNeeded = GetTotalTilesNeeded();
+        Debug.Log("Total tiles Needed: " + totalTilesNeeded);
+        Debug.Log("Layer Count: " + proceduralData.layerLayouts.Count);
+
         int typeCount = totalTilesNeeded / 3;
 
         //tile list (3 of each)
@@ -66,12 +87,28 @@ public class BoardGenerator : MonoBehaviour
                     count++;
             }
         }
-        
+
         return count;
     }
 
-    int GetValidTileCount(int count)
+    int GetTotalTilesNeeded()
     {
+        int count = 0;
+
+        foreach (string[] layout in proceduralData.layerLayouts)
+        {
+            foreach (string row in layout)
+            {
+                foreach (char c in row)
+                {
+                    if (c == '1')
+                    {
+                        count++;
+                    }
+                }
+            }
+        }
+
         return count - (count % 3);
     }
 }

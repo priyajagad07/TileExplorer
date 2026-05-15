@@ -76,8 +76,6 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySound(SoundName name)
     {
-        Debug.Log("Playing sound: " + name);
-
         if (soundDict.ContainsKey(name) && !isSfxMuted)
         {
             sfxSource.PlayOneShot(soundDict[name], sfxVolume);

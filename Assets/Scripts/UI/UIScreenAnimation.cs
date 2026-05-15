@@ -19,7 +19,6 @@ public class UIScreenAnimation : MonoBehaviour
 
     public void Show()
     {
-        Debug.Log("Animation Called");
         StopAllCoroutines();
         StartCoroutine(AnimationShow());
     }

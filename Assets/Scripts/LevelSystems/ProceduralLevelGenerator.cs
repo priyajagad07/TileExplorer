@@ -4,42 +4,29 @@ using UnityEngine;
 public class ProceduralLevelGenerator : MonoBehaviour
 {
     public static ProceduralLevelGenerator instance;
-    private SavedLevelsData savedData;
-    private Dictionary<int, ProceduralLevelData> generatedLevels
-    = new Dictionary<int, ProceduralLevelData>();
 
     void Awake()
     {
         instance = this;
-
-        savedData = LevelSaveSystem.Load();
-
-        foreach (SavedLevelEntry entry in savedData.levels)
-        {
-            generatedLevels[entry.levelNumber] = entry.levelData;
-        }
     }
 
     public ProceduralLevelData GenerateLevel(int level)
     {
-        if (generatedLevels.ContainsKey(level))
+        Random.InitState(level * 1000);
+
+        if (ShapeLoader.database == null || ShapeLoader.database.shapes == null
+            || ShapeLoader.database.shapes.Count == 0)
         {
-            return generatedLevels[level];
+            Debug.LogError("Shape database is Misssing or empty");
+            return null;
         }
 
         ProceduralLevelData data = new ProceduralLevelData();
-
         //difficulty
         data.layers = GetLayerCount(level);
-
-        data.spacing = 180f;
-
+        data.spacing = 130f;
 
         List<ShapeData> availableShapes = new List<ShapeData>();
-        if (availableShapes.Count == 0)
-        {
-            availableShapes.AddRange(ShapeLoader.database.shapes);
-        }
 
         int maxDifficulty = GetDifficulty(level);
 
@@ -51,22 +38,70 @@ public class ProceduralLevelGenerator : MonoBehaviour
             }
         }
 
-        ShapeData shape = availableShapes[Random.Range(0, availableShapes.Count)];
-        data.layout = shape.layout;
+        if (availableShapes.Count == 0)
+        {
+            Debug.LogWarning("No shapes found for difficulty");
+            availableShapes.AddRange(ShapeLoader.database.shapes);
+        }
 
-        data.rows = shape.layout.Length;
-        data.cols = shape.layout[0].Length;
+        if (data.layerLayouts == null)
+        {
+            data.layerLayouts = new List<string[]>();
+        }
+        else
+        {
+            data.layerLayouts.Clear();
+        }
 
-        Debug.Log("Generated shape: " + shape.shapeName);
+        for (int layer = 0; layer < data.layers; layer++)
+        {
+            List<ShapeData> filteredShapes = new List<ShapeData>();
 
-        generatedLevels.Add(level, data);
+            foreach (ShapeData shapeData in availableShapes)
+            {
+                int rows = shapeData.layout.Length;
+                int cols = shapeData.layout[0].Length;
 
-        SavedLevelEntry entry = new SavedLevelEntry();
-        entry.levelNumber = level;
-        entry.levelData = data;
+                if (layer == 0)
+                {
+                    //bottom layer
+                    if (rows >= 6 && cols >= 6)
+                    {
+                        filteredShapes.Add(shapeData);
+                    }
+                }
 
-        savedData.levels.Add(entry);
-        LevelSaveSystem.Save(savedData);
+                else if (layer == 1)
+                {
+                    //medium layer
+                    if (rows >= 4 && rows <= 5)
+                    {
+                        filteredShapes.Add(shapeData);
+                    }
+                }
+                else
+                {
+                    //small layer
+                    if (rows <= 4 && cols <= 5)
+                    {
+                        filteredShapes.Add(shapeData);
+                    }
+                }
+            }
+
+            if (filteredShapes.Count == 0)
+            {
+                filteredShapes = availableShapes;
+            }
+
+            ShapeData selectedShape = filteredShapes[Random.Range(0, filteredShapes.Count)];
+            data.layerLayouts.Add(selectedShape.layout);
+        }
+
+        string[] biggestLayout = data.layerLayouts[0];
+        data.layout = biggestLayout;
+        data.rows = biggestLayout.Length;
+        data.cols = biggestLayout[0].Length;
 
         Debug.Log("Generating Level Index: " + level);
         return data;
@@ -74,30 +109,30 @@ public class ProceduralLevelGenerator : MonoBehaviour
 
     int GetDifficulty(int level)
     {
-        if (level < 5)
+        if (level < 3)
             return 1;
 
-        if (level < 15)
+        if (level < 6)
             return 2;
 
-        if (level < 30)
+        if (level < 10)
             return 3;
 
-        return 4;
+        if (level < 15)
+            return 4;
+
+        return 5;
     }
 
     int GetLayerCount(int level)
     {
-        if (level < 10)
-            return 1;
-
-        if (level < 25)
+        if (level < 3)
             return 2;
 
-        if (level < 50)
+        if (level < 10)
             return 3;
 
-        if (level < 100)
+        if (level < 30)
             return 4;
 
         return 5;

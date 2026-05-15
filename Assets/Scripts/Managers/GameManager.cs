@@ -38,10 +38,13 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         Debug.Log(Time.timeScale);
 
-        int currentLevel = PlayerPrefs.GetInt("Level", 0);
-
-        MatchBoard.instance.ResetBoard();
         MatchBoardMatch.instance.ResetBoardState();
+
+        BoosterSystem.instance.ClearUndoStack();
+        MatchBoard.instance.ResetBoard();
+        BoardSpawner.instance.ClearBoard();
+
+        int currentLevel = PlayerPrefs.GetInt("Level", 0);
 
         LevelManager.instance.LoadLevel(currentLevel);
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class ProceduralLevelData
@@ -9,4 +10,6 @@ public class ProceduralLevelData
     public float spacing;
 
     public string[] layout;
+    public List<string[]> layerLayouts = new List<string[]>();
+    
 }

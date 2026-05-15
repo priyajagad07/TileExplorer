@@ -18,6 +18,10 @@ public class CoinRewardAnimation : MonoBehaviour
     {
         StopAllCoroutines();
         rewardText.gameObject.SetActive(true);
+        
+        Color color = rewardText.color;
+        color.a = 1f;
+        rewardText.color = color;
 
         rewardText.text = "+" + amount;
         claimButton.interactable = false;

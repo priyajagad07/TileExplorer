@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ public class CoinManager : MonoBehaviour
 {
     public static CoinManager instance;
 
-    [SerializeField] private TextMeshProUGUI coinText;
+    [SerializeField] private List<TextMeshProUGUI> coinText;
     private int coins;
 
     void Awake()
@@ -29,9 +30,9 @@ public class CoinManager : MonoBehaviour
 
     public bool SpendCoins(int amount)
     {
-        if(coins < amount)
+        if (coins < amount)
             return false;
-        
+
         coins -= amount;
 
         SaveCoins();
@@ -48,7 +49,10 @@ public class CoinManager : MonoBehaviour
 
     void UpdateCoinUI()
     {
-        coinText.text = coins.ToString();
+        foreach (TextMeshProUGUI text in coinText)
+        {
+            text.text = coins.ToString();
+        }
     }
 
     void LoadCoins()
