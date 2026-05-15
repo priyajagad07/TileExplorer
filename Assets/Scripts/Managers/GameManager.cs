@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public MatchBoard matchBoard;
     public TextMeshProUGUI levelText;
+    //public GameObject nextLevelButton;
     public Button claimButton;
 
     void Awake()
@@ -26,6 +27,8 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
+        //nextLevelButton.SetActive(false);
+
         claimButton.interactable = true;
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);

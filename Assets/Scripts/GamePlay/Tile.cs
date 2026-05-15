@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -65,6 +66,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             return;
 
         BoosterSystem.instance.RecordMove(gameObject);
+        StartCoroutine(ClickAnimation());
         bool added = MatchBoard.instance.AddTile(gameObject);
 
         if (added)
@@ -77,5 +79,34 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public bool IsMoved()
     {
         return isMoved;
+    }
+
+    IEnumerator ClickAnimation()
+    {
+        RectTransform rect = GetComponent<RectTransform>();
+        Vector3 originalScale = transform.localScale;
+
+        Vector3 pressedScale = originalScale * 0.9f;
+
+        float time = 0;
+        float duration = 0.08f;
+
+        while (time < duration)
+        {
+            transform.localScale = Vector3.Lerp(originalScale, pressedScale, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        time = 0;
+
+        while (time < duration)
+        {
+            transform.localScale = Vector3.Lerp(pressedScale, originalScale, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localScale = originalScale;
     }
 }

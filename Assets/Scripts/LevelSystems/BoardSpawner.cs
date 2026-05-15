@@ -82,7 +82,11 @@ public class BoardSpawner : MonoBehaviour
                     Debug.Log("Spawning Tile Index: " + index);
 
                     GameObject obj = Instantiate(tiles[index], tileParent);
+
                     obj.transform.localScale = Vector3.one * tileScale;
+                    // float layerScale = tileScale - (layer * 0.05f);
+                    // layerScale = Mathf.Clamp(layerScale, 0.6f, 1f);
+                    // obj.transform.localScale = Vector3.one * layerScale;
 
                     Tile tileScript = obj.GetComponent<Tile>();
                     tileScript.row = row;

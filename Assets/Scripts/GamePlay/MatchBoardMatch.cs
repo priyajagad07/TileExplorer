@@ -61,7 +61,7 @@ public class MatchBoardMatch : MonoBehaviour
 
         //scale up(Pop Effect)
         Vector3 startScale = Vector3.one;
-        Vector3 endScale = Vector3.one * 1.2f;
+        Vector3 endScale = Vector3.one * 1.45f;
 
         while (time < duration)
         {
@@ -73,18 +73,20 @@ public class MatchBoardMatch : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(0.3f);
-
+        yield return new WaitForSeconds(0.08f);
+        
         //Scale Dowm to zero
         time = 0f;
         while (time < duration)
         {
             rect.localScale = Vector3.Lerp(endScale, Vector3.zero, time / duration);
+            rect.Rotate(0, 0, 12f);
             time += Time.deltaTime;
             yield return null;
         }
 
         Instantiate(destroyParticle, rect.position, Quaternion.identity, particleParent);
+        //Camera.main.transform.position += Random.insideUnitSphere * 0.2f;
 
         Destroy(tile);
 
