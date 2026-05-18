@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,8 +40,14 @@ public class BoosterSystem : MonoBehaviour
         data.tile.transform.SetParent(data.originalParent);
         data.tile.transform.SetSiblingIndex(data.siblingIndex);
 
-        RectTransform rect = data.tile.GetComponent<RectTransform>();
+        RectTransform rect =
+            data.tile.GetComponent<RectTransform>();
+
         rect.anchoredPosition = data.originalPosition;
+
+        StartCoroutine(
+            UndoBounce(data.tile.transform)
+        );
 
         Tile tileScript = data.tile.GetComponent<Tile>();
         tileScript.SetMoved(false);
@@ -48,6 +55,31 @@ public class BoosterSystem : MonoBehaviour
         MatchBoard.instance.RearrangeBoard();
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
+    }
+
+    IEnumerator UndoBounce(Transform tile)
+    {
+        Vector3 originalScale = tile.localScale;
+
+        float time = 0;
+        float duration = 0.25f;
+
+        while (time < duration)
+        {
+            float t = time / duration;
+
+            tile.localScale =
+                Vector3.Lerp(
+                    originalScale * 1.25f,
+                    originalScale,
+                    t
+                );
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        tile.localScale = originalScale;
     }
 
     public void ClearUndoStack()
@@ -113,12 +145,43 @@ public class BoosterSystem : MonoBehaviour
         for (int i = 0; i < tiles.Count; i++)
         {
             RectTransform rect = tiles[i].GetComponent<RectTransform>();
-            rect.anchoredPosition = positions[i];
+            StartCoroutine(AnimateShuffle(rect, positions[i]));
 
             tiles[i].transform.SetSiblingIndex(siblingIndices[i]);
         }
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
+    }
+
+    IEnumerator AnimateShuffle(RectTransform rect, Vector2 targetPos)
+    {
+        Vector2 startPos = rect.anchoredPosition;
+
+        float time = 0;
+        float duration = 0.35f;
+
+        float randomRotation = Random.Range(-180f, 180f);
+
+        while (time < duration)
+        {
+            float t = time / duration;
+
+            t = Mathf.SmoothStep(0, 1, t);
+
+            rect.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+
+            rect.rotation = Quaternion.Lerp(
+                Quaternion.identity,
+                Quaternion.Euler(0, 0, randomRotation),
+                Mathf.Sin(t * Mathf.PI)
+            );
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        rect.anchoredPosition = targetPos;
+        rect.rotation = Quaternion.identity;
     }
 
     public void UseMagicBooster()
@@ -188,7 +251,9 @@ public class BoosterSystem : MonoBehaviour
             {
                 if (tile.tileId == targetTileId)
                 {
+
                     tile.MoveToBoard();
+                    StartCoroutine(MagicMove(tile));
                     found++;
 
                     if (found == neededToMatch)
@@ -221,5 +286,30 @@ public class BoosterSystem : MonoBehaviour
         }
 
         Debug.Log("No valid magic match possible on the board");
+    }
+
+    IEnumerator MagicMove(Tile tile)
+    {
+        Transform t = tile.transform;
+
+        Vector3 originalScale = t.localScale;
+
+        float time = 0;
+        float duration = 0.18f;
+
+        while (time < duration)
+        {
+            float pulse =
+                1f + Mathf.Sin(time * 25f) * 0.18f;
+
+            t.localScale = originalScale * pulse;
+
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+
+        t.localScale = originalScale;
+        tile.MoveToBoard();
     }
 }
