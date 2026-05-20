@@ -74,7 +74,7 @@ public class MatchBoardMatch : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.08f);
-        
+
         //Scale Dowm to zero
         time = 0f;
         while (time < duration)
@@ -85,8 +85,8 @@ public class MatchBoardMatch : MonoBehaviour
             yield return null;
         }
 
-        Instantiate(destroyParticle, rect.position, Quaternion.identity, particleParent);
-        //Camera.main.transform.position += Random.insideUnitSphere * 0.2f;
+        GameObject particle = Instantiate(destroyParticle, rect.position, Quaternion.identity, particleParent);
+        Destroy(particle, 2f);
 
         Destroy(tile);
 
@@ -105,7 +105,6 @@ public class MatchBoardMatch : MonoBehaviour
 
         CheckLevelComplete();
     }
-
 
     public void ResetBoardState()
     {
@@ -149,8 +148,6 @@ public class MatchBoardMatch : MonoBehaviour
         }
 
         int matchTiles = MatchBoard.instance.GetTileCount();
-
-        Debug.Log($"--- WIN CHECK --- Board Tiles Left: {boardTiles} | Match Slots Used: {matchTiles}");
 
         if (boardTiles <= 0 && matchTiles <= 0)
         {

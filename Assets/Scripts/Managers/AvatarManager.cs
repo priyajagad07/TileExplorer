@@ -46,5 +46,3 @@ public class AvatarManager : MonoBehaviour
         avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
     }
 }
-
-

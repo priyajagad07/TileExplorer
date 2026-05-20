@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -28,13 +26,13 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
-        nextLevelButton.SetActive(false);
-
         claimButton.interactable = true;
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
         Debug.Log("Level Completed");
         Time.timeScale = 0f;
+
+        //StartCoroutine(ShowNextButton());
     }
 
     public void ReplayGame()
@@ -63,29 +61,32 @@ public class GameManager : MonoBehaviour
 
     public void ClaimReward()
     {
-        CoinManager.instance.AddCoins(100);
+        CoinManager.instance.AddCoins(200);
         claimButton.interactable = false;
-        StartCoroutine(ShowNextButton());
     }
 
-    IEnumerator ShowNextButton()
+    public void ClaimWinCoins()
     {
-        yield return new WaitForSecondsRealtime(0.4f);
-        nextLevelButton.SetActive(true);
-
-        RectTransform rect = nextLevelButton.GetComponent<RectTransform>();
-        rect.localScale = Vector3.zero;
-
-        float time = 0;
-        float duration = 0.25f;
-
-        while(time < duration)
-        {
-            rect.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time / duration);
-            time += Time.unscaledDeltaTime;
-            yield return null;
-        }
-
-        rect.localScale = Vector3.one;
+        CoinManager.instance.AddCoins(100);
     }
+
+    // IEnumerator ShowNextButton()
+    // {
+    //     yield return new WaitForSecondsRealtime(0.2f);
+
+    //     RectTransform rect = nextLevelButton.GetComponent<RectTransform>();
+    //     rect.localScale = Vector3.zero;
+
+    //     float time = 0;
+    //     float duration = 0.25f;
+
+    //     while (time < duration)
+    //     {
+    //         rect.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time / duration);
+    //         time += Time.unscaledDeltaTime;
+    //         yield return null;
+    //     }
+
+    //     rect.localScale = Vector3.one;
+    // }
 }

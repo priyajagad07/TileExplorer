@@ -11,5 +11,4 @@ public class ProceduralLevelData
 
     public string[] layout;
     public List<string[]> layerLayouts = new List<string[]>();
-    
 }

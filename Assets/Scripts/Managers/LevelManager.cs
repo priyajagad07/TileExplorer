@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -24,7 +23,7 @@ public class LevelManager : MonoBehaviour
         currentLevelIndex = index;
         ProceduralLevelData levelData = ProceduralLevelGenerator.instance.GenerateLevel(index);
 
-        if(levelData == null)
+        if (levelData == null)
         {
             Debug.LogError("Level data is null");
         }

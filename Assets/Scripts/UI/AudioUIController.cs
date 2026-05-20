@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -68,7 +67,7 @@ public class AudioUIController : MonoBehaviour
     }
 
     public void OnNotificationButton()
-    {      
+    {
         UpdateIcons();
     }
 

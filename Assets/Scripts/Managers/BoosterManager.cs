@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -13,6 +12,10 @@ public class BoosterManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI undoText;
     [SerializeField] private TextMeshProUGUI shuffleText;
     [SerializeField] private TextMeshProUGUI magicText;
+
+    [SerializeField] private GameObject insuffientCoinUndo;
+    [SerializeField] private GameObject insuffientCoinsShuffle;
+    [SerializeField] private GameObject insuffientCoinsMagic;
 
     void Awake()
     {
@@ -84,7 +87,7 @@ public class BoosterManager : MonoBehaviour
     {
         Debug.Log("Buy Undo Clicked");
 
-        if (CoinManager.instance.SpendCoins(1200))
+        if (CoinManager.instance.SpendCoins(2000))
         {
             undoCount += 3;
 
@@ -97,6 +100,7 @@ public class BoosterManager : MonoBehaviour
         }
         else
         {
+            insuffientCoinUndo.SetActive(true);
             Debug.Log("Not Enough Coins");
         }
     }
@@ -117,6 +121,7 @@ public class BoosterManager : MonoBehaviour
         }
         else
         {
+            insuffientCoinsShuffle.SetActive(true);
             Debug.Log("Not Enough Coins");
         }
     }
@@ -138,6 +143,7 @@ public class BoosterManager : MonoBehaviour
         }
         else
         {
+            insuffientCoinsMagic.SetActive(true);
             Debug.Log("Not Enough Coins");
         }
     }

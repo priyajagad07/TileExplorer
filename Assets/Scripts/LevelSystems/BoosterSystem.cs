@@ -121,12 +121,10 @@ public class BoosterSystem : MonoBehaviour
         }
 
         List<Vector2> positions = new List<Vector2>();
-        List<int> siblingIndices = new List<int>();
 
         foreach (Tile tile in tiles)
         {
             positions.Add(tile.GetComponent<RectTransform>().anchoredPosition);
-            siblingIndices.Add(tile.transform.GetSiblingIndex());
         }
 
         for (int i = 0; i < positions.Count; i++)
@@ -136,18 +134,12 @@ public class BoosterSystem : MonoBehaviour
             Vector2 tempPos = positions[i];
             positions[i] = positions[randomIndex];
             positions[randomIndex] = tempPos;
-
-            int tempIndex = siblingIndices[i];
-            siblingIndices[i] = siblingIndices[randomIndex];
-            siblingIndices[randomIndex] = tempIndex;
         }
 
         for (int i = 0; i < tiles.Count; i++)
         {
             RectTransform rect = tiles[i].GetComponent<RectTransform>();
             StartCoroutine(AnimateShuffle(rect, positions[i]));
-
-            tiles[i].transform.SetSiblingIndex(siblingIndices[i]);
         }
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
@@ -160,21 +152,16 @@ public class BoosterSystem : MonoBehaviour
         float time = 0;
         float duration = 0.35f;
 
-        float randomRotation = Random.Range(-180f, 180f);
+        float targetRotation = Random.Range(-30f, 30f);
 
         while (time < duration)
         {
             float t = time / duration;
 
-            t = Mathf.SmoothStep(0, 1, t);
-
             rect.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
 
-            rect.rotation = Quaternion.Lerp(
-                Quaternion.identity,
-                Quaternion.Euler(0, 0, randomRotation),
-                Mathf.Sin(t * Mathf.PI)
-            );
+            rect.localRotation = Quaternion.Euler(0, 0,
+                Mathf.Lerp(0, targetRotation, t));
 
             time += Time.deltaTime;
             yield return null;
@@ -293,19 +280,15 @@ public class BoosterSystem : MonoBehaviour
         Transform t = tile.transform;
 
         Vector3 originalScale = t.localScale;
+        Vector3 targetScale = originalScale * 1.2f;
 
         float time = 0;
         float duration = 0.18f;
 
         while (time < duration)
         {
-            float pulse =
-                1f + Mathf.Sin(time * 25f) * 0.18f;
-
-            t.localScale = originalScale * pulse;
-
+            t.localScale = Vector3.Lerp(originalScale, targetScale, time / duration);
             time += Time.deltaTime;
-
             yield return null;
         }
 

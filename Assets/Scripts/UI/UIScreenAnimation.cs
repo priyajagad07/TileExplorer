@@ -12,8 +12,8 @@ public class UIScreenAnimation : MonoBehaviour
     {
         if (canvasGroup == null)
             canvasGroup = GetComponent<CanvasGroup>();
-        
-        if(target == null)
+
+        if (target == null)
             target = transform;
     }
 
@@ -38,7 +38,7 @@ public class UIScreenAnimation : MonoBehaviour
                 startScale = Vector3.one * 0.8f;
                 target.localScale = startScale;
                 break;
-            
+
             case AnimationType.SlideDown:
                 startPos = new Vector3(0, 800, 0);
                 target.localPosition = startPos;
@@ -50,10 +50,10 @@ public class UIScreenAnimation : MonoBehaviour
                 break;
         }
 
-        while(time < duration)
+        while (time < duration)
         {
             time += Time.unscaledDeltaTime;
-            float t = time/duration;
+            float t = time / duration;
 
             canvasGroup.alpha = t;
 
@@ -62,7 +62,7 @@ public class UIScreenAnimation : MonoBehaviour
                 case AnimationType.Scale:
                     target.localScale = Vector3.Lerp(startScale, Vector3.one, t);
                     break;
-                
+
                 case AnimationType.SlideDown:
                     target.localPosition = Vector3.Lerp(startPos, endPos, t);
                     break;
@@ -73,6 +73,6 @@ public class UIScreenAnimation : MonoBehaviour
             }
             yield return null;
         }
-        canvasGroup.alpha= 1;
+        canvasGroup.alpha = 1;
     }
 }

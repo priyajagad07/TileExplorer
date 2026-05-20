@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class BoardSpawner : MonoBehaviour
@@ -34,7 +33,7 @@ public class BoardSpawner : MonoBehaviour
 
         float spacing = Mathf.Min(spacingX, spacingY);
         spacing = Mathf.Clamp(spacing, 85f, 150f);
-        spacing *= 1.08f;
+        //spacing *= 1.08f;
 
         float tileScale = spacing / 100f;
         tileScale = Mathf.Clamp(tileScale, 0.65f, 0.9f);

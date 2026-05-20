@@ -13,7 +13,7 @@ public class UIButtonSound : MonoBehaviour
 
     void PlaySound()
     {
-        if(SoundManager.instance != null)
+        if (SoundManager.instance != null)
         {
             SoundManager.instance.PlaySound(sound);
         }

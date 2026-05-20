@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -73,22 +72,6 @@ public class BoardGenerator : MonoBehaviour
 
         totalTilesInLevel = tilesToSpawn.Count;
         BoardSpawner.instance.SpawnTiles(tilesToSpawn, proceduralData);
-    }
-
-    int CountOnesInLayout()
-    {
-        int count = 0;
-
-        foreach (string row in proceduralData.layout)
-        {
-            foreach (char c in row)
-            {
-                if (c == '1')
-                    count++;
-            }
-        }
-
-        return count;
     }
 
     int GetTotalTilesNeeded()
