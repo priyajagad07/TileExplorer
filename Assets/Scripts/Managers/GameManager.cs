@@ -1,4 +1,3 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public MatchBoard matchBoard;
     public TextMeshProUGUI levelText;
+    public TextMeshProUGUI levelTextHomeScreen;
     public GameObject nextLevelButton;
     public Button claimButton;
 
@@ -31,8 +31,6 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
         Debug.Log("Level Completed");
         Time.timeScale = 0f;
-
-        //StartCoroutine(ShowNextButton());
     }
 
     public void ReplayGame()
@@ -57,6 +55,7 @@ public class GameManager : MonoBehaviour
     public void UpdateLevelText(int levelIndex)
     {
         levelText.text = "Level " + (levelIndex + 1);
+        levelTextHomeScreen.text = "Level " + (levelIndex + 1);
     }
 
     public void ClaimReward()
@@ -69,24 +68,4 @@ public class GameManager : MonoBehaviour
     {
         CoinManager.instance.AddCoins(100);
     }
-
-    // IEnumerator ShowNextButton()
-    // {
-    //     yield return new WaitForSecondsRealtime(0.2f);
-
-    //     RectTransform rect = nextLevelButton.GetComponent<RectTransform>();
-    //     rect.localScale = Vector3.zero;
-
-    //     float time = 0;
-    //     float duration = 0.25f;
-
-    //     while (time < duration)
-    //     {
-    //         rect.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time / duration);
-    //         time += Time.unscaledDeltaTime;
-    //         yield return null;
-    //     }
-
-    //     rect.localScale = Vector3.one;
-    // }
 }

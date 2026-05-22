@@ -102,7 +102,7 @@ public class BoosterSystem : MonoBehaviour
             return;
         }
 
-        List<Tile> tiles = new List<Tile>();
+        Dictionary<int, List<Tile>> layerGroups = new Dictionary<int, List<Tile>>();
 
         foreach (Transform child in tileParent)
         {
@@ -117,29 +117,39 @@ public class BoosterSystem : MonoBehaviour
             if (tile.IsMoved())
                 continue;
 
-            tiles.Add(tile);
+            if (!layerGroups.ContainsKey(tile.layer))
+            {
+                layerGroups[tile.layer] = new List<Tile>();
+            }
+
+            layerGroups[tile.layer].Add(tile);
         }
 
-        List<Vector2> positions = new List<Vector2>();
-
-        foreach (Tile tile in tiles)
+        foreach (var group in layerGroups)
         {
-            positions.Add(tile.GetComponent<RectTransform>().anchoredPosition);
-        }
+            List<Tile> tiles = group.Value;
 
-        for (int i = 0; i < positions.Count; i++)
-        {
-            int randomIndex = Random.Range(i, positions.Count);
+            List<Vector2> positions = new List<Vector2>();
 
-            Vector2 tempPos = positions[i];
-            positions[i] = positions[randomIndex];
-            positions[randomIndex] = tempPos;
-        }
+            foreach (Tile tile in tiles)
+            {
+                positions.Add(tile.GetComponent<RectTransform>().anchoredPosition);
+            }
 
-        for (int i = 0; i < tiles.Count; i++)
-        {
-            RectTransform rect = tiles[i].GetComponent<RectTransform>();
-            StartCoroutine(AnimateShuffle(rect, positions[i]));
+            for (int i = 0; i < positions.Count; i++)
+            {
+                int randomIndex = Random.Range(i, positions.Count);
+
+                Vector2 tempPos = positions[i];
+                positions[i] = positions[randomIndex];
+                positions[randomIndex] = tempPos;
+            }
+
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                RectTransform rect = tiles[i].GetComponent<RectTransform>();
+                StartCoroutine(AnimateShuffle(rect, positions[i]));
+            }
         }
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);

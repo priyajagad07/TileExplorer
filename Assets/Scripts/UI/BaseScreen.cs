@@ -42,11 +42,30 @@ public class BaseScreen : MonoBehaviour
     public void Show()
     {
         canvas.enabled = true;
+
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+        }
+
         screenAnimation.Show();
     }
 
     public void Hide()
     {
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+
+        screenAnimation.Hide();
         canvas.enabled = false;
     }
 }

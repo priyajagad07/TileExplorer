@@ -6,65 +6,10 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
     public List<ScreenData> screens;
     public ScreenType startScreenType;
-
     private BaseScreen currentScreen;
+    private BaseScreen activePopup;
     private ScreenType currentScreenType;
     private Stack<ScreenType> screenHistory = new Stack<ScreenType>();
-
-    public void ShowGameStartScreen()
-    {
-        Show(ScreenType.GameStartScreeen);
-    }
-
-    public void ShowHomeScreen()
-    {
-        Show(ScreenType.HomeScreen);
-    }
-
-    public void ShowMapScreen()
-    {
-        Show(ScreenType.MapScreen);
-    }
-
-    public void ShowShopScreen()
-    {
-        Show(ScreenType.ShopScreen);
-    }
-
-    public void ShowSettingsScreen()
-    {
-        Show(ScreenType.SettingsScreen);
-    }
-
-    public void ShowInfoScreen()
-    {
-        Show(ScreenType.InfoScreen);
-    }
-
-    public void ShowFreeCoinsScreen()
-    {
-        Show(ScreenType.FreeCoinsScreen);
-    }
-
-    public void ShowDailyStreakScreen()
-    {
-        Show(ScreenType.DailyStreakScreen);
-    }
-
-    public void ShowGamePlay()
-    {
-        Show(ScreenType.GamePlay);
-    }
-
-    public void ShowGameOver()
-    {
-        Show(ScreenType.GameOver);
-    }
-
-    public void ShowLevelCompleted()
-    {
-        Show(ScreenType.LevelCompleted);
-    }
 
     void Awake()
     {
@@ -117,7 +62,19 @@ public class UIManager : MonoBehaviour
         {
             if (s.screenType == type && s.isPopup)
             {
-                s.screen.Show();
+                if (activePopup == s.screen)
+                {
+                    return;
+                }
+
+                if (activePopup != null)
+                {
+                    activePopup.Hide();
+                }
+
+                activePopup = s.screen;
+                activePopup.Show();
+
                 return;
             }
         }
@@ -127,9 +84,15 @@ public class UIManager : MonoBehaviour
     {
         foreach (var s in screens)
         {
-            if (s.screenType == type)
+            if (s.screenType == type && s.isPopup)
             {
                 s.screen.Hide();
+
+                if (activePopup == s.screen)
+                {
+                    activePopup = null;
+                }
+
                 return;
             }
         }

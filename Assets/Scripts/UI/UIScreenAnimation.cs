@@ -1,78 +1,160 @@
-using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class UIScreenAnimation : MonoBehaviour
 {
     public CanvasGroup canvasGroup;
+
     public AnimationType animationType;
+
     public Transform target;
-    public float duration = 0.4f;
+
+    public float duration = 0.35f;
+
+    private Vector3 originalPosition;
 
     void Awake()
     {
         if (canvasGroup == null)
-            canvasGroup = GetComponent<CanvasGroup>();
+        {
+            canvasGroup =
+                GetComponent<CanvasGroup>();
+        }
 
         if (target == null)
+        {
             target = transform;
+        }
+
+        originalPosition = target.localPosition;
     }
 
     public void Show()
     {
-        StopAllCoroutines();
-        StartCoroutine(AnimationShow());
-    }
-
-    IEnumerator AnimationShow()
-    {
-        float time = 0;
-        Vector3 startScale = Vector3.one;
-        Vector3 startPos = target.localPosition;
-        Vector3 endPos = Vector3.zero;
+        DOTween.Kill(target);
+        DOTween.Kill(canvasGroup);
 
         canvasGroup.alpha = 0;
 
         switch (animationType)
         {
-            case AnimationType.Scale:
-                startScale = Vector3.one * 0.8f;
-                target.localScale = startScale;
+            // GameStartScreen
+            case AnimationType.ScaleFade:
+
+                target.localScale =
+                    Vector3.one * 0.85f;
+
+                canvasGroup
+                    .DOFade(1, duration)
+                    .SetEase(Ease.OutQuad)
+                    .SetUpdate(true);
+
+                target
+                    .DOScale(1, duration)
+                    .SetEase(Ease.OutBack)
+                    .SetUpdate(true);
+
                 break;
 
-            case AnimationType.SlideDown:
-                startPos = new Vector3(0, 800, 0);
-                target.localPosition = startPos;
+            // HomeScreen
+            case AnimationType.SlideUpFade:
+
+                target.localPosition =
+                    originalPosition +
+                    new Vector3(0, -300, 0);
+
+                canvasGroup
+                    .DOFade(1, duration)
+                    .SetEase(Ease.OutQuad)
+                    .SetUpdate(true);
+
+                target
+                    .DOLocalMove(originalPosition, duration)
+                    .SetEase(Ease.OutCubic)
+                    .SetUpdate(true);
+
                 break;
 
-            case AnimationType.Zoom:
-                startScale = Vector3.zero;
-                target.localScale = startScale;
+            // MapScreen
+            case AnimationType.SlideLeft:
+
+                target.localPosition =
+                    originalPosition +
+                    new Vector3(600, 0, 0);
+
+                canvasGroup
+                    .DOFade(1, duration)
+                    .SetEase(Ease.OutQuad)
+                    .SetUpdate(true);
+
+                target
+                    .DOLocalMove(originalPosition, duration)
+                    .SetEase(Ease.OutCubic)
+                    .SetUpdate(true);
+
+                break;
+
+            // Gameplay
+            case AnimationType.Fade:
+
+                canvasGroup
+                    .DOFade(1, duration)
+                    .SetEase(Ease.Linear)
+                    .SetUpdate(true);
+
+                break;
+
+            // Popups
+            case AnimationType.Popup:
+
+                target.localScale =
+                    Vector3.one * 0.5f;
+
+                canvasGroup
+                    .DOFade(1, duration)
+                    .SetEase(Ease.OutQuad)
+                    .SetUpdate(true);
+
+                target
+                    .DOScale(1, duration)
+                    .SetEase(Ease.OutBack)
+                    .SetUpdate(true);
+
+                break;
+
+            default:
+
+                canvasGroup.alpha = 1;
+
                 break;
         }
+    }
 
-        while (time < duration)
+    public void Hide()
+    {
+        DOTween.Kill(target);
+        DOTween.Kill(canvasGroup);
+
+        switch (animationType)
         {
-            time += Time.unscaledDeltaTime;
-            float t = time / duration;
+            case AnimationType.Popup:
 
-            canvasGroup.alpha = t;
+                canvasGroup
+                    .DOFade(0, 0.18f)
+                    .SetUpdate(true);
 
-            switch (animationType)
-            {
-                case AnimationType.Scale:
-                    target.localScale = Vector3.Lerp(startScale, Vector3.one, t);
-                    break;
+                target
+                    .DOScale(0.7f, 0.18f)
+                    .SetEase(Ease.InBack)
+                    .SetUpdate(true);
 
-                case AnimationType.SlideDown:
-                    target.localPosition = Vector3.Lerp(startPos, endPos, t);
-                    break;
+                break;
 
-                case AnimationType.Zoom:
-                    target.localScale = Vector3.Lerp(startScale, Vector3.one, t);
-                    break;
-            }
-            yield return null;
+            default:
+
+                canvasGroup.alpha = 0;
+
+                break;
         }
-        canvasGroup.alpha = 1;
     }
 }

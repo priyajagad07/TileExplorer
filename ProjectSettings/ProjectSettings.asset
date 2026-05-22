@@ -502,7 +502,10 @@ PlayerSettings:
       m_Height: 1024
       m_Kind: 0
       m_SubKind: 
-  m_BuildTargetBatching: []
+  m_BuildTargetBatching:
+  - m_BuildTarget: Android
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs: []
   m_BuildTargetGraphicsJobMode: []
@@ -792,7 +795,24 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    iPhone: 
+    Android: DOTWEEN;DOTWEEN_EPO
+    EmbeddedLinux: DOTWEEN;DOTWEEN_EPO
+    GameCoreScarlett: DOTWEEN;DOTWEEN_EPO
+    GameCoreXboxOne: DOTWEEN;DOTWEEN_EPO
+    Kepler: DOTWEEN;DOTWEEN_EPO
+    LinuxHeadlessSimulation: DOTWEEN;DOTWEEN_EPO
+    Nintendo Switch: DOTWEEN;DOTWEEN_EPO
+    Nintendo Switch 2: DOTWEEN;DOTWEEN_EPO
+    PS4: DOTWEEN;DOTWEEN_EPO
+    PS5: DOTWEEN;DOTWEEN_EPO
+    QNX: DOTWEEN;DOTWEEN_EPO
+    Standalone: DOTWEEN;DOTWEEN_EPO
+    VisionOS: DOTWEEN;DOTWEEN_EPO
+    WebGL: DOTWEEN;DOTWEEN_EPO
+    Windows Store Apps: DOTWEEN;DOTWEEN_EPO
+    XboxOne: DOTWEEN;DOTWEEN_EPO
+    iPhone: DOTWEEN;DOTWEEN_EPO
+    tvOS: DOTWEEN;DOTWEEN_EPO
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

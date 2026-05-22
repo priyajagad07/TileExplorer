@@ -108,7 +108,7 @@ public class BoosterManager : MonoBehaviour
     {
          Debug.Log("Buy Shuffle Clicked");
 
-        if (CoinManager.instance.SpendCoins(2500))
+        if (CoinManager.instance.SpendCoins(20))
         {
             shuffleCount += 3;
 
