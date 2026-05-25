@@ -1,0 +1,96 @@
+using DG.Tweening;
+using UnityEngine;
+
+public class UIAnimations : MonoBehaviour
+{
+    [Header("Target")]
+    [SerializeField] private RectTransform target;
+
+    [Header("Intro Animation")]
+    [SerializeField] private bool playIntro = true;
+
+    [Header("Floating")]
+    [SerializeField] private bool floating;
+    [SerializeField] private float floatAmount = 15f;
+    [SerializeField] private float floatDuration = 2f;
+
+    [Header("Breathing")]
+    [SerializeField] private bool breathing;
+    [SerializeField] private float breatheScale = 1.03f;
+    [SerializeField] private float breatheDuration = 2f;
+
+    [Header("Rotation")]
+    [SerializeField] private bool rotating;
+    [SerializeField] private float rotateAmount = 2f;
+    [SerializeField] private float rotateDuration = 1.5f;
+
+    private Vector2 startPos;
+
+    private void Start()
+    {
+        if (target == null)
+            target = GetComponent<RectTransform>();
+
+        startPos = target.anchoredPosition;
+
+        if (playIntro)
+        {
+            target.localScale = Vector3.zero;
+
+            target
+                .DOScale(1f, 0.6f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(StartAnimations);
+        }
+        else
+        {
+            StartAnimations();
+        }
+    }
+
+    void StartAnimations()
+    {
+        if (floating)
+        {
+            target
+                .DOAnchorPosY(startPos.y + floatAmount, floatDuration)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
+        }
+
+        if (breathing)
+        {
+            target
+                .DOScale(breatheScale, breatheDuration)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
+        }
+
+        if (rotating)
+        {
+            target
+                .DORotate(
+                    new Vector3(0, 0, rotateAmount),
+                    rotateDuration
+                )
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
+        }
+    }
+
+    public void PlayPunchAnimation()
+    {
+        target.DOKill();
+
+        target.localScale = Vector3.one;
+
+        target.DOPunchScale(
+            Vector3.one * 0.2f,
+            0.35f,
+            8,
+            0.8f
+        );
+
+        StartAnimations();
+    }
+}

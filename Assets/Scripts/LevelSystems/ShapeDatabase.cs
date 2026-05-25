@@ -1,8 +1,11 @@
-using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-[Serializable]
-public class ShapeDatabase
+[CreateAssetMenu(
+    fileName = "ShapeDatabase",
+    menuName = "Tile Explorer/Shape Database"
+)]
+public class ShapeDatabase : ScriptableObject
 {
     public List<ShapeData> shapes;
 }

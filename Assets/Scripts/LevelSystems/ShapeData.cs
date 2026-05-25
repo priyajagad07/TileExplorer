@@ -1,9 +1,14 @@
-using System;
+using UnityEngine;
 
-[Serializable]
-public class ShapeData
+[CreateAssetMenu(
+    fileName = "ShapeData",
+    menuName = "Tile Explorer/Shape Data"
+)]
+public class ShapeData : ScriptableObject
 {
     public string shapeName;
+
     public string[] layout;
+
     public int difficulty;
 }

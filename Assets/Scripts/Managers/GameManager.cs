@@ -10,6 +10,10 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI levelTextHomeScreen;
     public GameObject nextLevelButton;
     public Button claimButton;
+    private GameObject coinParticle;
+    private bool rewardClaimed = false;
+    [SerializeField] private UIAnimations rewardAnimation;
+
 
     void Awake()
     {
@@ -26,11 +30,11 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
+        rewardClaimed = false;
         claimButton.interactable = true;
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
         Debug.Log("Level Completed");
-        Time.timeScale = 0f;
     }
 
     public void ReplayGame()
@@ -60,12 +64,26 @@ public class GameManager : MonoBehaviour
 
     public void ClaimReward()
     {
+        if (rewardClaimed)
+            return;
+
+        rewardClaimed = true;
+        rewardAnimation.PlayPunchAnimation();
+        SoundManager.instance.PlaySound(SoundName.Coins);
         CoinManager.instance.AddCoins(200);
         claimButton.interactable = false;
+        LevelManager.instance.NextLevel();
     }
 
     public void ClaimWinCoins()
     {
+        if (rewardClaimed)
+            return;
+
+        rewardClaimed = true;
+
+        SoundManager.instance.PlaySound(SoundName.Coins);
         CoinManager.instance.AddCoins(100);
+        LevelManager.instance.NextLevel();
     }
 }
