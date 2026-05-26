@@ -43,45 +43,28 @@ public class LevelManager : MonoBehaviour
         // HANDMADE LEVELS
         if (index < levelDatabase.levels.Count)
         {
-            LevelData handmadeLevel =
-                levelDatabase.levels[index];
+            LevelData handmadeLevel = levelDatabase.levels[index];
 
-            ProceduralLevelData data =
-                new ProceduralLevelData();
+            ProceduralLevelData data = new ProceduralLevelData();
 
-            data.layerLayouts =
-                new List<string[]>();
+            data.layerLayouts = new List<string[]>();
 
-            foreach (ShapeData shape
-                in handmadeLevel.layers)
+            foreach (ShapeData shape in handmadeLevel.layers)
             {
                 data.layerLayouts.Add(
                     shape.layout
                 );
             }
 
-            string[] biggestLayout =
-                data.layerLayouts[0];
+            string[] biggestLayout = data.layerLayouts[0];
 
-            data.layout =
-                biggestLayout;
+            data.layout = biggestLayout;
+            data.rows = biggestLayout.Length;
+            data.cols = biggestLayout[0].Length;
 
-            data.rows =
-                biggestLayout.Length;
-
-            data.cols =
-                biggestLayout[0].Length;
-
-            BoardGenerator.instance
-                .SetProceduralLevel(data);
-
-            GameManager.instance
-                .UpdateLevelText(index);
-
-            Debug.Log(
-                "Loaded Handmade Level: "
-                + index
-            );
+            BoardGenerator.instance.SetProceduralLevel(data);
+            GameManager.instance.UpdateLevelText(index);
+            Debug.Log("Loaded Handmade Level: " + index);
 
             return;
         }
@@ -100,16 +83,9 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        BoardGenerator.instance
-            .SetProceduralLevel(levelData);
-
-        GameManager.instance
-            .UpdateLevelText(index);
-
-        Debug.Log(
-            "Loaded Infinite Level: "
-            + index
-        );
+        BoardGenerator.instance.SetProceduralLevel(levelData);
+        GameManager.instance.UpdateLevelText(index);
+        Debug.Log("Loaded Infinite Level: " + index);
     }
 
     public void NextLevel()
@@ -121,11 +97,6 @@ public class LevelManager : MonoBehaviour
     {
         nextLevelButton.interactable = false;
 
-        if (nextLevelParticles != null)
-        {
-            nextLevelParticles.Play();
-        }
-
         yield return new WaitForSeconds(2f);
 
         currentLevelIndex++;
@@ -136,6 +107,7 @@ public class LevelManager : MonoBehaviour
         UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
 
         LoadLevel(currentLevelIndex);
+        GameManager.instance.ResetLevelState();
 
         nextLevelButton.interactable = true;
     }

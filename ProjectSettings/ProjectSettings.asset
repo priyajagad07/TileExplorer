@@ -168,7 +168,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.4
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: com.Unity.Match3
+    Android: com.DefaultCompany.TileExplorer
     Standalone: com.Unity.Match3
   buildNumber:
     Standalone: 0
@@ -301,7 +301,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 2d5cec4472c8c448cb9776e1dcd26511, type: 3}
+      m_Icon: {fileID: 2800000, guid: 79fc402abbf304020802024bfe157a14, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -528,7 +528,10 @@ PlayerSettings:
   m_BuildTargetNormalMapEncoding:
   - m_BuildTarget: iPhone
     m_Encoding: 1
-  m_BuildTargetDefaultTextureCompressionFormat: []
+  m_BuildTargetDefaultTextureCompressionFormat:
+  - serializedVersion: 3
+    m_BuildTarget: Android
+    m_Formats: 01000000
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
   actionOnDotNetUnhandledException: 1

@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 5425905698593443032}
   - component: {fileID: 8170991121761301371}
   - component: {fileID: 5591484843664854443}
+  - component: {fileID: 5250858944056432908}
   m_Layer: 5
   m_Name: IceCream
   m_TagString: Untagged
@@ -213,3 +214,15 @@ MonoBehaviour:
   row: 0
   col: 0
   layer: 0
+--- !u!225 &5250858944056432908
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8387658839642231776}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

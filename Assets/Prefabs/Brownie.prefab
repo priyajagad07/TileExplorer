@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7462590094176773463}
   - component: {fileID: 2469327577961828984}
   - component: {fileID: -3459422515234772085}
+  - component: {fileID: -93573522869658411}
   m_Layer: 5
   m_Name: Brownie
   m_TagString: Untagged
@@ -138,6 +139,18 @@ MonoBehaviour:
   row: 0
   col: 0
   layer: 0
+--- !u!225 &-93573522869658411
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3716950635253988004}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4186336456669391642
 GameObject:
   m_ObjectHideFlags: 0

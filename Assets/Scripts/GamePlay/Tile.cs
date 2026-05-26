@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class Tile : MonoBehaviour, IPointerClickHandler
 {
@@ -9,23 +10,34 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public int row;
     public int col;
     public int layer;
+    private CanvasGroup canvasGroup;
 
+    [SerializeField]
+    private float overlapTolerance = 8f;
+
+    void Awake()
+    {
+        canvasGroup = GetComponent<CanvasGroup>();
+    }
     public void OnPointerClick(PointerEventData eventData)
     {
         if (isMoved)
             return;
 
         if (IsBlocked())
+        {
+            PlayBlockedFeedback();
             return;
+        }
 
         MoveToBoard();
     }
-
     public bool IsBlocked()
     {
         Transform parent = transform.parent;
-
         RectTransform myRect = GetComponent<RectTransform>();
+
+        Rect myLocalRect = GetLocalRect(myRect, overlapTolerance);
 
         foreach (Transform child in parent)
         {
@@ -37,22 +49,36 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             if (other == null)
                 continue;
 
+            if (other.IsMoved())
+                continue;
+
             if (other.layer <= this.layer)
                 continue;
 
             RectTransform otherRect = other.GetComponent<RectTransform>();
+            Rect otherLocalRect = GetLocalRect(otherRect, overlapTolerance);
 
-            float distance = Vector2.Distance(
-                myRect.anchoredPosition,
-                otherRect.anchoredPosition
-            );
-
-            if (distance < 120f)
+            if (myLocalRect.Overlaps(otherLocalRect))
             {
                 return true;
             }
         }
         return false;
+    }
+
+    Rect GetLocalRect(RectTransform rect, float shrinkBy = 0f)
+    {
+        Vector2 centerPos = rect.anchoredPosition;
+
+        float width = rect.rect.width * rect.localScale.x;
+        float height = rect.rect.height * rect.localScale.y;
+
+        return new Rect(
+            centerPos.x - (width / 2f) + shrinkBy,
+            centerPos.y - (height / 2f) + shrinkBy,
+            width - (shrinkBy * 2),
+            height - (shrinkBy * 2)
+        );
     }
 
     public void SetMoved(bool value)
@@ -66,12 +92,13 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             return;
 
         BoosterSystem.instance.RecordMove(gameObject);
-        StartCoroutine(ClickAnimation());
+        PlayClickAnimation();
         bool added = MatchBoard.instance.AddTile(gameObject);
 
         if (added)
         {
             isMoved = true;
+            RefreshAllTiles();
             SoundManager.instance.PlaySound(SoundName.TileClick);
         }
     }
@@ -81,32 +108,74 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return isMoved;
     }
 
-    IEnumerator ClickAnimation()
+    void RefreshAllTiles()
     {
-        RectTransform rect = GetComponent<RectTransform>();
-        Vector3 originalScale = transform.localScale;
+        Tile[] allTiles = transform.parent.GetComponentsInChildren<Tile>();
 
-        Vector3 pressedScale = originalScale * 0.9f;
-
-        float time = 0;
-        float duration = 0.08f;
-
-        while (time < duration)
+        foreach (Tile tile in allTiles)
         {
-            transform.localScale = Vector3.Lerp(originalScale, pressedScale, time / duration);
-            time += Time.deltaTime;
-            yield return null;
+            tile.RefreshVisual();
         }
+    }
 
-        time = 0;
+    void PlayClickAnimation()
+    {
+        transform.DOKill();
 
-        while (time < duration)
+        transform
+            .DOScale(
+                transform.localScale * 0.88f,
+                0.08f
+            )
+            .SetLoops(2, LoopType.Yoyo)
+            .SetEase(Ease.OutQuad);
+    }
+
+    public void RefreshVisual()
+    {
+        bool blocked = IsBlocked();
+
+        float targetAlpha = blocked ? 0.6f : 1f;
+
+        canvasGroup.DOKill();
+
+        canvasGroup.DOFade(
+            targetAlpha,
+            0.25f
+        );
+    }
+
+    void PlayBlockedFeedback()
+    {
+        transform.DOKill();
+
+        transform
+            .DOPunchScale(
+                Vector3.one * 0.05f,
+                0.2f,
+                5,
+                0.5f
+            );
+
+        transform
+            .DOPunchPosition(
+                Vector3.right * 8f,
+                0.2f,
+                8,
+                0.5f
+            );
+
+        SoundManager.instance.PlaySound(SoundName.TileBlocked);
+    }
+
+    public static void RefreshAllTileVisuals(Transform parent)
+    {
+        Tile[] allTiles =
+            parent.GetComponentsInChildren<Tile>();
+
+        foreach (Tile tile in allTiles)
         {
-            transform.localScale = Vector3.Lerp(pressedScale, originalScale, time / duration);
-            time += Time.deltaTime;
-            yield return null;
+            tile.RefreshVisual();
         }
-
-        transform.localScale = originalScale;
     }
 }

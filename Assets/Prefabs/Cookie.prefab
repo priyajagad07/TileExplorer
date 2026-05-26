@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1007347277521220417}
   - component: {fileID: 1596180477431452406}
   - component: {fileID: 5929595155077623257}
+  - component: {fileID: 7326222595970477302}
   m_Layer: 5
   m_Name: Cookie
   m_TagString: Untagged
@@ -138,6 +139,18 @@ MonoBehaviour:
   row: 0
   col: 0
   layer: 0
+--- !u!225 &7326222595970477302
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856488690321741762}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2963007274848798963
 GameObject:
   m_ObjectHideFlags: 0

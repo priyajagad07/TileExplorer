@@ -87,7 +87,7 @@ public class BoosterManager : MonoBehaviour
     {
         Debug.Log("Buy Undo Clicked");
 
-        if (CoinManager.instance.SpendCoins(2000))
+        if (CoinManager.instance.SpendCoins(1200))
         {
             undoCount += 3;
 
@@ -108,7 +108,7 @@ public class BoosterManager : MonoBehaviour
     {
          Debug.Log("Buy Shuffle Clicked");
 
-        if (CoinManager.instance.SpendCoins(20))
+        if (CoinManager.instance.SpendCoins(2500))
         {
             shuffleCount += 3;
 

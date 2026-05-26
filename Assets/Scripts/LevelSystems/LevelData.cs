@@ -5,6 +5,7 @@ using UnityEngine;
     fileName = "LevelData",
     menuName = "Tile Explorer/Level Data"
 )]
+
 public class LevelData : ScriptableObject
 {
     [Header("Level Info")]
@@ -20,7 +21,4 @@ public class LevelData : ScriptableObject
     public List<ShapeData> layers =
         new List<ShapeData>();
 
-    [Header("Visuals")]
-
-    public Sprite background;
 }

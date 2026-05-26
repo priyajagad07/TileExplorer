@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 4008203497207251378}
   - component: {fileID: 8299708174229392062}
   - component: {fileID: -6033590918079538292}
+  - component: {fileID: 601425672765072015}
   m_Layer: 5
   m_Name: Cupcake
   m_TagString: Untagged
@@ -213,3 +214,15 @@ MonoBehaviour:
   row: 0
   col: 0
   layer: 0
+--- !u!225 &601425672765072015
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7737346076949395658}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

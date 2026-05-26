@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2226554910274657714}
   - component: {fileID: 6527692410601093187}
   - component: {fileID: -3545307286813994262}
+  - component: {fileID: 6701236272298334338}
   m_Layer: 5
   m_Name: Chocolate
   m_TagString: Untagged
@@ -138,6 +139,18 @@ MonoBehaviour:
   row: 0
   col: 0
   layer: 0
+--- !u!225 &6701236272298334338
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093344039239268608}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2653147758526589425
 GameObject:
   m_ObjectHideFlags: 0

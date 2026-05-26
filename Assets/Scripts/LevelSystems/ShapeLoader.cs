@@ -11,8 +11,23 @@ public class ShapeLoader : MonoBehaviour
 
     void LoadShapes()
     {
-        TextAsset jsonFile = Resources.Load<TextAsset>("shapes");
-        database = JsonUtility.FromJson<ShapeDatabase>(jsonFile.text);
-        Debug.Log("Loaded Shapes: " + database.shapes.Count);
+        database =
+            Resources.Load<ShapeDatabase>(
+                "ShapeDatabase"
+            );
+
+        if (database == null)
+        {
+            Debug.LogError(
+                "ShapeDatabase not found!"
+            );
+
+            return;
+        }
+
+        Debug.Log(
+            "Loaded Shapes: " +
+            database.shapes.Count
+        );
     }
 }

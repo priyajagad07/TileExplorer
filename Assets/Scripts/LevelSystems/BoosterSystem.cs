@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class BoosterSystem : MonoBehaviour
 {
@@ -45,41 +46,33 @@ public class BoosterSystem : MonoBehaviour
 
         rect.anchoredPosition = data.originalPosition;
 
-        StartCoroutine(
-            UndoBounce(data.tile.transform)
-        );
+        UndoBounce(data.tile.transform);
 
         Tile tileScript = data.tile.GetComponent<Tile>();
         tileScript.SetMoved(false);
+
+        Tile.RefreshAllTileVisuals(data.originalParent);
 
         MatchBoard.instance.RearrangeBoard();
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
     }
 
-    IEnumerator UndoBounce(Transform tile)
+    void UndoBounce(Transform tile)
     {
-        Vector3 originalScale = tile.localScale;
+        tile.DOKill();
 
-        float time = 0;
-        float duration = 0.25f;
+        Vector3 originalScale =
+            tile.localScale;
 
-        while (time < duration)
-        {
-            float t = time / duration;
+        tile.localScale =
+            originalScale * 1.25f;
 
-            tile.localScale =
-                Vector3.Lerp(
-                    originalScale * 1.25f,
-                    originalScale,
-                    t
-                );
-
-            time += Time.deltaTime;
-            yield return null;
-        }
-
-        tile.localScale = originalScale;
+        tile.DOScale(
+            originalScale,
+            0.25f
+        )
+        .SetEase(Ease.OutBack);
     }
 
     public void ClearUndoStack()
@@ -89,6 +82,9 @@ public class BoosterSystem : MonoBehaviour
 
     public void ShuffleTiles()
     {
+        int completedAnimations = 0;
+        int totalAnimations = 0;
+
         if (BoardSpawner.instance == null)
         {
             Debug.Log("BoardSpawner Missing");
@@ -145,40 +141,64 @@ public class BoosterSystem : MonoBehaviour
                 positions[randomIndex] = tempPos;
             }
 
+            totalAnimations += tiles.Count;
+
             for (int i = 0; i < tiles.Count; i++)
             {
                 RectTransform rect = tiles[i].GetComponent<RectTransform>();
-                StartCoroutine(AnimateShuffle(rect, positions[i]));
+                AnimateShuffle(rect, positions[i], () =>
+                            {
+                                completedAnimations++;
+
+                                if (completedAnimations >= totalAnimations)
+                                {
+                                    Tile.RefreshAllTileVisuals(tileParent);
+                                }
+                            });
             }
         }
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
     }
 
-    IEnumerator AnimateShuffle(RectTransform rect, Vector2 targetPos)
+    void AnimateShuffle(
+     RectTransform rect,
+     Vector2 targetPos,
+     System.Action onComplete = null)
     {
-        Vector2 startPos = rect.anchoredPosition;
+        rect.DOKill();
 
-        float time = 0;
-        float duration = 0.35f;
+        float targetRotation =
+            Random.Range(-30f, 30f);
 
-        float targetRotation = Random.Range(-30f, 30f);
+        Sequence seq = DOTween.Sequence();
 
-        while (time < duration)
+        seq.Append(
+            rect.DOAnchorPos(
+                targetPos,
+                0.35f
+            )
+            .SetEase(Ease.OutCubic)
+        );
+
+        seq.Join(
+            rect.DORotate(
+                new Vector3(0, 0, targetRotation),
+                0.2f
+            )
+        );
+
+        seq.Append(
+            rect.DORotate(
+                Vector3.zero,
+                0.15f
+            )
+        );
+
+        seq.OnComplete(() =>
         {
-            float t = time / duration;
-
-            rect.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
-
-            rect.localRotation = Quaternion.Euler(0, 0,
-                Mathf.Lerp(0, targetRotation, t));
-
-            time += Time.deltaTime;
-            yield return null;
-        }
-
-        rect.anchoredPosition = targetPos;
-        rect.rotation = Quaternion.identity;
+            onComplete?.Invoke();
+        });
     }
 
     public void UseMagicBooster()
@@ -248,9 +268,7 @@ public class BoosterSystem : MonoBehaviour
             {
                 if (tile.tileId == targetTileId)
                 {
-
-                    tile.MoveToBoard();
-                    StartCoroutine(MagicMove(tile));
+                    MagicMove(tile);
                     found++;
 
                     if (found == neededToMatch)
@@ -275,8 +293,9 @@ public class BoosterSystem : MonoBehaviour
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    group.Value[i].MoveToBoard();
+                    MagicMove(group.Value[i]);
                 }
+
                 SoundManager.instance.PlaySound(SoundName.ThreeTilesMatch);
                 return;
             }
@@ -285,24 +304,34 @@ public class BoosterSystem : MonoBehaviour
         Debug.Log("No valid magic match possible on the board");
     }
 
-    IEnumerator MagicMove(Tile tile)
+    void MagicMove(Tile tile)
     {
         Transform t = tile.transform;
 
-        Vector3 originalScale = t.localScale;
-        Vector3 targetScale = originalScale * 1.2f;
+        t.DOKill();
 
-        float time = 0;
-        float duration = 0.18f;
+        Vector3 originalScale =
+            t.localScale;
 
-        while (time < duration)
+        Sequence seq = DOTween.Sequence();
+
+        seq.Append(
+            t.DOScale(
+                originalScale * 1.2f,
+                0.12f
+            )
+        );
+
+        seq.Append(
+            t.DOScale(
+                originalScale,
+                0.12f
+            )
+        );
+
+        seq.OnComplete(() =>
         {
-            t.localScale = Vector3.Lerp(originalScale, targetScale, time / duration);
-            time += Time.deltaTime;
-            yield return null;
-        }
-
-        t.localScale = originalScale;
-        tile.MoveToBoard();
+            tile.MoveToBoard();
+        });
     }
 }

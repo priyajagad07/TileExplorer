@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6841331133897887146}
   - component: {fileID: 6319488678847736946}
   - component: {fileID: -4766603733688970783}
+  - component: {fileID: -3317586393938613288}
   m_Layer: 5
   m_Name: Cake
   m_TagString: Untagged
@@ -138,6 +139,18 @@ MonoBehaviour:
   row: 0
   col: 0
   layer: 0
+--- !u!225 &-3317586393938613288
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7463598509151866610}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8981524632946408370
 GameObject:
   m_ObjectHideFlags: 0

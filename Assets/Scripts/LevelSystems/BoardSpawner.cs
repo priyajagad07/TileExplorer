@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoardSpawner : MonoBehaviour
 {
@@ -17,7 +19,7 @@ public class BoardSpawner : MonoBehaviour
         if (instance == this)
             instance = null;
     }
-    
+
     public void SpawnTiles(List<GameObject> tiles, ProceduralLevelData proceduralLevelData)
     {
         if (proceduralLevelData == null || tiles == null || tiles.Count == 0)
@@ -25,18 +27,8 @@ public class BoardSpawner : MonoBehaviour
 
         int index = 0;
 
-        float areaWidth = tileParent.rect.width;
-        float areaHeight = tileParent.rect.height;
-
-        float spacingX = areaWidth / (proceduralLevelData.cols + 1);
-        float spacingY = areaHeight / (proceduralLevelData.rows + 1);
-
-        float spacing = Mathf.Min(spacingX, spacingY);
-        spacing = Mathf.Clamp(spacing, 85f, 150f);
-        //spacing *= 1.08f;
-
-        float tileScale = spacing / 100f;
-        tileScale = Mathf.Clamp(tileScale, 0.65f, 0.9f);
+        float spacing = 130f;
+        float tileScale = 0.9f;
 
         for (int layer = 0; layer < proceduralLevelData.layerLayouts.Count; layer++)
         {
@@ -83,10 +75,7 @@ public class BoardSpawner : MonoBehaviour
                     GameObject obj = Instantiate(tiles[index], tileParent);
 
                     obj.transform.localScale = Vector3.one * tileScale;
-                    // float layerScale = tileScale - (layer * 0.05f);
-                    // layerScale = Mathf.Clamp(layerScale, 0.6f, 1f);
-                    // obj.transform.localScale = Vector3.one * layerScale;
-
+                   
                     Tile tileScript = obj.GetComponent<Tile>();
                     tileScript.row = row;
                     tileScript.col = col;
@@ -103,6 +92,12 @@ public class BoardSpawner : MonoBehaviour
                 }
             }
         }
+
+        Tile[] allTiles = tileParent.GetComponentsInChildren<Tile>();
+        foreach (Tile tile in allTiles)
+        {
+            tile.RefreshVisual();
+        }
     }
 
     public void ClearBoard()
@@ -116,6 +111,7 @@ public class BoardSpawner : MonoBehaviour
 
         foreach (GameObject child in children)
         {
+            child.transform.SetParent(null);
             Destroy(child);
         }
     }

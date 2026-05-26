@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,8 +13,9 @@ public class GameManager : MonoBehaviour
     public Button claimButton;
     private GameObject coinParticle;
     private bool rewardClaimed = false;
-    [SerializeField] private UIAnimations rewardAnimation;
-
+    [SerializeField] private ParticleSystem leftConfetti;
+    [SerializeField] private ParticleSystem rightConfetti;
+    private bool levelCompleted = false;
 
     void Awake()
     {
@@ -30,15 +32,25 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
+        if (levelCompleted)
+            return;
+
+        levelCompleted = true;
+
         rewardClaimed = false;
         claimButton.interactable = true;
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
+
+        leftConfetti.Play();
+        rightConfetti.Play();
+
         Debug.Log("Level Completed");
     }
 
     public void ReplayGame()
     {
+        ResetLevelState();
         Time.timeScale = 1f;
         Debug.Log(Time.timeScale);
 
@@ -68,11 +80,31 @@ public class GameManager : MonoBehaviour
             return;
 
         rewardClaimed = true;
-        rewardAnimation.PlayPunchAnimation();
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        CoinManager.instance.AddCoins(200);
+
         claimButton.interactable = false;
-        LevelManager.instance.NextLevel();
+
+        SoundManager.instance.PlaySound(
+            SoundName.Coins
+        );
+
+        if (LevelManager.instance.nextLevelParticles != null)
+        {
+            LevelManager.instance
+                .nextLevelParticles
+                .Play();
+        }
+
+        DOVirtual.DelayedCall(
+            1.2f,
+            () =>
+            {
+                CoinManager.instance
+                    .AddCoins(200);
+
+                LevelManager.instance
+                    .NextLevel();
+            }
+        );
     }
 
     public void ClaimWinCoins()
@@ -82,8 +114,33 @@ public class GameManager : MonoBehaviour
 
         rewardClaimed = true;
 
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        CoinManager.instance.AddCoins(100);
-        LevelManager.instance.NextLevel();
+        SoundManager.instance.PlaySound(
+            SoundName.Coins
+        );
+
+        if (LevelManager.instance.nextLevelParticles != null)
+        {
+            LevelManager.instance
+                .nextLevelParticles
+                .Play();
+        }
+
+        DOVirtual.DelayedCall(
+            1.2f,
+            () =>
+            {
+                CoinManager.instance
+                    .AddCoins(100);
+
+                LevelManager.instance
+                    .NextLevel();
+            }
+        );
+    }
+
+    public void ResetLevelState()
+    {
+        levelCompleted = false;
+        rewardClaimed = false;
     }
 }
