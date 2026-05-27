@@ -21,6 +21,8 @@ public class FreeCoinsReward : MonoBehaviour
     {
         watchButton.interactable = false;
 
+        SoundManager.instance.PlaySound(SoundName.Coins);
+        
         if (rewardParticles != null)
         {
             rewardParticles.Play();
@@ -30,12 +32,9 @@ public class FreeCoinsReward : MonoBehaviour
             rewardDelay,
             () =>
             {
-                CoinManager.instance
-                    .AddCoins(rewardAmount);
-
-                UIManager.Instance.HidePopup(
-                    ScreenType.FreeCoinsScreen
-                );
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                CoinManager.instance.AddCoins(rewardAmount);
+                UIManager.Instance.HidePopup(ScreenType.FreeCoinsScreen);
 
                 watchButton.interactable = true;
             }

@@ -1,45 +1,37 @@
-using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 public class MatchBoardMovement : MonoBehaviour
 {
     public void MoveTile(GameObject tile, Transform targetSlot)
     {
-        StartCoroutine(MoveToSlot(tile, targetSlot));
-    }
+        if (tile == null)
+            return;
 
-    IEnumerator MoveToSlot(GameObject tile, Transform targetSlot)
-    {
-        RectTransform rect = tile.GetComponent<RectTransform>();
+        RectTransform rect =
+            tile.GetComponent<RectTransform>();
 
-        Vector3 startPos = rect.position;
+        rect.DOKill();
 
-        float time = 0f;
-        float duration = 0.15f;
-
-        while (time < duration)
+        rect.DOMove(
+            targetSlot.position,
+            0.15f
+        )
+        .SetEase(Ease.OutQuad)
+        .OnComplete(() =>
         {
             if (tile == null)
-                yield break;
+                return;
 
-            rect.position = Vector3.Lerp(startPos, targetSlot.position, time / duration);
-            time += Time.deltaTime;
-            yield return null;
-        }
-        
-        if(tile == null)
-            yield break;
-            
-        rect.position = targetSlot.position;
-        tile.transform.SetParent(targetSlot);
-        tile.transform.SetAsLastSibling();
+            rect.position =
+                targetSlot.position;
 
-        rect.anchoredPosition = Vector2.zero;
+            tile.transform.SetParent(targetSlot);
 
-        if (MatchBoard.instance.GetTileCount() >= MatchBoard.instance.slots.Count)
-        {
-            Debug.Log("Game Over");
-            GameManager.instance.GameOver();
-        }
+            tile.transform.SetAsLastSibling();
+
+            rect.anchoredPosition =
+                Vector2.zero;
+        });
     }
 }

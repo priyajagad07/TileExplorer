@@ -26,36 +26,39 @@ public class BoosterSystem : MonoBehaviour
         undoStack.Push(data);
     }
 
-    public void UndoMove()
+    public bool UndoMove()
     {
-        if (undoStack.Count == 0)
-            return;
+        while (undoStack.Count > 0)
+        {
+            UndoData data = undoStack.Pop();
 
-        UndoData data = undoStack.Pop();
+            if (data.tile == null)
+                continue;
 
-        if (data.tile == null)
-            return;
+            MatchBoard.instance.RemoveTile(data.tile);
 
-        MatchBoard.instance.RemoveTile(data.tile);
+            data.tile.transform.SetParent(data.originalParent);
+            data.tile.transform.SetSiblingIndex(data.siblingIndex);
 
-        data.tile.transform.SetParent(data.originalParent);
-        data.tile.transform.SetSiblingIndex(data.siblingIndex);
+            RectTransform rect = data.tile.GetComponent<RectTransform>();
 
-        RectTransform rect =
-            data.tile.GetComponent<RectTransform>();
+            rect.anchoredPosition = data.originalPosition;
 
-        rect.anchoredPosition = data.originalPosition;
+            UndoBounce(data.tile.transform);
 
-        UndoBounce(data.tile.transform);
+            Tile tileScript = data.tile.GetComponent<Tile>();
+            tileScript.SetMoved(false);
 
-        Tile tileScript = data.tile.GetComponent<Tile>();
-        tileScript.SetMoved(false);
+            Tile.RefreshAllTileVisuals(data.originalParent);
 
-        Tile.RefreshAllTileVisuals(data.originalParent);
+            MatchBoard.instance.RearrangeBoard();
 
-        MatchBoard.instance.RearrangeBoard();
+            SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
 
-        SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
+            return true;
+        }
+
+        return false;
     }
 
     void UndoBounce(Transform tile)
@@ -80,6 +83,18 @@ public class BoosterSystem : MonoBehaviour
         undoStack.Clear();
     }
 
+    public bool CanUndo()
+    {
+        foreach (UndoData data in undoStack)
+        {
+            if (data.tile != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
     public void ShuffleTiles()
     {
         int completedAnimations = 0;
@@ -161,39 +176,19 @@ public class BoosterSystem : MonoBehaviour
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
     }
 
-    void AnimateShuffle(
-     RectTransform rect,
-     Vector2 targetPos,
-     System.Action onComplete = null)
+    void AnimateShuffle(RectTransform rect, Vector2 targetPos, System.Action onComplete = null)
     {
         rect.DOKill();
 
-        float targetRotation =
-            Random.Range(-30f, 30f);
+        float targetRotation = Random.Range(-30f, 30f);
 
         Sequence seq = DOTween.Sequence();
 
-        seq.Append(
-            rect.DOAnchorPos(
-                targetPos,
-                0.35f
-            )
-            .SetEase(Ease.OutCubic)
-        );
+        seq.Append(rect.DOAnchorPos(targetPos, 0.35f).SetEase(Ease.OutCubic));
 
-        seq.Join(
-            rect.DORotate(
-                new Vector3(0, 0, targetRotation),
-                0.2f
-            )
-        );
+        seq.Join(rect.DORotate(new Vector3(0, 0, targetRotation), 0.2f));
 
-        seq.Append(
-            rect.DORotate(
-                Vector3.zero,
-                0.15f
-            )
-        );
+        seq.Append(rect.DORotate(Vector3.zero, 0.15f));
 
         seq.OnComplete(() =>
         {
@@ -310,24 +305,13 @@ public class BoosterSystem : MonoBehaviour
 
         t.DOKill();
 
-        Vector3 originalScale =
-            t.localScale;
+        Vector3 originalScale = t.localScale;
 
         Sequence seq = DOTween.Sequence();
 
-        seq.Append(
-            t.DOScale(
-                originalScale * 1.2f,
-                0.12f
-            )
-        );
+        seq.Append(t.DOScale(originalScale * 1.2f, 0.12f));
 
-        seq.Append(
-            t.DOScale(
-                originalScale,
-                0.12f
-            )
-        );
+        seq.Append(t.DOScale(originalScale, 0.12f));
 
         seq.OnComplete(() =>
         {

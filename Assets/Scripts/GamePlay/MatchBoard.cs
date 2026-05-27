@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MatchBoard : MonoBehaviour
 {
@@ -46,9 +47,27 @@ public class MatchBoard : MonoBehaviour
         }
 
         RearrangeBoard();
-        matchSystem.CheckMatch(placedTiles, tileID);
+        DOVirtual.DelayedCall(0.16f, () =>
+            {
+                matchSystem.CheckMatch(
+                placedTiles,
+                tileID
+            );
 
+                CheckGameOver();
+            }
+        );
         return true;
+    }
+
+    void CheckGameOver()
+    {
+        if (placedTiles.Count >= slots.Count)
+        {
+            Debug.Log("Game Over");
+
+            GameManager.instance.GameOver();
+        }
     }
 
     public void RearrangeBoard()

@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using UnityEngine.UI;
+
 
 public class Tile : MonoBehaviour, IPointerClickHandler
 {
@@ -10,14 +12,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public int row;
     public int col;
     public int layer;
-    private CanvasGroup canvasGroup;
-
-    [SerializeField]
-    private float overlapTolerance = 8f;
+    private Image[] tileImages;
 
     void Awake()
     {
-        canvasGroup = GetComponent<CanvasGroup>();
+        tileImages = GetComponentsInChildren<Image>();
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -32,12 +31,16 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         MoveToBoard();
     }
+
     public bool IsBlocked()
     {
+        if (isMoved)
+            return false;
+
         Transform parent = transform.parent;
         RectTransform myRect = GetComponent<RectTransform>();
 
-        Rect myLocalRect = GetLocalRect(myRect, overlapTolerance);
+        Rect myLocalRect = GetLocalRect(myRect);
 
         foreach (Transform child in parent)
         {
@@ -56,7 +59,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                 continue;
 
             RectTransform otherRect = other.GetComponent<RectTransform>();
-            Rect otherLocalRect = GetLocalRect(otherRect, overlapTolerance);
+            Rect otherLocalRect = GetLocalRect(otherRect);
 
             if (myLocalRect.Overlaps(otherLocalRect))
             {
@@ -66,7 +69,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return false;
     }
 
-    Rect GetLocalRect(RectTransform rect, float shrinkBy = 0f)
+    Rect GetLocalRect(RectTransform rect)
     {
         Vector2 centerPos = rect.anchoredPosition;
 
@@ -74,10 +77,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         float height = rect.rect.height * rect.localScale.y;
 
         return new Rect(
-            centerPos.x - (width / 2f) + shrinkBy,
-            centerPos.y - (height / 2f) + shrinkBy,
-            width - (shrinkBy * 2),
-            height - (shrinkBy * 2)
+            centerPos.x - (width / 2f),
+            centerPos.y - (height / 2f),
+            width,
+            height
         );
     }
 
@@ -98,7 +101,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (added)
         {
             isMoved = true;
+
+            RefreshVisual();
             RefreshAllTiles();
+
             SoundManager.instance.PlaySound(SoundName.TileClick);
         }
     }
@@ -135,14 +141,13 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         bool blocked = IsBlocked();
 
-        float targetAlpha = blocked ? 0.6f : 1f;
+        Color targetColor = blocked ? new Color(0.45f, 0.45f, 0.45f, 1f) : Color.white;
 
-        canvasGroup.DOKill();
-
-        canvasGroup.DOFade(
-            targetAlpha,
-            0.25f
-        );
+        foreach (Image img in tileImages)
+        {
+            img.DOKill();
+            img.DOColor(targetColor, 0.2f);
+        }
     }
 
     void PlayBlockedFeedback()
@@ -150,20 +155,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         transform.DOKill();
 
         transform
-            .DOPunchScale(
-                Vector3.one * 0.05f,
-                0.2f,
-                5,
-                0.5f
-            );
+            .DOPunchScale(Vector3.one * 0.05f, 0.2f, 5, 0.5f);
 
         transform
             .DOPunchPosition(
-                Vector3.right * 8f,
-                0.2f,
-                8,
-                0.5f
-            );
+                Vector3.right * 8f, 0.2f, 8, 0.5f);
 
         SoundManager.instance.PlaySound(SoundName.TileBlocked);
     }

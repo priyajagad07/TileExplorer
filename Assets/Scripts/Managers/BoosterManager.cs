@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 public class BoosterManager : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class BoosterManager : MonoBehaviour
     [SerializeField] private GameObject insuffientCoinUndo;
     [SerializeField] private GameObject insuffientCoinsShuffle;
     [SerializeField] private GameObject insuffientCoinsMagic;
+
+    [SerializeField] private GameObject nothingToUndoMessage;
 
     void Awake()
     {
@@ -55,6 +58,11 @@ public class BoosterManager : MonoBehaviour
         UpdateUI();
 
         return true;
+    }
+
+    public void ShowNothingToUndo()
+    {
+        ShowMessage(nothingToUndoMessage);
     }
 
     public bool UseShuffle()
@@ -100,15 +108,15 @@ public class BoosterManager : MonoBehaviour
         }
         else
         {
-            insuffientCoinUndo.SetActive(true);
+            ShowMessage(insuffientCoinUndo);
             Debug.Log("Not Enough Coins");
         }
     }
     public void BuyShuffle()
     {
-         Debug.Log("Buy Shuffle Clicked");
+        Debug.Log("Buy Shuffle Clicked");
 
-        if (CoinManager.instance.SpendCoins(2500))
+        if (CoinManager.instance.SpendCoins(1400))
         {
             shuffleCount += 3;
 
@@ -121,16 +129,16 @@ public class BoosterManager : MonoBehaviour
         }
         else
         {
-            insuffientCoinsShuffle.SetActive(true);
+            ShowMessage(insuffientCoinsShuffle);
             Debug.Log("Not Enough Coins");
         }
     }
 
     public void BuyMagic()
     {
-         Debug.Log("Buy Magic Clicked");
+        Debug.Log("Buy Magic Clicked");
 
-        if (CoinManager.instance.SpendCoins(3000))
+        if (CoinManager.instance.SpendCoins(10))
         {
             magicCount += 3;
 
@@ -143,7 +151,7 @@ public class BoosterManager : MonoBehaviour
         }
         else
         {
-            insuffientCoinsMagic.SetActive(true);
+            ShowMessage(insuffientCoinsMagic);
             Debug.Log("Not Enough Coins");
         }
     }
@@ -153,5 +161,37 @@ public class BoosterManager : MonoBehaviour
         undoText.text = undoCount.ToString();
         shuffleText.text = shuffleCount.ToString();
         magicText.text = magicCount.ToString();
+    }
+
+    void ShowMessage(GameObject messageObject)
+    {
+        messageObject.SetActive(true);
+        CanvasGroup canvasGroup = messageObject.GetComponent<CanvasGroup>();
+        RectTransform rect = messageObject.GetComponent<RectTransform>();
+
+        rect.DOKill();
+        canvasGroup.DOKill();
+
+        Vector2 originalPos = new Vector2(rect.anchoredPosition.x, 0f);
+
+        rect.anchoredPosition = new Vector2(originalPos.x, originalPos.y - 20f);
+        rect.localScale = Vector3.one;
+        canvasGroup.alpha = 0f;
+
+        Sequence seq = DOTween.Sequence();
+
+        seq.Append(canvasGroup.DOFade(1f, 0.2f));
+        seq.Join(rect.DOAnchorPosY(originalPos.y, 0.3f).SetEase(Ease.OutCubic));
+
+        seq.AppendInterval(0.8f);
+
+        seq.Append(canvasGroup.DOFade(0f, 0.2f));
+        seq.Join(rect.DOAnchorPosY(originalPos.y + 15f, 0.2f).SetEase(Ease.InCubic));
+
+        seq.OnComplete(() =>
+        {
+            rect.anchoredPosition = originalPos;
+            messageObject.SetActive(false);
+        });
     }
 }

@@ -63,11 +63,10 @@ public class MatchBoardRevive : MonoBehaviour
         foreach (GameObject tile in tilesToRemove)
         {
             MatchBoardMatch.instance.AddRemovedTile();
-            Destroy(tile);
             MatchBoard.instance.RemoveTile(tile);
-        }
 
-        StartCoroutine(CheckLevelComplete());
+            MatchBoardMatch.instance.PlayDestroyEffect(tile);
+        }
 
         placedTiles.Clear();
         MatchBoard.instance.ResetBoard();
@@ -75,17 +74,5 @@ public class MatchBoardRevive : MonoBehaviour
 
         Time.timeScale = 1f;
         UIManager.Instance.HidePopup(ScreenType.GameOver);
-    }
-
-    IEnumerator CheckLevelComplete()
-    {
-        yield return new WaitForSeconds(2f);
-
-        Transform tileParent = BoardSpawner.instance.GetTileParent();
-
-        if(tileParent.childCount <= 0)
-        {
-            GameManager.instance.LevelComplete();
-        }
     }
 }

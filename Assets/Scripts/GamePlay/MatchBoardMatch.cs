@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MatchBoardMatch : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class MatchBoardMatch : MonoBehaviour
     private int activePopAnimation = 0;
     [SerializeField] private GameObject destroyParticle;
     [SerializeField] private Transform particleParent;
+    private int activeDestroyParticles = 0;
 
     void Awake()
     {
@@ -31,14 +33,12 @@ public class MatchBoardMatch : MonoBehaviour
         {
             removedTiles += matched.Count;
 
-            bool isFinalMatch = removedTiles >= BoardGenerator.totalTilesInLevel;
 
-            BoosterSystem.instance.ClearUndoStack();
             foreach (GameObject matchtile in matched)
             {
                 MatchBoard.instance.RemoveTile(matchtile);
                 activePopAnimation++;
-                StartCoroutine(PopAndDestroy(matchtile, isFinalMatch));
+                PopAndDestroy(matchtile);
             }
 
             Invoke(nameof(Rearrange), 0.6f);
@@ -52,65 +52,39 @@ public class MatchBoardMatch : MonoBehaviour
         MatchBoard.instance.RearrangeBoard();
     }
 
-    IEnumerator PopAndDestroy(GameObject tile, bool checkForWin)
+    void PopAndDestroy(GameObject tile)
     {
+        if (tile == null)
+            return;
+
         RectTransform rect = tile.GetComponent<RectTransform>();
 
-        float time = 0f;
-        float duration = 0.2f;
+        rect.DOKill();
 
-        //scale up(Pop Effect)
-        Vector3 startScale = Vector3.one;
-        Vector3 endScale = Vector3.one * 1.45f;
+        Sequence seq = DOTween.Sequence();
 
-        while (time < duration)
+        seq.Append(rect.DOScale(Vector3.one * 1.45f, 0.2f).SetEase(Ease.OutBack));
+        seq.AppendInterval(0.08f);
+        seq.Append(rect.DOScale(Vector3.zero, 0.22f).SetEase(Ease.InBack));
+        seq.Join(rect.DORotate(new Vector3(0, 0, 90f), 0.22f, RotateMode.FastBeyond360).SetEase(Ease.Linear));
+
+        seq.OnComplete(() =>
         {
-            if (tile == null)
-                yield break;
+            SpawnDestroyParticle(
+                rect.position
+            );
 
-            rect.localScale = Vector3.Lerp(startScale, endScale, time / duration);
-            time += Time.deltaTime;
-            yield return null;
-        }
+            Destroy(tile);
 
-        yield return new WaitForSeconds(0.08f);
-
-        //Scale Dowm to zero
-        time = 0f;
-        while (time < duration)
-        {
-            rect.localScale = Vector3.Lerp(endScale, Vector3.zero, time / duration);
-            rect.Rotate(0, 0, 12f);
-            time += Time.deltaTime;
-            yield return null;
-        }
-
-        GameObject particle = Instantiate(destroyParticle, rect.position, Quaternion.identity, particleParent);
-        Destroy(particle, 2f);
-
-        Destroy(tile);
-
-        yield return new WaitForSeconds(2f);
-
-        activePopAnimation--;
-
-
-        StartCoroutine(CheckCompletionDelayed());
+            activePopAnimation--;
+        });
     }
-
-    IEnumerator CheckCompletionDelayed()
-    {
-        yield return null;
-        yield return null;
-
-        CheckLevelComplete();
-    }
-
     public void ResetBoardState()
     {
         StopAllCoroutines();
         removedTiles = 0;
         activePopAnimation = 0;
+        activeDestroyParticles = 0;
     }
 
     public void AddRemovedTile()
@@ -154,5 +128,40 @@ public class MatchBoardMatch : MonoBehaviour
             Debug.Log("level Complete");
             GameManager.instance.LevelComplete();
         }
+    }
+
+    IEnumerator WaitForParticleFinish(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        activeDestroyParticles--;
+
+        if (activePopAnimation <= 0 && activeDestroyParticles <= 0)
+        {
+            CheckLevelComplete();
+        }
+    }
+
+    public void PlayDestroyEffect(GameObject tile)
+    {
+        if (tile == null)
+            return;
+
+        RectTransform rect = tile.GetComponent<RectTransform>();
+        SpawnDestroyParticle(rect.position);
+        Destroy(tile);
+    }
+
+    void SpawnDestroyParticle(Vector3 position)
+    {
+        GameObject particle = Instantiate(destroyParticle, position, Quaternion.identity, particleParent);
+        activeDestroyParticles++;
+
+        ParticleSystem ps = particle.GetComponent<ParticleSystem>();
+        float particleDuration = ps.main.duration + ps.main.startLifetime.constantMax;
+
+        Destroy(particle, particleDuration);
+
+        StartCoroutine(WaitForParticleFinish(particleDuration));
     }
 }

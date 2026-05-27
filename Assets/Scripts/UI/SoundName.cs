@@ -8,5 +8,6 @@ public enum SoundName
     GameOver,
     LevelComplete,
     Coins,
+    CoinReach,
     TileBlocked,
 }

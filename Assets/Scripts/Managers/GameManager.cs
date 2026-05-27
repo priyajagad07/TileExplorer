@@ -83,26 +83,20 @@ public class GameManager : MonoBehaviour
 
         claimButton.interactable = false;
 
-        SoundManager.instance.PlaySound(
-            SoundName.Coins
-        );
+        SoundManager.instance.PlaySound(SoundName.Coins);
 
         if (LevelManager.instance.nextLevelParticles != null)
         {
-            LevelManager.instance
-                .nextLevelParticles
-                .Play();
+            LevelManager.instance.nextLevelParticles.Play();
         }
 
         DOVirtual.DelayedCall(
-            1.2f,
+            1.1f,
             () =>
             {
-                CoinManager.instance
-                    .AddCoins(200);
-
-                LevelManager.instance
-                    .NextLevel();
+                CoinManager.instance.AddCoins(200);
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                LevelManager.instance.NextLevel(false);
             }
         );
     }
@@ -114,26 +108,20 @@ public class GameManager : MonoBehaviour
 
         rewardClaimed = true;
 
-        SoundManager.instance.PlaySound(
-            SoundName.Coins
-        );
+        SoundManager.instance.PlaySound(SoundName.Coins);
 
         if (LevelManager.instance.nextLevelParticles != null)
         {
-            LevelManager.instance
-                .nextLevelParticles
-                .Play();
+            LevelManager.instance.nextLevelParticles.Play();
         }
 
         DOVirtual.DelayedCall(
-            1.2f,
+            1.1f,
             () =>
             {
-                CoinManager.instance
-                    .AddCoins(100);
-
-                LevelManager.instance
-                    .NextLevel();
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                CoinManager.instance.AddCoins(100);
+                LevelManager.instance.NextLevel(false);
             }
         );
     }

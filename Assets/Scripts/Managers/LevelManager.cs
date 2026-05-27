@@ -11,11 +11,11 @@ public class LevelManager : MonoBehaviour
 
     [Header("Next Level Transition")]
     public UIParticle nextLevelParticles;
-    public float delayBeforeNextLevel = 2f;
     public Button nextLevelButton;
+    private bool isLoadingNextLevel = false;
 
-    [SerializeField]
-    private LevelDatabase levelDatabase;
+    [SerializeField] private LevelDatabase levelDatabase;
+    [SerializeField] private float nextLevelParticleDuration = 1.2f;
 
     void Awake()
     {
@@ -27,10 +27,7 @@ public class LevelManager : MonoBehaviour
         //PlayerPrefs.DeleteAll();
         currentLevelIndex = PlayerPrefs.GetInt("Level", 0);
 
-        levelDatabase =
-        Resources.Load<LevelDatabase>(
-        "LevelDatabase"
-        );
+        levelDatabase = Resources.Load<LevelDatabase>("LevelDatabase");
 
         LoadLevel(currentLevelIndex);
         Debug.Log("Saved Level: " + currentLevelIndex);
@@ -70,16 +67,11 @@ public class LevelManager : MonoBehaviour
         }
 
         // PROCEDURAL INFINITE
-        ProceduralLevelData levelData =
-            ProceduralLevelGenerator.instance
-                .GenerateLevel(index);
+        ProceduralLevelData levelData = ProceduralLevelGenerator.instance.GenerateLevel(index);
 
         if (levelData == null)
         {
-            Debug.LogError(
-                "Level data is null"
-            );
-
+            Debug.LogError("Level data is null");
             return;
         }
 
@@ -88,16 +80,30 @@ public class LevelManager : MonoBehaviour
         Debug.Log("Loaded Infinite Level: " + index);
     }
 
-    public void NextLevel()
+    public void NextLevel(bool playParticle = true)
     {
-        StartCoroutine(NextLevelRoutine());
+        if (isLoadingNextLevel)
+            return;
+
+        StartCoroutine(
+            NextLevelRoutine(playParticle)
+        );
     }
 
-    private IEnumerator NextLevelRoutine()
+    private IEnumerator NextLevelRoutine(bool playParticle)
     {
+        isLoadingNextLevel = true;
+
         nextLevelButton.interactable = false;
 
-        yield return new WaitForSeconds(2f);
+        if (playParticle && nextLevelParticles != null)
+        {
+            nextLevelParticles.Play();
+
+            yield return new WaitForSeconds(
+                nextLevelParticleDuration
+            );
+        }
 
         currentLevelIndex++;
 
@@ -107,8 +113,11 @@ public class LevelManager : MonoBehaviour
         UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
 
         LoadLevel(currentLevelIndex);
+
         GameManager.instance.ResetLevelState();
 
         nextLevelButton.interactable = true;
+
+        isLoadingNextLevel = false;
     }
 }

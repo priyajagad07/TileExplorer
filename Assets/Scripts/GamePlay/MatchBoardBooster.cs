@@ -4,14 +4,28 @@ public class MatchBoardBooster : MonoBehaviour
 {
     public void UseUndo()
     {
-        if (!BoosterManager.instance.UseUndo())
+        if (BoosterManager.instance.undoCount <= 0)
         {
             Debug.Log("No Undo Left");
             UIManager.Instance.ShowPopup(ScreenType.BuyUndoScreen);
             return;
         }
 
-        BoosterSystem.instance.UndoMove();
+        if (!BoosterSystem.instance.CanUndo())
+        {
+            BoosterManager.instance.ShowNothingToUndo();
+            Debug.Log("Nothing To Undo");
+            return;
+        }
+
+        BoosterManager.instance.UseUndo();
+
+        bool success = BoosterSystem.instance.UndoMove();
+
+        if (!success)
+        {
+            return;
+        }
     }
 
     public void ShuffleTiles()
