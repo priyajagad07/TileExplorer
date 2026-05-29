@@ -138,7 +138,7 @@ public class BoosterManager : MonoBehaviour
     {
         Debug.Log("Buy Magic Clicked");
 
-        if (CoinManager.instance.SpendCoins(10))
+        if (CoinManager.instance.SpendCoins(1800))
         {
             magicCount += 3;
 
@@ -193,5 +193,19 @@ public class BoosterManager : MonoBehaviour
             rect.anchoredPosition = originalPos;
             messageObject.SetActive(false);
         });
+    }
+
+    public void AddBoosters(
+    int undo,
+    int shuffle,
+    int magic
+)
+    {
+        undoCount += undo;
+        shuffleCount += shuffle;
+        magicCount += magic;
+
+        SaveBoosters();
+        UpdateUI();
     }
 }

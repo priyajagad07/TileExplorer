@@ -10,4 +10,6 @@ public enum SoundName
     Coins,
     CoinReach,
     TileBlocked,
+    TileSpawn,
+    TileSpawnFinish,
 }

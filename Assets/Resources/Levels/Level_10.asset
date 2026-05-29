@@ -16,8 +16,6 @@ MonoBehaviour:
   rewardCoins: 100
   difficulty: 1
   layers:
-  - {fileID: 11400000, guid: dc368136187314a199e694ab05a45efc, type: 2}
-  - {fileID: 11400000, guid: a44599f858d1f486e8582d589c69393d, type: 2}
-  - {fileID: 11400000, guid: 6b55b203f1d4c4b669d2172024408529, type: 2}
-  - {fileID: 11400000, guid: 5c174a30183db46ffb5d89fe2a554fed, type: 2}
-  background: {fileID: 0}
+  - {fileID: 11400000, guid: 15cc1d477a07041a6a0023f9e17736aa, type: 2}
+  - {fileID: 11400000, guid: 3ea5cd4c6839a403dae367126c4cad03, type: 2}
+  - {fileID: 11400000, guid: d6db5e44be37740588be32f98f54f9b5, type: 2}

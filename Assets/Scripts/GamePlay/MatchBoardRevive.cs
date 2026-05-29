@@ -73,6 +73,14 @@ public class MatchBoardRevive : MonoBehaviour
         MatchBoard.instance.RearrangeBoard();
 
         Time.timeScale = 1f;
+        StartCoroutine(RefreshTilesAfterRevive(tileParent));
         UIManager.Instance.HidePopup(ScreenType.GameOver);
+    }
+
+    IEnumerator RefreshTilesAfterRevive(Transform tileParent)
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        Tile.RefreshAllTileVisuals(tileParent);
     }
 }

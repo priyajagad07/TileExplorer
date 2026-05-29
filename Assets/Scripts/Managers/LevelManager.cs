@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Coffee.UIExtensions;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class LevelManager : MonoBehaviour
 {
@@ -113,6 +114,15 @@ public class LevelManager : MonoBehaviour
         UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
 
         LoadLevel(currentLevelIndex);
+
+        DOVirtual.DelayedCall(0.1f, () =>
+        {
+            if (BoardSpawner.instance != null)
+            {
+                BoardSpawner.instance.PlaySpawnAnimation();
+            }
+        }
+);
 
         GameManager.instance.ResetLevelState();
 

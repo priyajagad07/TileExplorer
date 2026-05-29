@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Solo.MOST_IN_ONE;
 
 public class BoosterSystem : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class BoosterSystem : MonoBehaviour
 
     public bool UndoMove()
     {
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
+
         while (undoStack.Count > 0)
         {
             UndoData data = undoStack.Pop();
@@ -112,6 +115,8 @@ public class BoosterSystem : MonoBehaviour
             Debug.LogError("Tile Parent is NULL");
             return;
         }
+
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.HeavyImpact);
 
         Dictionary<int, List<Tile>> layerGroups = new Dictionary<int, List<Tile>>();
 
@@ -208,6 +213,8 @@ public class BoosterSystem : MonoBehaviour
 
         if (tileParent == null)
             return;
+
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.HeavyImpact);
 
         List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
         Dictionary<int, int> placedCounts = new Dictionary<int, int>();

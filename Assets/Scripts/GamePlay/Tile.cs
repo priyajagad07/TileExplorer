@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using UnityEngine.UI;
-
+using Solo.MOST_IN_ONE;
 
 public class Tile : MonoBehaviour, IPointerClickHandler
 {
@@ -141,7 +141,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         bool blocked = IsBlocked();
 
-        Color targetColor = blocked ? new Color(0.45f, 0.45f, 0.45f, 1f) : Color.white;
+        Color targetColor = blocked ? new Color(0.65f, 0.65f, 0.65f, 1f) : Color.white;
 
         foreach (Image img in tileImages)
         {
@@ -152,6 +152,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     void PlayBlockedFeedback()
     {
+        SoundManager.instance.PlayHaptic(
+    MOST_HapticFeedback.HapticTypes.LightImpact
+);
         transform.DOKill();
 
         transform

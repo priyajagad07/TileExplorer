@@ -53,15 +53,15 @@ public class SimpleShapeEditor : EditorWindow
         int newRows = EditorGUILayout.IntSlider(
             "Rows",
             rows,
-            4,
-            7
+            1,
+            9
         );
 
         int newCols = EditorGUILayout.IntSlider(
-            "Cols",
+            "Cols", 
             cols,
-            4,
-            7
+            1,
+            9
         );
 
         if (newRows != rows || newCols != cols)

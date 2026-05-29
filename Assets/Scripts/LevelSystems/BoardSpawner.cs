@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using System.Linq;
 
 public class BoardSpawner : MonoBehaviour
 {
@@ -70,21 +72,17 @@ public class BoardSpawner : MonoBehaviour
                     if (rowData[col] != '1')
                         continue;
 
-                    Debug.Log("Spawning Tile Index: " + index);
-
                     GameObject obj = Instantiate(tiles[index], tileParent);
 
-                    obj.transform.localScale = Vector3.one * tileScale;
-                   
                     Tile tileScript = obj.GetComponent<Tile>();
                     tileScript.row = row;
                     tileScript.col = col;
                     tileScript.layer = layer;
 
-                    RectTransform rect = obj.GetComponent<RectTransform>();
+                    RectTransform rect1 = obj.GetComponent<RectTransform>();
                     float x = currentStartX + col * spacing + layerOffsetX;
                     float y = currentStartY - row * spacing + layerOffsetY;
-                    rect.anchoredPosition = new Vector2(x, y);
+                    rect1.anchoredPosition = new Vector2(x, y);
 
                     obj.transform.SetSiblingIndex(tileParent.childCount);
 
@@ -93,11 +91,138 @@ public class BoardSpawner : MonoBehaviour
             }
         }
 
-        Tile[] allTiles = tileParent.GetComponentsInChildren<Tile>();
+        StartCoroutine(RefreshTilesAfterSpawn());
+    }
+    IEnumerator RefreshTilesAfterSpawn()
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        Tile[] allTiles =
+            tileParent.GetComponentsInChildren<Tile>();
+
         foreach (Tile tile in allTiles)
         {
             tile.RefreshVisual();
         }
+    }
+
+    public void PlaySpawnAnimation()
+    {
+        Tile[] allTiles = tileParent.GetComponentsInChildren<Tile>();
+        int highestLayer = GetHighestLayer(allTiles);
+
+        Sequence masterSequence = DOTween.Sequence();
+        float currentTime = 0f;
+        float dropDuration = 0.3f;
+        float delayBetweenTiles = 0.02f;
+        float pauseBetweenLayers = 0.02f;
+        float dropHeight = 1800f;
+
+        bool glowSoundInserted = false;
+
+        for (int layer = 0; layer <= highestLayer; layer++)
+        {
+            List<Tile> layerTiles = new List<Tile>();
+            foreach (Tile tile in allTiles)
+            {
+                if (tile.layer == layer)
+                {
+                    layerTiles.Add(tile);
+                }
+            }
+
+            if (layerTiles.Count == 0) continue;
+
+            layerTiles = layerTiles
+                .OrderByDescending(t => t.GetComponent<RectTransform>().anchoredPosition.y)
+                .ThenBy(t => t.GetComponent<RectTransform>().anchoredPosition.x)
+                .ToList();
+
+            masterSequence.InsertCallback(currentTime, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.TileSpawn);
+            });
+
+            for (int i = 0; i < layerTiles.Count; i++)
+            {
+                Tile tile = layerTiles[i];
+                RectTransform rect = tile.GetComponent<RectTransform>();
+
+                Vector2 finalPos = rect.anchoredPosition;
+
+                rect.localScale = Vector3.one * 0.9f;
+                rect.anchoredPosition = finalPos + new Vector2(0, dropHeight);
+
+                Sequence tileSeq = DOTween.Sequence();
+                float startRotation = Random.Range(-16f, 16f);
+
+                rect.localRotation = Quaternion.Euler(0, 0, startRotation);
+
+                tileSeq.Join(
+                    rect.DORotate(Vector3.zero, dropDuration)
+                        .SetEase(Ease.OutCubic)
+                );
+
+                // Drop animation
+                tileSeq.Join(rect.DOAnchorPos(finalPos, dropDuration).SetEase(Ease.OutBack));
+
+                // Glow animation
+                if (layer == highestLayer)
+                {
+                    if (!glowSoundInserted)
+                    {
+                        glowSoundInserted = true;
+
+                        tileSeq.InsertCallback(dropDuration, () =>
+                        {
+                            Debug.Log("Glow sound callback fired");
+                            SoundManager.instance.PlaySound(SoundName.TileSpawnFinish);
+                        });
+                    }
+
+                    Image[] images = tile.GetComponentsInChildren<Image>();
+
+                    foreach (Image img in images)
+                    {
+                        Color original = img.color;
+
+                        tileSeq.Insert(
+                            dropDuration,
+                            img.DOColor(new Color(1.15f, 1.15f, 0.9f, 1f), 0.1f)
+                        );
+
+                        tileSeq.Insert(
+                            dropDuration + 0.1f,
+                            img.DOColor(original, 0.2f)
+                        );
+                    }
+
+                    tileSeq.Insert(
+                        dropDuration,
+                        rect.DOScale(1.12f, 0.08f)
+                            .SetLoops(2, LoopType.Yoyo)
+                    );
+                }
+
+                masterSequence.Insert(currentTime, tileSeq);
+                currentTime += delayBetweenTiles;
+            }
+
+            currentTime += dropDuration + pauseBetweenLayers;
+        }
+
+        masterSequence.Play();
+    }
+
+
+    int GetHighestLayer(Tile[] tiles)
+    {
+        int highest = 0;
+        foreach (Tile tile in tiles)
+        {
+            if (tile.layer > highest) highest = tile.layer;
+        }
+        return highest;
     }
 
     public void ClearBoard()

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Solo.MOST_IN_ONE;
 
 public class MatchBoardMatch : MonoBehaviour
 {
@@ -31,8 +32,8 @@ public class MatchBoardMatch : MonoBehaviour
 
         if (matched.Count >= 3)
         {
+            SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
             removedTiles += matched.Count;
-
 
             foreach (GameObject matchtile in matched)
             {

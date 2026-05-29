@@ -42,7 +42,10 @@ public class GameManager : MonoBehaviour
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
 
+        leftConfetti.Stop();
         leftConfetti.Play();
+
+        rightConfetti.Play();
         rightConfetti.Play();
 
         Debug.Log("Level Completed");

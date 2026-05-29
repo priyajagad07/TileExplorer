@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class BaseScreen : MonoBehaviour
 {
@@ -52,6 +53,21 @@ public class BaseScreen : MonoBehaviour
         }
 
         screenAnimation.Show();
+
+        if (gameObject.name == "GamePlay")
+        {
+            DOVirtual.DelayedCall(
+                0.35f,
+                () =>
+                {
+                    if (BoardSpawner.instance != null)
+                    {
+                        BoardSpawner.instance
+                            .PlaySpawnAnimation();
+                    }
+                }
+            );
+        }
     }
 
     public void Hide()
@@ -60,12 +76,13 @@ public class BaseScreen : MonoBehaviour
 
         if (canvasGroup != null)
         {
-            canvasGroup.alpha = 0;
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
         }
 
-        screenAnimation.Hide();
-        canvas.enabled = false;
+        screenAnimation.Hide(() =>
+        {
+            canvas.enabled = false;
+        });
     }
 }

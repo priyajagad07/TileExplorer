@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Solo.MOST_IN_ONE;
 
 public class SoundManager : MonoBehaviour
 {
@@ -53,6 +54,7 @@ public class SoundManager : MonoBehaviour
                 soundDict.Add(s.name, s.audio);
             }
         }
+        LoadSettings();
     }
 
     void OnEnable()
@@ -98,22 +100,6 @@ public class SoundManager : MonoBehaviour
         musicSource.mute = val;
     }
 
-    public void SetMusicVolume(float value)
-    {
-        musicVolume = value;
-
-        if (!isMusicMuted)
-            musicSource.volume = value;
-    }
-
-    public void SetSfxVolume(float value)
-    {
-        sfxVolume = value;
-
-        if (!isSfxMuted)
-            sfxSource.volume = value;
-    }
-
     public void StopMusic()
     {
         musicSource.Stop();
@@ -131,6 +117,8 @@ public class SoundManager : MonoBehaviour
         {
             musicSource.volume = musicVolume;
         }
+
+        SaveSettings();
     }
 
     public void ToggleSfx()
@@ -145,6 +133,16 @@ public class SoundManager : MonoBehaviour
         {
             sfxSource.volume = sfxVolume;
         }
+
+        SaveSettings();
+    }
+
+    public void ToggleVibration()
+    {
+        isVibrationMuted =
+            !isVibrationMuted;
+
+        SaveSettings();
     }
 
     public void ForceMusicMute(bool val)
@@ -159,6 +157,7 @@ public class SoundManager : MonoBehaviour
         {
             musicSource.volume = musicVolume;
         }
+        SaveSettings();
     }
 
     public void ForceSfxMute(bool val)
@@ -173,6 +172,74 @@ public class SoundManager : MonoBehaviour
         {
             sfxSource.volume = sfxVolume;
         }
+        SaveSettings();
+    }
+
+    void LoadSettings()
+    {
+        isMusicMuted =
+            PlayerPrefs.GetInt("MusicMuted", 0) == 1;
+
+        isSfxMuted =
+            PlayerPrefs.GetInt("SfxMuted", 0) == 1;
+
+        musicVolume =
+            PlayerPrefs.GetFloat("MusicVolume", 1f);
+
+        sfxVolume =
+            PlayerPrefs.GetFloat("SfxVolume", 1f);
+
+        musicSource.volume =
+            isMusicMuted ? 0 : musicVolume;
+
+        sfxSource.volume =
+            isSfxMuted ? 0 : sfxVolume;
+
+        isVibrationMuted =
+PlayerPrefs.GetInt(
+    "VibrationMuted",
+    0
+) == 1;
+    }
+
+    void SaveSettings()
+    {
+        PlayerPrefs.SetInt(
+            "MusicMuted",
+            isMusicMuted ? 1 : 0
+        );
+
+        PlayerPrefs.SetInt(
+            "SfxMuted",
+            isSfxMuted ? 1 : 0
+        );
+
+        PlayerPrefs.SetFloat(
+            "MusicVolume",
+            musicVolume
+        );
+
+        PlayerPrefs.SetFloat(
+            "SfxVolume",
+            sfxVolume
+        );
+
+        PlayerPrefs.SetInt(
+    "VibrationMuted",
+    isVibrationMuted ? 1 : 0
+);
+
+        PlayerPrefs.Save();
+    }
+
+    public void PlayHaptic(
+    MOST_HapticFeedback.HapticTypes type
+)
+    {
+        if (isVibrationMuted)
+            return;
+
+        MOST_HapticFeedback.Generate(type);
     }
 }
 

@@ -130,7 +130,7 @@ public class UIScreenAnimation : MonoBehaviour
         }
     }
 
-    public void Hide()
+    public void Hide(System.Action onComplete = null)
     {
         DOTween.Kill(target);
         DOTween.Kill(canvasGroup);
@@ -140,19 +140,25 @@ public class UIScreenAnimation : MonoBehaviour
             case AnimationType.Popup:
 
                 canvasGroup
-                    .DOFade(0, 0.18f)
+                    .DOFade(0, duration)
+                    .SetEase(Ease.OutQuad)
                     .SetUpdate(true);
 
                 target
-                    .DOScale(0.7f, 0.18f)
+                    .DOScale(0.5f, duration)
                     .SetEase(Ease.InBack)
-                    .SetUpdate(true);
+                    .SetUpdate(true)
+                    .OnComplete(() =>
+                    {
+                        onComplete?.Invoke();
+                    });
 
                 break;
 
             default:
 
                 canvasGroup.alpha = 0;
+                onComplete?.Invoke();
 
                 break;
         }

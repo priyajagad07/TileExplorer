@@ -23,11 +23,11 @@ public class AudioUIController : MonoBehaviour
     public Sprite notificationOnSprite;
     public Sprite notificationOffSprite;
 
-    void Start()
+    void OnEnable()
     {
         UpdateIcons();
     }
-
+    
     public void OnMusicButton()
     {
         if (!SoundManager.instance.IsMusicMuted())
@@ -63,6 +63,7 @@ public class AudioUIController : MonoBehaviour
 
     public void OnVibrationButton()
     {
+        SoundManager.instance.ToggleVibration();
         UpdateIcons();
     }
 
@@ -71,7 +72,7 @@ public class AudioUIController : MonoBehaviour
         UpdateIcons();
     }
 
-    void UpdateIcons()
+    public void UpdateIcons()
     {
         musicIcon.sprite = SoundManager.instance.IsMusicMuted() ? musicOffSprite : musicOnSprite;
         sfxIcon.sprite = SoundManager.instance.IsSfxMuted() ? sfxOffSprite : sfxOnSprite;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class AvatarManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class AvatarManager : MonoBehaviour
     [SerializeField] private Image avatarPreview;
     [SerializeField] private Image avatarHomeScreen;
     [SerializeField] private GameObject checkMark;
+    [SerializeField] private TMP_InputField nameInput;
 
     private int selectedAvatar = 0;
 
@@ -31,8 +33,10 @@ public class AvatarManager : MonoBehaviour
     }
 
     public void ConfirmAvatar()
-    {
+    {   
         PlayerPrefs.SetInt("Avatar", selectedAvatar);
+        PlayerPrefs.SetString("PlayerName", nameInput.text);
+
         PlayerPrefs.Save();
 
         avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
@@ -44,5 +48,6 @@ public class AvatarManager : MonoBehaviour
         SelectAvatar(selectedAvatar);
 
         avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
+        nameInput.text = PlayerPrefs.GetString("PlayerName", "");
     }
 }

@@ -60,6 +60,7 @@ public class UIAnimations : MonoBehaviour
 
         if (breathing)
         {
+            target.localScale = Vector3.one;
             target
                 .DOScale(breatheScale, breatheDuration)
                 .SetEase(Ease.InOutSine)
@@ -76,21 +77,5 @@ public class UIAnimations : MonoBehaviour
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo);
         }
-    }
-
-    public void PlayPunchAnimation()
-    {
-        target.DOKill();
-
-        target.localScale = Vector3.one;
-
-        target.DOPunchScale(
-            Vector3.one * 0.2f,
-            0.35f,
-            8,
-            0.8f
-        );
-
-        StartAnimations();
     }
 }
