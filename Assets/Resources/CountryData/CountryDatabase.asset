@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f71be8d5884b4a2fa18418ba84e0166, type: 3}
+  m_Name: CountryDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::CountryDatabase
+  countries:
+  - {fileID: 11400000, guid: 35a849a23e1d1473ba1837e4583aa0c5, type: 2}
+  - {fileID: 11400000, guid: 4b74f57d8664140478a10bc239602b4f, type: 2}
+  - {fileID: 11400000, guid: d0c899df5bf984db898be5e294ba68c4, type: 2}
+  - {fileID: 11400000, guid: 7d6a4bf18ba544db0be9dcc583389e9f, type: 2}
+  - {fileID: 11400000, guid: 67674f0514f594840b060679100514d8, type: 2}
+  - {fileID: 11400000, guid: 5014f16dd07434fcbabdfb21045a071b, type: 2}
+  - {fileID: 11400000, guid: eb830c78b6d204bc5bd51bee6d6453bd, type: 2}
+  - {fileID: 11400000, guid: 8f5d8945e437043b3b4ff81b0dd66b39, type: 2}

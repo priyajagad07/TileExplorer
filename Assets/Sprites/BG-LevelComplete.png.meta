@@ -1,0 +1,1781 @@
+fileFormatVersion: 2
+guid: 28a2015ef995541c893b85559a11fd2a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4376799789996414645
+    second: BG-LevelComplete_0
+  - first:
+      213: 3846096685425520081
+    second: BG-LevelComplete_1
+  - first:
+      213: 5113914328015879785
+    second: BG-LevelComplete_2
+  - first:
+      213: 4744540586428353729
+    second: BG-LevelComplete_3
+  - first:
+      213: -8539098029173848854
+    second: BG-LevelComplete_4
+  - first:
+      213: 6888257896717708347
+    second: BG-LevelComplete_5
+  - first:
+      213: 7849164713271529218
+    second: BG-LevelComplete_6
+  - first:
+      213: 6696522448812523145
+    second: BG-LevelComplete_7
+  - first:
+      213: 6021763136395682061
+    second: BG-LevelComplete_8
+  - first:
+      213: 6730036858542093439
+    second: BG-LevelComplete_9
+  - first:
+      213: -1187045629288837135
+    second: BG-LevelComplete_10
+  - first:
+      213: -1441329563369277943
+    second: BG-LevelComplete_11
+  - first:
+      213: -5871696763030467805
+    second: BG-LevelComplete_12
+  - first:
+      213: -8986720746889567132
+    second: BG-LevelComplete_13
+  - first:
+      213: 498264769256211538
+    second: BG-LevelComplete_14
+  - first:
+      213: -6074174722515778492
+    second: BG-LevelComplete_15
+  - first:
+      213: -7985449473471730427
+    second: BG-LevelComplete_16
+  - first:
+      213: -1557743482566469699
+    second: BG-LevelComplete_17
+  - first:
+      213: -2640574143787989664
+    second: BG-LevelComplete_18
+  - first:
+      213: 25828641064505702
+    second: BG-LevelComplete_19
+  - first:
+      213: 2263111533836508928
+    second: BG-LevelComplete_20
+  - first:
+      213: -8822358731549993013
+    second: BG-LevelComplete_21
+  - first:
+      213: 2123574876129294632
+    second: BG-LevelComplete_22
+  - first:
+      213: 1904001008563110591
+    second: BG-LevelComplete_23
+  - first:
+      213: 7158115907139793980
+    second: BG-LevelComplete_24
+  - first:
+      213: 3728450838336954662
+    second: BG-LevelComplete_25
+  - first:
+      213: -8006134656293440128
+    second: BG-LevelComplete_26
+  - first:
+      213: 51440791453760248
+    second: BG-LevelComplete_27
+  - first:
+      213: 2197708233251587461
+    second: BG-LevelComplete_28
+  - first:
+      213: 1333988696226658776
+    second: BG-LevelComplete_29
+  - first:
+      213: -397896580545374861
+    second: BG-LevelComplete_30
+  - first:
+      213: -7518056238542354959
+    second: BG-LevelComplete_31
+  - first:
+      213: -3334864192120832798
+    second: BG-LevelComplete_32
+  - first:
+      213: -480659154233402474
+    second: BG-LevelComplete_33
+  - first:
+      213: 4457444087772192424
+    second: BG-LevelComplete_34
+  - first:
+      213: -3985288549180336102
+    second: BG-LevelComplete_35
+  - first:
+      213: 4850329896581811969
+    second: BG-LevelComplete_36
+  - first:
+      213: 7549198924689211131
+    second: BG-LevelComplete_37
+  - first:
+      213: 2285719393414128279
+    second: BG-LevelComplete_38
+  - first:
+      213: -1174352143934929064
+    second: BG-LevelComplete_39
+  - first:
+      213: -6867671931040268056
+    second: BG-LevelComplete_40
+  - first:
+      213: 2017410892395142059
+    second: BG-LevelComplete_41
+  - first:
+      213: -3401575396708968361
+    second: BG-LevelComplete_42
+  - first:
+      213: 5642833278479068550
+    second: BG-LevelComplete_43
+  - first:
+      213: 4795330773252290222
+    second: BG-LevelComplete_44
+  - first:
+      213: 7713746742699469111
+    second: BG-LevelComplete_45
+  - first:
+      213: 6441785920931384016
+    second: BG-LevelComplete_46
+  - first:
+      213: 3745574641522669188
+    second: BG-LevelComplete_47
+  - first:
+      213: -5354726161494754229
+    second: BG-LevelComplete_48
+  - first:
+      213: 7917182363156991091
+    second: BG-LevelComplete_49
+  - first:
+      213: -5167312900577595521
+    second: BG-LevelComplete_50
+  - first:
+      213: 7211287437591905744
+    second: BG-LevelComplete_51
+  - first:
+      213: 540853852682734086
+    second: BG-LevelComplete_52
+  - first:
+      213: -1794925338393475784
+    second: BG-LevelComplete_53
+  - first:
+      213: 6308611401647050896
+    second: BG-LevelComplete_54
+  - first:
+      213: 3173359803572330711
+    second: BG-LevelComplete_55
+  - first:
+      213: -3556477007579453260
+    second: BG-LevelComplete_56
+  - first:
+      213: 1736578497168774594
+    second: BG-LevelComplete_57
+  - first:
+      213: 5245388962953121150
+    second: BG-LevelComplete_58
+  - first:
+      213: 4053335319554911817
+    second: BG-LevelComplete_59
+  - first:
+      213: -6569694528497180406
+    second: BG-LevelComplete_60
+  - first:
+      213: 2498106228661482125
+    second: BG-LevelComplete_61
+  - first:
+      213: -7519952283051644935
+    second: BG-LevelComplete_62
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BG-LevelComplete_0
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 176
+        width: 832
+        height: 1160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b69dbf38348dbc30800000000000000
+      internalID: 4376799789996414645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_1
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 1354
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dd6892de84106530800000000000000
+      internalID: 3846096685425520081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_2
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 1301
+        width: 41
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96eba259cf548f640800000000000000
+      internalID: 5113914328015879785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_3
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 1303
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cc4c74968ef7d140800000000000000
+      internalID: 4744540586428353729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_4
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 1269
+        width: 43
+        height: 52
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae4cad4a5970f7980800000000000000
+      internalID: -8539098029173848854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_5
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 1299
+        width: 6
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3c632fbf02089f50800000000000000
+      internalID: 6888257896717708347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_6
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 1277
+        width: 38
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20f841658b5ddec60800000000000000
+      internalID: 7849164713271529218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_7
+      rect:
+        serializedVersion: 2
+        x: 613
+        y: 1279
+        width: 28
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98e36efffa3deec50800000000000000
+      internalID: 6696522448812523145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_8
+      rect:
+        serializedVersion: 2
+        x: 663
+        y: 1306
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d01286afaa9919350800000000000000
+      internalID: 6021763136395682061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_9
+      rect:
+        serializedVersion: 2
+        x: 670
+        y: 1275
+        width: 30
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f74ffa69dd4e56d50800000000000000
+      internalID: 6730036858542093439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_10
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 1290
+        width: 37
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ff0f061a44c68fe0800000000000000
+      internalID: -1187045629288837135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_11
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 1296
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 906fa1b066e5ffbe0800000000000000
+      internalID: -1441329563369277943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_12
+      rect:
+        serializedVersion: 2
+        x: 269
+        y: 1294
+        width: 19
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32b02c257ea838ea0800000000000000
+      internalID: -5871696763030467805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_13
+      rect:
+        serializedVersion: 2
+        x: 797
+        y: 1271
+        width: 28
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 464a30a2811c84380800000000000000
+      internalID: -8986720746889567132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_14
+      rect:
+        serializedVersion: 2
+        x: 914
+        y: 1079
+        width: 31
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 254cb9fea213ae600800000000000000
+      internalID: 498264769256211538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_15
+      rect:
+        serializedVersion: 2
+        x: 931
+        y: 1025
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4444ac0b54234bba0800000000000000
+      internalID: -6074174722515778492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_16
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 194
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50d23e9330cfd2190800000000000000
+      internalID: -7985449473471730427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_17
+      rect:
+        serializedVersion: 2
+        x: 930
+        y: 191
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db7127e4e88c16ae0800000000000000
+      internalID: -1557743482566469699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_18
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0658f6c7ecbca5bd0800000000000000
+      internalID: -2640574143787989664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_19
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6615eaf1303cb5000800000000000000
+      internalID: 25828641064505702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_20
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 104
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00f1a6513ff286f10800000000000000
+      internalID: 2263111533836508928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_21
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 104
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc795ecf97fa09580800000000000000
+      internalID: -8822358731549993013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_22
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82971a14914787d10800000000000000
+      internalID: 2123574876129294632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_23
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 102
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb2c36754de5c6a10800000000000000
+      internalID: 1904001008563110591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_24
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c34f3220e7cb65360800000000000000
+      internalID: 7158115907139793980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_25
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 621e495884e1eb330800000000000000
+      internalID: 3728450838336954662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_26
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0857fabc2fe74e090800000000000000
+      internalID: -8006134656293440128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_27
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8faf0959021c6b000800000000000000
+      internalID: 51440791453760248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_28
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 104
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58589e28ef3df7e10800000000000000
+      internalID: 2197708233251587461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_29
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d9f9f4c6a7438210800000000000000
+      internalID: 1333988696226658776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_30
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 103
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 375104b0b236a7af0800000000000000
+      internalID: -397896580545374861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_31
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f50644feaf7aa790800000000000000
+      internalID: -7518056238542354959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_32
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 106
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ecb776afae28b1d0800000000000000
+      internalID: -3334864192120832798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_33
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69bd0edbb0b5459f0800000000000000
+      internalID: -480659154233402474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_34
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ae93d108c50cdd30800000000000000
+      internalID: 4457444087772192424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_35
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 107
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a189ca2fd2961b8c0800000000000000
+      internalID: -3985288549180336102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_36
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 107
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10f4731c755df4340800000000000000
+      internalID: 4850329896581811969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_37
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfe7cd4bc6424c860800000000000000
+      internalID: 7549198924689211131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_38
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 104
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 792aba49da188bf10800000000000000
+      internalID: 2285719393414128279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_39
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8574a8372fcd3bfe0800000000000000
+      internalID: -1174352143934929064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_40
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 107
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e08c64e3c021b0a0800000000000000
+      internalID: -6867671931040268056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_41
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bab573794884ffb10800000000000000
+      internalID: 2017410892395142059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_42
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7581472f23d2bc0d0800000000000000
+      internalID: -3401575396708968361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_43
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 107
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68d6f7248fe5f4e40800000000000000
+      internalID: 5642833278479068550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_44
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 106
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea6b3387eef6c8240800000000000000
+      internalID: 4795330773252290222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_45
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 739ade51bcbbc0b60800000000000000
+      internalID: 7713746742699469111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_46
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0da4a304a22d56950800000000000000
+      internalID: 6441785920931384016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_47
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4867ba3aa44faf330800000000000000
+      internalID: 3745574641522669188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_48
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4c3d9a3de030b5b0800000000000000
+      internalID: -5354726161494754229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_49
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 103
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37cc5f9896b7fdd60800000000000000
+      internalID: 7917182363156991091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_50
+      rect:
+        serializedVersion: 2
+        x: 728
+        y: 104
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7f67c56b440a48b0800000000000000
+      internalID: -5167312900577595521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_51
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 104
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d507eaa7b3a31460800000000000000
+      internalID: 7211287437591905744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_52
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60a4e84a6bf718700800000000000000
+      internalID: 540853852682734086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_53
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 104
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83585b62ae42717e0800000000000000
+      internalID: -1794925338393475784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_54
+      rect:
+        serializedVersion: 2
+        x: 761
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 090d62535a0bc8750800000000000000
+      internalID: 6308611401647050896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_55
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 107
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d0ae6c9de90a0c20800000000000000
+      internalID: 3173359803572330711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_56
+      rect:
+        serializedVersion: 2
+        x: 784
+        y: 107
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b8e16f210bd4aec0800000000000000
+      internalID: -3556477007579453260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_57
+      rect:
+        serializedVersion: 2
+        x: 793
+        y: 101
+        width: 8
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c5935041f0991810800000000000000
+      internalID: 1736578497168774594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_58
+      rect:
+        serializedVersion: 2
+        x: 801
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7d4395787d5bc840800000000000000
+      internalID: 5245388962953121150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_59
+      rect:
+        serializedVersion: 2
+        x: 809
+        y: 103
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94e6d956ff6504830800000000000000
+      internalID: 4053335319554911817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_60
+      rect:
+        serializedVersion: 2
+        x: 818
+        y: 107
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a01291252a1c3d4a0800000000000000
+      internalID: -6569694528497180406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_61
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 107
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d82fe82216e0ba220800000000000000
+      internalID: 2498106228661482125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG-LevelComplete_62
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 104
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f7a1d0bd33c3a790800000000000000
+      internalID: -7519952283051644935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 9942831f77a9d4dc2847625f661bbe42
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BG-LevelComplete_0: 4376799789996414645
+      BG-LevelComplete_1: 3846096685425520081
+      BG-LevelComplete_10: -1187045629288837135
+      BG-LevelComplete_11: -1441329563369277943
+      BG-LevelComplete_12: -5871696763030467805
+      BG-LevelComplete_13: -8986720746889567132
+      BG-LevelComplete_14: 498264769256211538
+      BG-LevelComplete_15: -6074174722515778492
+      BG-LevelComplete_16: -7985449473471730427
+      BG-LevelComplete_17: -1557743482566469699
+      BG-LevelComplete_18: -2640574143787989664
+      BG-LevelComplete_19: 25828641064505702
+      BG-LevelComplete_2: 5113914328015879785
+      BG-LevelComplete_20: 2263111533836508928
+      BG-LevelComplete_21: -8822358731549993013
+      BG-LevelComplete_22: 2123574876129294632
+      BG-LevelComplete_23: 1904001008563110591
+      BG-LevelComplete_24: 7158115907139793980
+      BG-LevelComplete_25: 3728450838336954662
+      BG-LevelComplete_26: -8006134656293440128
+      BG-LevelComplete_27: 51440791453760248
+      BG-LevelComplete_28: 2197708233251587461
+      BG-LevelComplete_29: 1333988696226658776
+      BG-LevelComplete_3: 4744540586428353729
+      BG-LevelComplete_30: -397896580545374861
+      BG-LevelComplete_31: -7518056238542354959
+      BG-LevelComplete_32: -3334864192120832798
+      BG-LevelComplete_33: -480659154233402474
+      BG-LevelComplete_34: 4457444087772192424
+      BG-LevelComplete_35: -3985288549180336102
+      BG-LevelComplete_36: 4850329896581811969
+      BG-LevelComplete_37: 7549198924689211131
+      BG-LevelComplete_38: 2285719393414128279
+      BG-LevelComplete_39: -1174352143934929064
+      BG-LevelComplete_4: -8539098029173848854
+      BG-LevelComplete_40: -6867671931040268056
+      BG-LevelComplete_41: 2017410892395142059
+      BG-LevelComplete_42: -3401575396708968361
+      BG-LevelComplete_43: 5642833278479068550
+      BG-LevelComplete_44: 4795330773252290222
+      BG-LevelComplete_45: 7713746742699469111
+      BG-LevelComplete_46: 6441785920931384016
+      BG-LevelComplete_47: 3745574641522669188
+      BG-LevelComplete_48: -5354726161494754229
+      BG-LevelComplete_49: 7917182363156991091
+      BG-LevelComplete_5: 6888257896717708347
+      BG-LevelComplete_50: -5167312900577595521
+      BG-LevelComplete_51: 7211287437591905744
+      BG-LevelComplete_52: 540853852682734086
+      BG-LevelComplete_53: -1794925338393475784
+      BG-LevelComplete_54: 6308611401647050896
+      BG-LevelComplete_55: 3173359803572330711
+      BG-LevelComplete_56: -3556477007579453260
+      BG-LevelComplete_57: 1736578497168774594
+      BG-LevelComplete_58: 5245388962953121150
+      BG-LevelComplete_59: 4053335319554911817
+      BG-LevelComplete_6: 7849164713271529218
+      BG-LevelComplete_60: -6569694528497180406
+      BG-LevelComplete_61: 2498106228661482125
+      BG-LevelComplete_62: -7519952283051644935
+      BG-LevelComplete_7: 6696522448812523145
+      BG-LevelComplete_8: 6021763136395682061
+      BG-LevelComplete_9: 6730036858542093439
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

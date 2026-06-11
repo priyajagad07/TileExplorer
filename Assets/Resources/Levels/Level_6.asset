@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelNumber: 0
   rewardCoins: 100
-  difficulty: 1
+  difficulty: 3
   layers:
   - {fileID: 11400000, guid: e085a362cbccf4ac89e5c324649845bb, type: 2}
   - {fileID: 11400000, guid: 7efe11999b99249cdb88b24a1a22ad1e, type: 2}

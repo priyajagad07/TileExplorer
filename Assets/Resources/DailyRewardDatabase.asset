@@ -1,0 +1,146 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f2690ccf4ebd48eda4052e0df647ee2, type: 3}
+  m_Name: DailyRewardDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::DailyRewardDatabase
+  day1Rewards:
+  - rewardName: 100 Coins
+    rewards:
+    - rewardType: 0
+      amount: 100
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  - rewardName: 150 Coins
+    rewards:
+    - rewardType: 0
+      amount: 150
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  - rewardName: 200 Coins
+    rewards:
+    - rewardType: 0
+      amount: 200
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  - rewardName: 300 Coins
+    rewards:
+    - rewardType: 0
+      amount: 300
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  day3Rewards:
+  - rewardName: 100 Coins + 1 Undo
+    rewards:
+    - rewardType: 0
+      amount: 100
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 1
+      amount: 1
+      rewardIcon: {fileID: 6529047121145798249, guid: d35bad98e47434a98923b1c40c3aac9f, type: 3}
+  - rewardName: 200 Coins + 1 Shuffle
+    rewards:
+    - rewardType: 0
+      amount: 200
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 2
+      amount: 1
+      rewardIcon: {fileID: 898996296980223913, guid: 7fdfc4d7fb4874afa929bbb6e8f921da, type: 3}
+  - rewardName: 150 Coins + 1 Magic
+    rewards:
+    - rewardType: 0
+      amount: 150
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 3
+      amount: 1
+      rewardIcon: {fileID: 21300000, guid: 92d34f573fdff4150a9a7c6d1d1f29bb, type: 2}
+  - rewardName: 250 Coins + 2 Shuffle
+    rewards:
+    - rewardType: 0
+      amount: 250
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 2
+      amount: 2
+      rewardIcon: {fileID: 898996296980223913, guid: 7fdfc4d7fb4874afa929bbb6e8f921da, type: 3}
+  day5Rewards:
+  - rewardName: 500 Coins
+    rewards:
+    - rewardType: 0
+      amount: 500
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  - rewardName: 750 Coins
+    rewards:
+    - rewardType: 0
+      amount: 750
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  - rewardName: 1000 Coins
+    rewards:
+    - rewardType: 0
+      amount: 1000
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  - rewardName: 1500 Coins
+    rewards:
+    - rewardType: 0
+      amount: 1500
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+  day7Rewards:
+  - rewardName: 1000 Coins + All Boosters
+    rewards:
+    - rewardType: 0
+      amount: 1000
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 1
+      amount: 1
+      rewardIcon: {fileID: 6529047121145798249, guid: d35bad98e47434a98923b1c40c3aac9f, type: 3}
+    - rewardType: 2
+      amount: 1
+      rewardIcon: {fileID: 898996296980223913, guid: 7fdfc4d7fb4874afa929bbb6e8f921da, type: 3}
+    - rewardType: 3
+      amount: 1
+      rewardIcon: {fileID: 21300000, guid: 92d34f573fdff4150a9a7c6d1d1f29bb, type: 2}
+  - rewardName: 1500 Coins + All Boosters
+    rewards:
+    - rewardType: 0
+      amount: 1500
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 1
+      amount: 1
+      rewardIcon: {fileID: 6529047121145798249, guid: d35bad98e47434a98923b1c40c3aac9f, type: 3}
+    - rewardType: 2
+      amount: 1
+      rewardIcon: {fileID: 898996296980223913, guid: 7fdfc4d7fb4874afa929bbb6e8f921da, type: 3}
+    - rewardType: 3
+      amount: 1
+      rewardIcon: {fileID: 21300000, guid: 92d34f573fdff4150a9a7c6d1d1f29bb, type: 2}
+  - rewardName: 2000 Coins + All Boosters
+    rewards:
+    - rewardType: 0
+      amount: 2000
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 1
+      amount: 1
+      rewardIcon: {fileID: 6529047121145798249, guid: d35bad98e47434a98923b1c40c3aac9f, type: 3}
+    - rewardType: 2
+      amount: 1
+      rewardIcon: {fileID: 898996296980223913, guid: 7fdfc4d7fb4874afa929bbb6e8f921da, type: 3}
+    - rewardType: 3
+      amount: 1
+      rewardIcon: {fileID: 21300000, guid: 92d34f573fdff4150a9a7c6d1d1f29bb, type: 2}
+  - rewardName: '3000 Coins + All Boosters '
+    rewards:
+    - rewardType: 0
+      amount: 3000
+      rewardIcon: {fileID: 21300000, guid: 3c7a64b0ee64e41548e210cbb1bffbfd, type: 2}
+    - rewardType: 1
+      amount: 1
+      rewardIcon: {fileID: 6529047121145798249, guid: d35bad98e47434a98923b1c40c3aac9f, type: 3}
+    - rewardType: 2
+      amount: 1
+      rewardIcon: {fileID: 898996296980223913, guid: 7fdfc4d7fb4874afa929bbb6e8f921da, type: 3}
+    - rewardType: 3
+      amount: 1
+      rewardIcon: {fileID: 21300000, guid: 92d34f573fdff4150a9a7c6d1d1f29bb, type: 2}

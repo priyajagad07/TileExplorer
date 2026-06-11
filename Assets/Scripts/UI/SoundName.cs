@@ -12,4 +12,10 @@ public enum SoundName
     TileBlocked,
     TileSpawn,
     TileSpawnFinish,
+    BirdPop,
+    CounterStart,
+    RewardPop,
+    RewardReveal,
+    ButtonPop,
+    NumberPop,
 }

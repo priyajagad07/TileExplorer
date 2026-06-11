@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: d1a8d89ba6e7b4649a02990b668f2eae
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1974811796759162997
+    second: ShopScreenAssets_0
+  - first:
+      213: -7341457757158432247
+    second: ShopScreenAssets_1
+  - first:
+      213: 1186371739381964629
+    second: ShopScreenAssets_2
+  - first:
+      213: -1551576383235330311
+    second: ShopScreenAssets_3
+  - first:
+      213: -2246714881208162590
+    second: ShopScreenAssets_4
+  - first:
+      213: 7866597147763118109
+    second: ShopScreenAssets_5
+  - first:
+      213: 2084342453643464712
+    second: ShopScreenAssets_6
+  - first:
+      213: 3297810791906108004
+    second: ShopScreenAssets_7
+  - first:
+      213: -6818651495706019848
+    second: ShopScreenAssets_8
+  - first:
+      213: -2474140773405068638
+    second: ShopScreenAssets_9
+  - first:
+      213: 2595589647573385931
+    second: ShopScreenAssets_10
+  - first:
+      213: 4072026041897554114
+    second: ShopScreenAssets_11
+  - first:
+      213: 7941594488439529376
+    second: ShopScreenAssets_12
+  - first:
+      213: 7950316492131075325
+    second: ShopScreenAssets_13
+  - first:
+      213: 887412447052995240
+    second: ShopScreenAssets_14
+  - first:
+      213: 1911759629392702688
+    second: ShopScreenAssets_15
+  - first:
+      213: 1890893549411596215
+    second: ShopScreenAssets_16
+  - first:
+      213: -8959361399323373930
+    second: ShopScreenAssets_17
+  - first:
+      213: 3048103375138481948
+    second: ShopScreenAssets_18
+  - first:
+      213: 810368576246767209
+    second: ShopScreenAssets_19
+  - first:
+      213: -6291650812865238417
+    second: ShopScreenAssets_20
+  - first:
+      213: -3157497017232910732
+    second: ShopScreenAssets_21
+  - first:
+      213: 3878259988289641985
+    second: ShopScreenAssets_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ShopScreenAssets_0
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 849
+        width: 376
+        height: 458
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8f4be3422f0894e0800000000000000
+      internalID: -1974811796759162997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_1
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 1353
+        width: 546
+        height: 115
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 902290b0117ed1a90800000000000000
+      internalID: -7341457757158432247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_2
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 1168
+        width: 465
+        height: 142
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55f9c61bfc6d67010800000000000000
+      internalID: 1186371739381964629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_3
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 896
+        width: 467
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fe6f530081b77ae0800000000000000
+      internalID: -1551576383235330311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_4
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 714
+        width: 364
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e6e00a18b012d0e0800000000000000
+      internalID: -2246714881208162590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_5
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 706
+        width: 467
+        height: 149
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1095874d64cb2d60800000000000000
+      internalID: 7866597147763118109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_6
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 555
+        width: 366
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8005fa31b621dec10800000000000000
+      internalID: 2084342453643464712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_7
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 560
+        width: 471
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4626304517d24cd20800000000000000
+      internalID: 3297810791906108004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_8
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 675
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f7b14767984f51a0800000000000000
+      internalID: -6818651495706019848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_9
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 436
+        width: 267
+        height: 68
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a271ec33161aadd0800000000000000
+      internalID: -2474140773405068638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_10
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 418
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc20b4e4803650420800000000000000
+      internalID: 2595589647573385931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_11
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 419
+        width: 1
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c0917f4c1eb28830800000000000000
+      internalID: 4072026041897554114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_12
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 442
+        width: 183
+        height: 63
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0af53a16c16363e60800000000000000
+      internalID: 7941594488439529376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_13
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 442
+        width: 213
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df4076d1ab2355e60800000000000000
+      internalID: 7950316492131075325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_14
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 204
+        width: 200
+        height: 165
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8aa9adb3be8b05c00800000000000000
+      internalID: 887412447052995240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_15
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 190
+        width: 288
+        height: 195
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ec62e5014fe78a10800000000000000
+      internalID: 1911759629392702688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_16
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 201
+        width: 160
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b771c03aadcd3a10800000000000000
+      internalID: 1890893549411596215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3
+        width: 434
+        height: 178
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69ecbfaa644f9a380800000000000000
+      internalID: -8959361399323373930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_18
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 11
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c176cc1ced90d4a20800000000000000
+      internalID: 3048103375138481948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_19
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 11
+        width: 23
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96ed3543de10f3b00800000000000000
+      internalID: 810368576246767209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_20
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 28
+        width: 166
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6aae589be09fa8a0800000000000000
+      internalID: -6291650812865238417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_21
+      rect:
+        serializedVersion: 2
+        x: 670
+        y: 11
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4761a7421315e24d0800000000000000
+      internalID: -3157497017232910732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreenAssets_22
+      rect:
+        serializedVersion: 2
+        x: 676
+        y: 11
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10e5d9459e852d530800000000000000
+      internalID: 3878259988289641985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 13547d0a4c54f4f30aa6c4773e047a7d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ShopScreenAssets_0: -1974811796759162997
+      ShopScreenAssets_1: -7341457757158432247
+      ShopScreenAssets_10: 2595589647573385931
+      ShopScreenAssets_11: 4072026041897554114
+      ShopScreenAssets_12: 7941594488439529376
+      ShopScreenAssets_13: 7950316492131075325
+      ShopScreenAssets_14: 887412447052995240
+      ShopScreenAssets_15: 1911759629392702688
+      ShopScreenAssets_16: 1890893549411596215
+      ShopScreenAssets_17: -8959361399323373930
+      ShopScreenAssets_18: 3048103375138481948
+      ShopScreenAssets_19: 810368576246767209
+      ShopScreenAssets_2: 1186371739381964629
+      ShopScreenAssets_20: -6291650812865238417
+      ShopScreenAssets_21: -3157497017232910732
+      ShopScreenAssets_22: 3878259988289641985
+      ShopScreenAssets_3: -1551576383235330311
+      ShopScreenAssets_4: -2246714881208162590
+      ShopScreenAssets_5: 7866597147763118109
+      ShopScreenAssets_6: 2084342453643464712
+      ShopScreenAssets_7: 3297810791906108004
+      ShopScreenAssets_8: -6818651495706019848
+      ShopScreenAssets_9: -2474140773405068638
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

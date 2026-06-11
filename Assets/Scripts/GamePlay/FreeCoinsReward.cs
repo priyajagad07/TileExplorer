@@ -24,7 +24,7 @@ public class FreeCoinsReward : MonoBehaviour
         SoundManager.instance.PlaySound(SoundName.Coins);
         
         if (rewardParticles != null)
-        {
+        {   
             rewardParticles.Play();
         }
 

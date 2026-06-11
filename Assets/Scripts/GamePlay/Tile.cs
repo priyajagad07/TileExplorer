@@ -94,7 +94,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (isMoved)
             return;
 
-        BoosterSystem.instance.RecordMove(gameObject);
+        //BoosterSystem.instance.RecordMove(gameObject);
         PlayClickAnimation();
         bool added = MatchBoard.instance.AddTile(gameObject);
 

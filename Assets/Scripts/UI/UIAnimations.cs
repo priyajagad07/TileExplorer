@@ -24,6 +24,9 @@ public class UIAnimations : MonoBehaviour
     [SerializeField] private float rotateAmount = 2f;
     [SerializeField] private float rotateDuration = 1.5f;
 
+    [SerializeField]
+    private float introDelay = 0f;
+
     private Vector2 startPos;
 
     private void Start()
@@ -39,8 +42,11 @@ public class UIAnimations : MonoBehaviour
 
             target
                 .DOScale(1f, 0.6f)
+                .SetDelay(introDelay)
                 .SetEase(Ease.OutBack)
+                .SetUpdate(true)
                 .OnComplete(StartAnimations);
+
         }
         else
         {
@@ -55,7 +61,8 @@ public class UIAnimations : MonoBehaviour
             target
                 .DOAnchorPosY(startPos.y + floatAmount, floatDuration)
                 .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo);
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetUpdate(true);
         }
 
         if (breathing)
@@ -64,7 +71,8 @@ public class UIAnimations : MonoBehaviour
             target
                 .DOScale(breatheScale, breatheDuration)
                 .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo);
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetUpdate(true);
         }
 
         if (rotating)
@@ -75,7 +83,10 @@ public class UIAnimations : MonoBehaviour
                     rotateDuration
                 )
                 .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo);
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetUpdate(true);
         }
+
+
     }
 }

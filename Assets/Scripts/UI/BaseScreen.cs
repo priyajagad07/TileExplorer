@@ -42,6 +42,7 @@ public class BaseScreen : MonoBehaviour
 
     public void Show()
     {
+        Debug.Log("SHOW SCREEN: " + gameObject.name);
         canvas.enabled = true;
 
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
@@ -56,14 +57,17 @@ public class BaseScreen : MonoBehaviour
 
         if (gameObject.name == "GamePlay")
         {
+            Debug.Log("GAMEPLAY SHOW CALLED");
+
             DOVirtual.DelayedCall(
                 0.35f,
                 () =>
                 {
+                    Debug.Log("PLAYING SPAWN");
+
                     if (BoardSpawner.instance != null)
                     {
-                        BoardSpawner.instance
-                            .PlaySpawnAnimation();
+                        BoardSpawner.instance.PlaySpawnAnimation();
                     }
                 }
             );

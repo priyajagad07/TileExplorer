@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class BoosterManager : MonoBehaviour
 {
@@ -10,9 +11,9 @@ public class BoosterManager : MonoBehaviour
     public int shuffleCount;
     public int magicCount;
 
-    [SerializeField] private TextMeshProUGUI undoText;
-    [SerializeField] private TextMeshProUGUI shuffleText;
-    [SerializeField] private TextMeshProUGUI magicText;
+    [SerializeField] private List<TextMeshProUGUI> undoText;
+    [SerializeField] private List<TextMeshProUGUI> shuffleText;
+    [SerializeField] private List<TextMeshProUGUI> magicText;
 
     [SerializeField] private GameObject insuffientCoinUndo;
     [SerializeField] private GameObject insuffientCoinsShuffle;
@@ -112,6 +113,7 @@ public class BoosterManager : MonoBehaviour
             Debug.Log("Not Enough Coins");
         }
     }
+
     public void BuyShuffle()
     {
         Debug.Log("Buy Shuffle Clicked");
@@ -158,9 +160,21 @@ public class BoosterManager : MonoBehaviour
 
     void UpdateUI()
     {
-        undoText.text = undoCount.ToString();
-        shuffleText.text = shuffleCount.ToString();
-        magicText.text = magicCount.ToString();
+        foreach (TextMeshProUGUI undo in undoText)
+        {
+            undo.text = undoCount.ToString();
+        }
+
+        foreach (TextMeshProUGUI shuffle in shuffleText)
+        {
+            shuffle.text = shuffleCount.ToString();
+        }
+
+        foreach (TextMeshProUGUI magic in magicText)
+        {
+            magic.text = magicCount.ToString();
+        }
+
     }
 
     void ShowMessage(GameObject messageObject)
@@ -195,15 +209,35 @@ public class BoosterManager : MonoBehaviour
         });
     }
 
-    public void AddBoosters(
-    int undo,
-    int shuffle,
-    int magic
-)
+    public void AddBoosters(int undo, int shuffle, int magic)
     {
         undoCount += undo;
         shuffleCount += shuffle;
         magicCount += magic;
+
+        SaveBoosters();
+        UpdateUI();
+    }
+
+    public void AddUndo(int amount)
+    {
+        undoCount += amount;
+
+        SaveBoosters();
+        UpdateUI();
+    }
+
+    public void AddShuffle(int amount)
+    {
+        shuffleCount += amount;
+
+        SaveBoosters();
+        UpdateUI();
+    }
+
+    public void AddMagic(int amount)
+    {
+        magicCount += amount;
 
         SaveBoosters();
         UpdateUI();

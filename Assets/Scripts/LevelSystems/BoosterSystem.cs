@@ -29,16 +29,30 @@ public class BoosterSystem : MonoBehaviour
 
     public bool UndoMove()
     {
+        Debug.Log("Undo Stack Count = " + undoStack.Count);
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
 
         while (undoStack.Count > 0)
         {
             UndoData data = undoStack.Pop();
 
+            Debug.Log("Checking tile = " + data.tile);
+
             if (data.tile == null)
+            {
+                Debug.Log("Tile destroyed, skipping");
                 continue;
+            }
+            Debug.Log("Undoing tile = " + data.tile.name);
+
+            if (!MatchBoard.instance.GetPlacedTiles().Contains(data.tile))
+            {
+                Debug.Log("Tile already undone, skipping");
+                continue;
+            }
 
             MatchBoard.instance.RemoveTile(data.tile);
+            Debug.Log("Placed Tiles After Remove = " + MatchBoard.instance.GetPlacedTiles().Count);
 
             data.tile.transform.SetParent(data.originalParent);
             data.tile.transform.SetSiblingIndex(data.siblingIndex);

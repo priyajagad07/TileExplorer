@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: SwedenData
+  m_EditorClassIdentifier: Assembly-CSharp::CountryData
+  countryName: Sweden
+  startLevel: 21
+  endLevel: 40
+  backgrounds:
+  - {fileID: 3950825841425331367, guid: e5b75b9cf36c54919af469b68bae83f5, type: 3}
+  - {fileID: -4054322043456685153, guid: ffbb2f72b103e40b296c72ed1a9b3fc5, type: 3}
+  - {fileID: -8435089255142549518, guid: ac01e1f9e13044ddfbd65bd2602948e1, type: 3}
+  - {fileID: 3664004311922911772, guid: 96ff3c78564ec49498080c5ffb7d2326, type: 3}
+  - {fileID: 659120307662830007, guid: efd651f42d1c34a89877af5ed49c9992, type: 3}
+  - {fileID: -8469394750272446038, guid: 080727e51827844d8aec09b38bae283b, type: 3}
+  previewCards:
+  - {fileID: 3950825841425331367, guid: e5b75b9cf36c54919af469b68bae83f5, type: 3}
+  - {fileID: -4054322043456685153, guid: ffbb2f72b103e40b296c72ed1a9b3fc5, type: 3}
+  - {fileID: -8435089255142549518, guid: ac01e1f9e13044ddfbd65bd2602948e1, type: 3}
+  - {fileID: 3664004311922911772, guid: 96ff3c78564ec49498080c5ffb7d2326, type: 3}
+  - {fileID: 659120307662830007, guid: efd651f42d1c34a89877af5ed49c9992, type: 3}
+  - {fileID: -8469394750272446038, guid: 080727e51827844d8aec09b38bae283b, type: 3}
+  destinations:
+  - destinationName: Stockholm Waterfront
+    description: Historic buildings overlook sparkling harbor waters. Elegant bridges
+      connect the city's many islands. Boats glide peacefully through scenic waterways.
+      Colorful facades brighten the waterfront skyline. A blend of history and modern
+      life thrives here.
+    background: {fileID: 3950825841425331367, guid: e5b75b9cf36c54919af469b68bae83f5, type: 3}
+  - destinationName: Swedish Red Cottage
+    description: Classic red cottages rest among green meadows. Wildflowers bloom
+      beside peaceful country lanes. Wooden fences frame the charming countryside.
+      Quiet forests surround the cozy landscape. Simple beauty defines this Swedish
+      retreat.
+    background: {fileID: -4054322043456685153, guid: ffbb2f72b103e40b296c72ed1a9b3fc5, type: 3}
+  - destinationName: Swedish Forest Lake
+    description: 'Calm waters reflect towering pine forests. Wooden docks extend
+      into crystal-clear lakes. Nature remains untouched and wonderfully peaceful.
+      Birdsong echoes through the surrounding woods. Serenity fills every corner
+      of the landscape. '
+    background: {fileID: -8435089255142549518, guid: ac01e1f9e13044ddfbd65bd2602948e1, type: 3}
+  - destinationName: Visby Old Town
+    description: Medieval stone walls protect historic cobblestone streets. Colorful
+      houses decorate charming narrow lanes. Ancient architecture reveals centuries
+      of history. Flower-filled courtyards add warmth and beauty. The past comes
+      alive within these walls.
+    background: {fileID: 3664004311922911772, guid: 96ff3c78564ec49498080c5ffb7d2326, type: 3}
+  - destinationName: Swedish Castle Grounds
+    description: Grand castles rise above beautifully landscaped gardens. Elegant
+      pathways weave through historic grounds. Fountains and sculptures decorate
+      peaceful courtyards. Towering trees provide shade along scenic walks. Royal
+      history surrounds every view.
+    background: {fileID: 659120307662830007, guid: efd651f42d1c34a89877af5ed49c9992, type: 3}
+  - destinationName: Swedish Archipelago
+    description: Thousands of islands scatter across sparkling waters. Rocky coastlines
+      meet peaceful seaside villages. Boats travel between picturesque island communities.
+      Sea breezes refresh the coastal landscape. Natural beauty stretches beyond
+      the horizon.
+    background: {fileID: -8469394750272446038, guid: 080727e51827844d8aec09b38bae283b, type: 3}

@@ -12,6 +12,7 @@ public class UIScreenAnimation : MonoBehaviour
     public float duration = 0.35f;
 
     private Vector3 originalPosition;
+    
 
     void Awake()
     {

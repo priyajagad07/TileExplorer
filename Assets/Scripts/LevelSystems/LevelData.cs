@@ -20,5 +20,4 @@ public class LevelData : ScriptableObject
 
     public List<ShapeData> layers =
         new List<ShapeData>();
-
 }

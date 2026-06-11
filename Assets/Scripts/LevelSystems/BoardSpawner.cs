@@ -106,7 +106,7 @@ public class BoardSpawner : MonoBehaviour
         }
     }
 
-    public void PlaySpawnAnimation()
+    public void PlaySpawnAnimation(bool playSound = true)
     {
         Tile[] allTiles = tileParent.GetComponentsInChildren<Tile>();
         int highestLayer = GetHighestLayer(allTiles);
@@ -138,10 +138,13 @@ public class BoardSpawner : MonoBehaviour
                 .ThenBy(t => t.GetComponent<RectTransform>().anchoredPosition.x)
                 .ToList();
 
-            masterSequence.InsertCallback(currentTime, () =>
+            if (playSound)
+            {
+                masterSequence.InsertCallback(currentTime, () =>
             {
                 SoundManager.instance.PlaySound(SoundName.TileSpawn);
             });
+            }
 
             for (int i = 0; i < layerTiles.Count; i++)
             {
@@ -175,8 +178,10 @@ public class BoardSpawner : MonoBehaviour
 
                         tileSeq.InsertCallback(dropDuration, () =>
                         {
-                            Debug.Log("Glow sound callback fired");
-                            SoundManager.instance.PlaySound(SoundName.TileSpawnFinish);
+                            if (playSound)
+                            {
+                                SoundManager.instance.PlaySound(SoundName.TileSpawnFinish);
+                            }
                         });
                     }
 
@@ -213,7 +218,6 @@ public class BoardSpawner : MonoBehaviour
 
         masterSequence.Play();
     }
-
 
     int GetHighestLayer(Tile[] tiles)
     {

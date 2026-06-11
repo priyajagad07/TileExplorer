@@ -18,9 +18,12 @@ public class MatchBoardBooster : MonoBehaviour
             return;
         }
 
-        BoosterManager.instance.UseUndo();
-
         bool success = BoosterSystem.instance.UndoMove();
+
+        if (success)
+        {
+            BoosterManager.instance.UseUndo();
+        }
 
         if (!success)
         {

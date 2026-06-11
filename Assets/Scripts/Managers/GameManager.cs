@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ParticleSystem leftConfetti;
     [SerializeField] private ParticleSystem rightConfetti;
     private bool levelCompleted = false;
+    [SerializeField]
+    private UIAnimations birdAnimation;
 
     void Awake()
     {
@@ -40,13 +42,12 @@ public class GameManager : MonoBehaviour
         rewardClaimed = false;
         claimButton.interactable = true;
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
+
+        DailyStreakManager.instance.OnLevelCompleted();
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
+        LevelManager.instance.UpdateNextButtonText();
 
-        leftConfetti.Stop();
-        leftConfetti.Play();
-
-        rightConfetti.Play();
-        rightConfetti.Play();
+        PlayConfetti();
 
         Debug.Log("Level Completed");
     }
@@ -66,7 +67,6 @@ public class GameManager : MonoBehaviour
         int currentLevel = PlayerPrefs.GetInt("Level", 0);
 
         LevelManager.instance.LoadLevel(currentLevel);
-
         UIManager.Instance.HidePopup(ScreenType.GameOver);
         UIManager.Instance.Show(ScreenType.GamePlay);
     }
@@ -77,30 +77,73 @@ public class GameManager : MonoBehaviour
         levelTextHomeScreen.text = "Level " + (levelIndex + 1);
     }
 
+    private void CompleteLevelReward(int coinAmount)
+    {
+        SoundManager.instance.PlaySound(SoundName.CoinReach);
+        CoinManager.instance.AddCoins(coinAmount);
+
+        if (DailyStreakManager.instance.ShouldShowRewardPopup())
+        {
+            UIManager.Instance.Show(ScreenType.DailyStreakScreen);
+            DOVirtual.DelayedCall(0.1f, () =>
+                {
+                    DailyStreakUI.instance.OpenDailyReward();
+                }
+            );
+        }
+        else
+        {
+            DailyStreakManager.instance.ClearPendingReward();
+            if (BackgroundManager.Instance.IsNextDestinationUnlock())
+            {
+                int nextDestination =
+                    BackgroundManager.Instance
+                        .GetNextDestinationIndex();
+
+                MapScreenUI.DestinationUnlocker
+                    .SetPending(nextDestination);
+
+                UIManager.Instance.Show(
+     ScreenType.MapScreen
+ );
+
+                DOVirtual.DelayedCall(
+                    0.2f,
+                    () =>
+                    {
+                        MapScreenUI.instance
+                            .PlayPendingUnlock();
+                    }
+                );
+
+                MapScreenUI.instance
+                    .PlayPendingUnlock();
+            }
+            else
+            {
+                LevelManager.instance.NextLevel(false);
+            }
+        }
+    }
+
     public void ClaimReward()
     {
         if (rewardClaimed)
             return;
 
         rewardClaimed = true;
-
         claimButton.interactable = false;
 
         SoundManager.instance.PlaySound(SoundName.Coins);
-
         if (LevelManager.instance.nextLevelParticles != null)
         {
             LevelManager.instance.nextLevelParticles.Play();
         }
 
-        DOVirtual.DelayedCall(
-            1.1f,
-            () =>
-            {
-                CoinManager.instance.AddCoins(200);
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                LevelManager.instance.NextLevel(false);
-            }
+        DOVirtual.DelayedCall(1.1f, () =>
+        {
+            CompleteLevelReward(200);
+        }
         );
     }
 
@@ -112,20 +155,15 @@ public class GameManager : MonoBehaviour
         rewardClaimed = true;
 
         SoundManager.instance.PlaySound(SoundName.Coins);
-
         if (LevelManager.instance.nextLevelParticles != null)
         {
             LevelManager.instance.nextLevelParticles.Play();
         }
 
-        DOVirtual.DelayedCall(
-            1.1f,
-            () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                CoinManager.instance.AddCoins(100);
-                LevelManager.instance.NextLevel(false);
-            }
+        DOVirtual.DelayedCall(1.1f, () =>
+        {
+            CompleteLevelReward(100);
+        }
         );
     }
 
@@ -133,5 +171,14 @@ public class GameManager : MonoBehaviour
     {
         levelCompleted = false;
         rewardClaimed = false;
+    }
+
+    void PlayConfetti()
+    {
+        leftConfetti.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        rightConfetti.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        leftConfetti.Play();
+        rightConfetti.Play();
     }
 }

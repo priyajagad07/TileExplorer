@@ -14,4 +14,5 @@ public enum ScreenType
     BuyUndoScreen,
     BuyShuffleScreen,
     BuyMagicScreen,
+    CountryInfoScreen,
 }

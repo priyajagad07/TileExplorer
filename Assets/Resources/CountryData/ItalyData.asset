@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: ItalyData
+  m_EditorClassIdentifier: Assembly-CSharp::CountryData
+  countryName: Italy
+  startLevel: 71
+  endLevel: 110
+  backgrounds:
+  - {fileID: -6113576447126754275, guid: 8ad7bda90523e4afd93312b69ea83500, type: 3}
+  - {fileID: 1797328812940283345, guid: 0abd8ae03b0624427b9dc20d07c29b83, type: 3}
+  - {fileID: 8042318672532992584, guid: ebacfe74ffdf04665adfec2b389bb2f5, type: 3}
+  - {fileID: -2526035510480981500, guid: 60d658e968eab47fe9b1b62d43df0b96, type: 3}
+  - {fileID: -4661922296809479161, guid: f588035e2914a4a9d8d14bbe2185eaea, type: 3}
+  - {fileID: -163715399050752621, guid: 2718a3a12056d49e094696f9c96a151e, type: 3}
+  previewCards:
+  - {fileID: -6113576447126754275, guid: 8ad7bda90523e4afd93312b69ea83500, type: 3}
+  - {fileID: 1797328812940283345, guid: 0abd8ae03b0624427b9dc20d07c29b83, type: 3}
+  - {fileID: 8042318672532992584, guid: ebacfe74ffdf04665adfec2b389bb2f5, type: 3}
+  - {fileID: -2526035510480981500, guid: 60d658e968eab47fe9b1b62d43df0b96, type: 3}
+  - {fileID: -4661922296809479161, guid: f588035e2914a4a9d8d14bbe2185eaea, type: 3}
+  - {fileID: -163715399050752621, guid: 2718a3a12056d49e094696f9c96a151e, type: 3}
+  destinations:
+  - destinationName: Tuscany Countryside
+    description: Rolling hills unfold beneath warm golden sunlight. Vineyards and
+      olive groves cover the landscape. Stone farmhouses rest among scenic fields.
+      Peaceful roads wind through timeless countryside. Rustic beauty defines the
+      region.
+    background: {fileID: -6113576447126754275, guid: 8ad7bda90523e4afd93312b69ea83500, type: 3}
+  - destinationName: Venice Canal
+    description: 'Historic buildings rise beside tranquil waterways
+
+      Gondolas
+      glide gracefully through narrow canals
+
+      Elegant bridges connect charming
+      neighborhoods Reflections dance across the water''s surface A uniquely romantic
+      atmosphere fills the city'
+    background: {fileID: 1797328812940283345, guid: 0abd8ae03b0624427b9dc20d07c29b83, type: 3}
+  - destinationName: Lake Como
+    description: Crystal-clear waters reflect surrounding mountains Elegant villas
+      line the scenic shoreline Gardens bloom beside peaceful lakeside paths Boats
+      drift across calm blue waters Natural beauty and luxury coexist here.
+    background: {fileID: 8042318672532992584, guid: ebacfe74ffdf04665adfec2b389bb2f5, type: 3}
+  - destinationName: Amalfi Coast
+    description: 'Colorful villages cling to dramatic cliffsides
+
+      Turquoise
+      waters sparkle beneath sunny skies Winding roads reveal breathtaking coastal
+      views Flower-filled terraces overlook the sea Mediterranean beauty surrounds
+      every corner'
+    background: {fileID: -2526035510480981500, guid: 60d658e968eab47fe9b1b62d43df0b96, type: 3}
+  - destinationName: Roman Garden
+    description: Historic ruins blend with elegant landscaped grounds Ancient pathways
+      reveal stories of the past Fountains and sculptures decorate peaceful gardens
+      Towering cypress trees frame scenic views History and nature meet in harmony.
+    background: {fileID: -4661922296809479161, guid: f588035e2914a4a9d8d14bbe2185eaea, type: 3}
+  - destinationName: Dolomites Valley
+    description: Jagged mountain peaks dominate the skyline Green valleys stretch
+      beneath towering cliffs Alpine meadows bloom with seasonal flowers Fresh mountain
+      air fills every trail Adventure and beauty thrive together.
+    background: {fileID: -163715399050752621, guid: 2718a3a12056d49e094696f9c96a151e, type: 3}

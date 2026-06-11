@@ -4,6 +4,7 @@ using Coffee.UIExtensions;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private LevelDatabase levelDatabase;
     [SerializeField] private float nextLevelParticleDuration = 1.2f;
+    public bool shouldPlaySpawnAnimation;
+    public bool loadLevelSilently = false;
+    [SerializeField]
+    private TMP_Text nextLevelText;
 
     void Awake()
     {
@@ -36,7 +41,20 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel(int index)
     {
+        Debug.Log("LOAD LEVEL CALLED");
+
         currentLevelIndex = index;
+
+        CountryData country = CountryManager.Instance.GetCountryForLevel(index + 1);
+
+        if (country != null)
+        {
+            BackgroundManager.Instance
+     .UpdateBackgrounds(
+         country,
+         index + 1
+     );
+        }
 
         // HANDMADE LEVELS
         if (index < levelDatabase.levels.Count)
@@ -83,6 +101,8 @@ public class LevelManager : MonoBehaviour
 
     public void NextLevel(bool playParticle = true)
     {
+        Debug.Log("NEXT LEVEL CALLED");
+
         if (isLoadingNextLevel)
             return;
 
@@ -115,19 +135,38 @@ public class LevelManager : MonoBehaviour
 
         LoadLevel(currentLevelIndex);
 
-        DOVirtual.DelayedCall(0.1f, () =>
+        if (!loadLevelSilently)
         {
-            if (BoardSpawner.instance != null)
-            {
-                BoardSpawner.instance.PlaySpawnAnimation();
-            }
+            DOVirtual.DelayedCall(
+                0.1f,
+                () =>
+                {
+                    if (BoardSpawner.instance != null)
+                    {
+                        BoardSpawner.instance.PlaySpawnAnimation();
+                    }
+                }
+            );
         }
-);
+
+        loadLevelSilently = false;
 
         GameManager.instance.ResetLevelState();
 
         nextLevelButton.interactable = true;
 
         isLoadingNextLevel = false;
+    }
+
+    public void UpdateNextButtonText()
+    {
+        bool unlockingDestination =
+            BackgroundManager.Instance
+                .IsNextDestinationUnlock();
+
+        nextLevelText.text =
+            unlockingDestination
+            ? "Next Destination"
+            : "Next Level";
     }
 }
