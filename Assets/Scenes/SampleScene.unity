@@ -908,6 +908,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &31890231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4017,6 +4018,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &106299218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4165,6 +4167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &109708501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4313,6 +4316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &110697957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10453,6 +10457,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &367016967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10676,6 +10681,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &369351985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11118,8 +11124,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CountryInfoScreen
   titleText: {fileID: 980114517}
   descriptionText: {fileID: 1903785260}
+  backButton: {fileID: 2011986496}
+  titleTextRect: {fileID: 980114516}
+  continueButton: {fileID: 1944100682}
   openedFromUnlock: 0
-  contentPanel: {fileID: 380436639}
 --- !u!1 &389204036
 GameObject:
   m_ObjectHideFlags: 0
@@ -11593,7 +11601,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 404676812}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -12414,6 +12422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &444047617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14037,6 +14046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &503100802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14335,6 +14345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &509757025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14661,6 +14672,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &521717542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15914,6 +15926,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &577948512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16003,6 +16016,7 @@ RectTransform:
   - {fileID: 924965975}
   - {fileID: 59912242}
   - {fileID: 1470129050}
+  - {fileID: 1023724494}
   m_Father: {fileID: 1405746443}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -16383,6 +16397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &597020857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16907,6 +16922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &605448768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18195,6 +18211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &645147167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18817,6 +18834,18 @@ MonoBehaviour:
       - m_Target: {fileID: 668732265}
         m_TargetAssemblyTypeName: UIScreenButton, Assembly-CSharp
         m_MethodName: ClosePopup
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 681901727}
+        m_TargetAssemblyTypeName: AvatarManager, Assembly-CSharp
+        m_MethodName: ConfirmAvatar
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -19850,6 +19879,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!1 &731817823
 GameObject:
   m_ObjectHideFlags: 0
@@ -21353,6 +21383,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!1 &813415281
 GameObject:
   m_ObjectHideFlags: 0
@@ -22373,6 +22404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &861783112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24188,6 +24220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &950128605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24726,6 +24759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!1 &979078278
 GameObject:
   m_ObjectHideFlags: 0
@@ -24826,6 +24860,7 @@ GameObject:
   - component: {fileID: 980114516}
   - component: {fileID: 980114518}
   - component: {fileID: 980114517}
+  - component: {fileID: 980114519}
   m_Layer: 5
   m_Name: Title - Text
   m_TagString: Untagged
@@ -24952,6 +24987,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 980114515}
   m_CullTransparentMesh: 1
+--- !u!225 &980114519
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980114515}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &980927159
 GameObject:
   m_ObjectHideFlags: 0
@@ -25100,6 +25147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!1 &986494239
 GameObject:
   m_ObjectHideFlags: 0
@@ -25311,6 +25359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &988498211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25598,6 +25647,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &995080113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25882,6 +25932,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!1 &1002222201
 GameObject:
   m_ObjectHideFlags: 0
@@ -26664,6 +26715,82 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022956531}
+  m_CullTransparentMesh: 1
+--- !u!1 &1023724493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1023724494}
+  - component: {fileID: 1023724496}
+  - component: {fileID: 1023724495}
+  m_Layer: 5
+  m_Name: PopupMessage - Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1023724494
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023724493}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1785329636}
+  m_Father: {fileID: 578843929}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.16982758, y: 0.45639712}
+  m_AnchorMax: {x: 0.8301724, y: 0.5436029}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1023724495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023724493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.49803922, g: 0.2705882, b: 0.07450981, a: 0.9490196}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 099aedae9fa8a684899326e620b4aa89, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1023724496
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023724493}
   m_CullTransparentMesh: 1
 --- !u!198 &1027624136 stripped
 ParticleSystem:
@@ -29002,6 +29129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1123189071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29901,7 +30029,7 @@ MonoBehaviour:
     isPopup: 1
   - screenType: 14
     screen: {fileID: 380436640}
-    isPopup: 1
+    isPopup: 0
   startScreenType: 0
 --- !u!1 &1162802634
 GameObject:
@@ -31521,6 +31649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1214130073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32710,6 +32839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1258291505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35644,6 +35774,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1372466368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36660,7 +36791,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1405746438}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -36688,9 +36819,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 445959230}
   - {fileID: 2109487753}
   - {fileID: 578843929}
-  - {fileID: 445959230}
   m_Father: {fileID: 1161221562}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -36711,7 +36842,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapScreenUI
   cardZoomTarget: {fileID: 445959230}
-  mapCanvasGroup: {fileID: 1405746445}
+  lockedMessagePopup: {fileID: 1023724493}
 --- !u!225 &1405746445
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -36816,6 +36947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1409708168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37083,6 +37215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1412926026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37231,6 +37364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1427010339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37810,6 +37944,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1465050646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37993,6 +38128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1471653720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38292,6 +38428,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1477858785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38807,6 +38944,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1505619386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40125,7 +40263,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 586780d2759214e29bfa77d21fe098e6, type: 3}
   m_Type: 0
-  m_PreserveAspect: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -42661,6 +42799,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1676939204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44630,6 +44769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1736132078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45811,6 +45951,143 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1777159821}
+  m_CullTransparentMesh: 1
+--- !u!1 &1785329635
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1785329636}
+  - component: {fileID: 1785329638}
+  - component: {fileID: 1785329637}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1785329636
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785329635}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1023724494}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: -0.010509373, y: 0.2530515}
+  m_AnchorMax: {x: 1.0105093, y: 0.74694854}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1785329637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785329635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: "Play more levels to unlock \nthis destination!"
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 57b68656d78574e628d07c2b99d2e512, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 57b68656d78574e628d07c2b99d2e512, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 41.3
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1785329638
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785329635}
   m_CullTransparentMesh: 1
 --- !u!1 &1785859070
 GameObject:
@@ -48523,6 +48800,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!1 &1899383978
 GameObject:
   m_ObjectHideFlags: 0
@@ -48585,6 +48863,7 @@ GameObject:
   - component: {fileID: 1903785259}
   - component: {fileID: 1903785261}
   - component: {fileID: 1903785260}
+  - component: {fileID: 1903785262}
   m_Layer: 5
   m_Name: Description - Text
   m_TagString: Untagged
@@ -48606,10 +48885,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1906552998}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 477.7676}
-  m_SizeDelta: {x: 926.2513, y: 600.4648}
+  m_AnchorMin: {x: 0.07117996, y: 0.60873073}
+  m_AnchorMax: {x: 0.92882, y: 0.97648305}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1903785260
 MonoBehaviour:
@@ -48712,6 +48991,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1903785258}
   m_CullTransparentMesh: 1
+--- !u!225 &1903785262
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903785258}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1906552997
 GameObject:
   m_ObjectHideFlags: 0
@@ -49680,6 +49971,7 @@ GameObject:
   - component: {fileID: 1944100685}
   - component: {fileID: 1944100684}
   - component: {fileID: 1944100683}
+  - component: {fileID: 1944100686}
   m_Layer: 5
   m_Name: Continue -  Button
   m_TagString: Untagged
@@ -49801,6 +50093,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1944100681}
   m_CullTransparentMesh: 1
+--- !u!225 &1944100686
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944100681}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1944720822
 GameObject:
   m_ObjectHideFlags: 0
@@ -50304,6 +50608,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1949740678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50728,6 +51033,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1965779791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50876,6 +51182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &1966105760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51684,6 +51991,7 @@ GameObject:
   - component: {fileID: 2011986499}
   - component: {fileID: 2011986498}
   - component: {fileID: 2011986497}
+  - component: {fileID: 2011986501}
   m_Layer: 5
   m_Name: Back - Button
   m_TagString: Untagged
@@ -51818,6 +52126,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2011986495}
   m_CullTransparentMesh: 1
+--- !u!225 &2011986501
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011986495}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2016665999
 GameObject:
   m_ObjectHideFlags: 0
@@ -53323,6 +53643,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &2071383107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53527,6 +53848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!1 &2077197340
 GameObject:
   m_ObjectHideFlags: 0
@@ -54140,7 +54462,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: fe272de41c4f54d3cbd2be3b704c4f68, type: 3}
   m_Type: 0
-  m_PreserveAspect: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -54543,6 +54865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &2111629876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55064,6 +55387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &2120842893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55212,6 +55536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestinationCard
   country: {fileID: 0}
   destinationIndex: 0
+  lockedMessagePopup: {fileID: 0}
 --- !u!114 &2122743483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55882,7 +56207,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Priya
+  m_text: Yudiz
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 57b68656d78574e628d07c2b99d2e512, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 57b68656d78574e628d07c2b99d2e512, type: 2}

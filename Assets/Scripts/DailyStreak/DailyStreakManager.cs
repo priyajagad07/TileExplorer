@@ -128,6 +128,7 @@ public class DailyStreakManager : MonoBehaviour
             LevelManager.instance.NextLevel(false);
         }
 
+        UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
         UIManager.Instance.Show(
             ScreenType.HomeScreen
         );

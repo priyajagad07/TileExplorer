@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using Solo.MOST_IN_ONE;
 
 public partial class DailyStreakUI
 {
@@ -7,6 +8,9 @@ public partial class DailyStreakUI
         string reward
     )
     {
+        SoundManager.instance.PlayHaptic(
+    MOST_HapticFeedback.HapticTypes.Success
+);
         SoundManager.instance.PlaySound(
             SoundName.RewardPop
         );

@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Solo.MOST_IN_ONE;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        SoundManager.instance.PlayHaptic(
+    MOST_HapticFeedback.HapticTypes.Warning
+);
         SoundManager.instance.PlaySound(SoundName.GameOver);
         UIManager.Instance.ShowPopup(ScreenType.GameOver);
         Debug.Log("Game Over");
@@ -41,6 +45,9 @@ public class GameManager : MonoBehaviour
 
         rewardClaimed = false;
         claimButton.interactable = true;
+        SoundManager.instance.PlayHaptic(
+    MOST_HapticFeedback.HapticTypes.Success
+);
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
 
         DailyStreakManager.instance.OnLevelCompleted();
@@ -103,6 +110,10 @@ public class GameManager : MonoBehaviour
                 MapScreenUI.DestinationUnlocker
                     .SetPending(nextDestination);
 
+                UIManager.Instance.HidePopup(
+    ScreenType.LevelCompleted
+);
+
                 UIManager.Instance.Show(
      ScreenType.MapScreen
  );
@@ -116,8 +127,6 @@ public class GameManager : MonoBehaviour
                     }
                 );
 
-                MapScreenUI.instance
-                    .PlayPendingUnlock();
             }
             else
             {
@@ -139,6 +148,9 @@ public class GameManager : MonoBehaviour
         {
             LevelManager.instance.nextLevelParticles.Play();
         }
+        SoundManager.instance.PlayHaptic(
+    MOST_HapticFeedback.HapticTypes.Success
+);
 
         DOVirtual.DelayedCall(1.1f, () =>
         {
@@ -159,7 +171,9 @@ public class GameManager : MonoBehaviour
         {
             LevelManager.instance.nextLevelParticles.Play();
         }
-
+SoundManager.instance.PlayHaptic(
+    MOST_HapticFeedback.HapticTypes.Success
+);
         DOVirtual.DelayedCall(1.1f, () =>
         {
             CompleteLevelReward(100);

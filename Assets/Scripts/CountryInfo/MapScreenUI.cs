@@ -1,14 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
+using Solo.MOST_IN_ONE;
 
 public class MapScreenUI : MonoBehaviour
 {
     public static MapScreenUI instance;
-    [SerializeField]
-    private Transform cardZoomTarget;
 
     [SerializeField]
-    private CanvasGroup mapCanvasGroup;
+    private RectTransform cardZoomTarget;
+    [SerializeField]
+    private GameObject lockedMessagePopup;
 
     void Awake()
     {
@@ -77,66 +79,77 @@ public class MapScreenUI : MonoBehaviour
         if (card == null)
             return;
 
+        Transform cityImage =
+            card.Find("City - Image");
+
+        if (cityImage == null)
+            return;
+
+        Image image =
+            cityImage.GetComponent<Image>();
+
+        if (image == null)
+            return;
+
         Vector3 originalPos =
-            card.position;
+            cityImage.position;
 
         Vector3 originalScale =
-            card.localScale;
+            cityImage.localScale;
 
         Sequence seq =
             DOTween.Sequence();
 
-        // 1. Tiny unlock shake
+
+        SoundManager.instance.PlayHaptic(
+    MOST_HapticFeedback.HapticTypes.Success
+);
+
+        // Step 1: Small shake
         seq.Append(
-            card.DOShakeRotation(
-                0.2f,
+            cityImage.DOShakeRotation(
+                0.5f,
                 8f,
-                8
+                10
             )
         );
 
-        // 2. Reveal destination image
+        // Step 2: Reveal destination image
         seq.AppendCallback(() =>
         {
-            MapManager.instance
-                ?.RefreshMap();
+            image.sprite =
+                country.previewCards[pending];
         });
 
-        // 3. Move card to center
+        // Step 3: Small pause so player notices reveal
+        seq.AppendInterval(0.3f);
+
+        // Step 4: Move image to center
         seq.Append(
-            card.DOMove(
+            cityImage.DOMove(
                 cardZoomTarget.position,
-                0.45f
+                0.75f
             )
-            .SetEase(Ease.OutCubic)
-        );
-
-        // 4. Fade map
-        seq.Join(
-            mapCanvasGroup.DOFade(
-                0f,
-                0.4f
+            .SetEase(
+                Ease.OutCubic
             )
         );
 
-        // 5. Big zoom
+        // Step 5: Zoom image
         seq.Append(
-            card.DOScale(
-                2.5f,
-                0.35f
+            cityImage.DOScale(
+                3f,
+                0.75f
             )
-            .SetEase(Ease.OutBack)
+            .SetEase(
+                Ease.OutBack
+            )
         );
 
-        // 6. Open destination screen
+        // Step 6: Open info screen
         seq.AppendCallback(() =>
         {
             DestinationUnlocker.Clear();
-
-            CountryInfoScreen.instance
-                .ShowDestination(
-                    country.destinations[pending]
-                );
 
             CountryInfoScreen.instance
                 .openedFromUnlock = true;
@@ -145,14 +158,55 @@ public class MapScreenUI : MonoBehaviour
                 ScreenType.CountryInfoScreen
             );
 
-            // Reset card
-            card.position =
+            DOVirtual.DelayedCall(
+                0.05f,
+                () =>
+                {
+                    CountryInfoScreen.instance
+                        .ShowDestination(
+                            country.destinations[pending]
+                        );
+                }
+            );
+
+            MapManager.instance
+                ?.RefreshMap();
+
+            cityImage.position =
                 originalPos;
 
-            card.localScale =
+            cityImage.localScale =
                 originalScale;
+        });
+    }
 
-            mapCanvasGroup.alpha = 1f;
+    public void ShowLockedMessage()
+    {
+        lockedMessagePopup.SetActive(true);
+
+        lockedMessagePopup.transform.localScale =
+            Vector3.zero;
+
+        Sequence seq =
+            DOTween.Sequence();
+
+        seq.Append(
+            lockedMessagePopup.transform
+                .DOScale(1f, 0.25f)
+                .SetEase(Ease.OutBack)
+        );
+
+        seq.AppendInterval(1.2f);
+
+        seq.Append(
+            lockedMessagePopup.transform
+                .DOScale(0f, 0.2f)
+                .SetEase(Ease.InBack)
+        );
+
+        seq.OnComplete(() =>
+        {
+            lockedMessagePopup.SetActive(false);
         });
     }
 }

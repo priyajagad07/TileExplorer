@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Solo.MOST_IN_ONE;
 
 public class AvatarManager : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class AvatarManager : MonoBehaviour
 
     public void SelectAvatar(int index)
     {
+        SoundManager.instance.PlayHaptic(
+       MOST_HapticFeedback.HapticTypes.LightImpact
+                );
         selectedAvatar = index;
         avatarPreview.sprite = avatars[index].iconImage.sprite;
 
@@ -33,7 +37,7 @@ public class AvatarManager : MonoBehaviour
     }
 
     public void ConfirmAvatar()
-    {   
+    {
         PlayerPrefs.SetInt("Avatar", selectedAvatar);
         PlayerPrefs.SetString("PlayerName", nameInput.text);
 

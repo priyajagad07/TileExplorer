@@ -105,7 +105,13 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             RefreshVisual();
             RefreshAllTiles();
 
-            SoundManager.instance.PlaySound(SoundName.TileClick);
+            SoundManager.instance.PlayHaptic(
+                MOST_HapticFeedback.HapticTypes.LightImpact
+            );
+
+            SoundManager.instance.PlaySound(
+                SoundName.TileClick
+            );
         }
     }
 

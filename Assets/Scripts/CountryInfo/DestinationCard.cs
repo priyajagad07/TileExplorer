@@ -6,14 +6,14 @@ public class DestinationCard : MonoBehaviour
     public CountryData country;
     public int destinationIndex;
     private bool isUnlocked;
-
+    [SerializeField]
+private GameObject lockedMessagePopup;
     public void OnClick()
     {
         if (!isUnlocked)
         {
-            Debug.Log(
-                "Play more levels to unlock this destination"
-            );
+            MapScreenUI.instance
+        .ShowLockedMessage();
             return;
         }
 
@@ -61,4 +61,5 @@ public class DestinationCard : MonoBehaviour
     {
         isUnlocked = unlocked;
     }
+    
 }
