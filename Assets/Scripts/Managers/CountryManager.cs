@@ -30,4 +30,24 @@ public class CountryManager : MonoBehaviour
     {
         return countryDatabase;
     }
+
+    public bool IsCountryChanging()
+    {
+        int nextLevel =
+            PlayerPrefs.GetInt("Level", 0) + 2;
+
+        CountryData nextCountry =
+            GetCountryForLevel(nextLevel);
+
+        return nextCountry !=
+               BackgroundManager.Instance.GetCurrentCountry();
+    }
+
+    public CountryData GetNextCountry()
+{
+    int nextLevel =
+        PlayerPrefs.GetInt("Level", 0) + 2;
+
+    return GetCountryForLevel(nextLevel);
+}
 }

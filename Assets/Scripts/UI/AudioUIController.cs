@@ -11,17 +11,9 @@ public class AudioUIController : MonoBehaviour
     public Sprite sfxOnSprite;
     public Sprite sfxOffSprite;
 
-    public Image voiceIcon;
-    public Sprite voiceOnSprite;
-    public Sprite voiceOffSprite;
-
     public Image vibrationIcon;
     public Sprite vibrationOnSprite;
     public Sprite vibrationOffSprite;
-
-    public Image notificationIcon;
-    public Sprite notificationOnSprite;
-    public Sprite notificationOffSprite;
 
     void OnEnable()
     {
@@ -76,8 +68,6 @@ public class AudioUIController : MonoBehaviour
     {
         musicIcon.sprite = SoundManager.instance.IsMusicMuted() ? musicOffSprite : musicOnSprite;
         sfxIcon.sprite = SoundManager.instance.IsSfxMuted() ? sfxOffSprite : sfxOnSprite;
-        voiceIcon.sprite = SoundManager.instance.IsVolumeMuted() ? voiceOffSprite : voiceOnSprite;
         vibrationIcon.sprite = SoundManager.instance.IsVibrationMuted() ? vibrationOffSprite : vibrationOnSprite;
-        notificationIcon.sprite = SoundManager.instance.IsNotificationMuted() ? notificationOffSprite : notificationOnSprite;
     }
 }

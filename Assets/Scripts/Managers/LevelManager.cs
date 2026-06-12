@@ -41,19 +41,22 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel(int index)
     {
-        Debug.Log("LOAD LEVEL CALLED");
+        Debug.Log("=== LOAD LEVEL CALLED ===");
+        Debug.Log("Loading Level Index: " + index);
 
         currentLevelIndex = index;
 
+        // ← IMPORTANT! Get the country for this level and update backgrounds
         CountryData country = CountryManager.Instance.GetCountryForLevel(index + 1);
 
         if (country != null)
         {
-            BackgroundManager.Instance
-     .UpdateBackgrounds(
-         country,
-         index + 1
-     );
+            Debug.Log("Country found: " + country.countryName);
+            BackgroundManager.Instance.UpdateBackgrounds(country, index + 1);
+        }
+        else
+        {
+            Debug.LogWarning("No country found for level: " + (index + 1));
         }
 
         // HANDMADE LEVELS
@@ -67,9 +70,7 @@ public class LevelManager : MonoBehaviour
 
             foreach (ShapeData shape in handmadeLevel.layers)
             {
-                data.layerLayouts.Add(
-                    shape.layout
-                );
+                data.layerLayouts.Add(shape.layout);
             }
 
             string[] biggestLayout = data.layerLayouts[0];
@@ -101,14 +102,15 @@ public class LevelManager : MonoBehaviour
 
     public void NextLevel(bool playParticle = true)
     {
-        Debug.Log("NEXT LEVEL CALLED");
+        Debug.Log("=== NEXT LEVEL CALLED ===");
 
         if (isLoadingNextLevel)
+        {
+            Debug.LogWarning("Already loading next level - ignoring call");
             return;
+        }
 
-        StartCoroutine(
-            NextLevelRoutine(playParticle)
-        );
+        StartCoroutine(NextLevelRoutine(playParticle));
     }
 
     private IEnumerator NextLevelRoutine(bool playParticle)
@@ -121,12 +123,12 @@ public class LevelManager : MonoBehaviour
         {
             nextLevelParticles.Play();
 
-            yield return new WaitForSeconds(
-                nextLevelParticleDuration
-            );
+            yield return new WaitForSeconds(nextLevelParticleDuration);
         }
 
         currentLevelIndex++;
+
+        Debug.Log("Moving to next level: " + currentLevelIndex);
 
         PlayerPrefs.SetInt("Level", currentLevelIndex);
         PlayerPrefs.Save();
@@ -137,16 +139,13 @@ public class LevelManager : MonoBehaviour
 
         if (!loadLevelSilently)
         {
-            DOVirtual.DelayedCall(
-                0.1f,
-                () =>
+            DOVirtual.DelayedCall(0.1f, () =>
+            {
+                if (BoardSpawner.instance != null)
                 {
-                    if (BoardSpawner.instance != null)
-                    {
-                        BoardSpawner.instance.PlaySpawnAnimation();
-                    }
+                    BoardSpawner.instance.PlaySpawnAnimation();
                 }
-            );
+            });
         }
 
         loadLevelSilently = false;
@@ -160,12 +159,23 @@ public class LevelManager : MonoBehaviour
 
     public void UpdateNextButtonText()
     {
+        int currentLevel =
+            PlayerPrefs.GetInt("Level", 0) + 1;
+
+        CountryData currentCountry =
+            BackgroundManager.Instance.GetCurrentCountry();
+
+        CountryData nextCountry =
+            CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+
+        bool countryChanging =
+            nextCountry != currentCountry;
+
         bool unlockingDestination =
-            BackgroundManager.Instance
-                .IsNextDestinationUnlock();
+            BackgroundManager.Instance.IsNextDestinationUnlock();
 
         nextLevelText.text =
-            unlockingDestination
+            (unlockingDestination || countryChanging)
             ? "Next Destination"
             : "Next Level";
     }

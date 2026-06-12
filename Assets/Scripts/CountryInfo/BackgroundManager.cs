@@ -34,30 +34,34 @@ public class BackgroundManager : MonoBehaviour
         }
     }
 
+    private int lastUpdatedLevel = -1;  // ← NEW!
+
     public void UpdateBackgrounds(CountryData country, int playerLevel)
     {
         if (country == null)
             return;
 
-        currentCountry = country;
+        // ← NEW! Prevent duplicate updates
+        if (lastUpdatedLevel == playerLevel && currentCountry == country)
+        {
+            Debug.Log($"Background already updated for level {playerLevel}, skipping...");
+            return;
+        }
 
-        Sprite bg =
-            GetBackgroundForLevel(
-                country,
-                playerLevel
-            );
+        currentCountry = country;
+        lastUpdatedLevel = playerLevel;  // ← NEW! Track this level
+
+        Sprite bg = GetBackgroundForLevel(country, playerLevel);
 
         SetGameplayBackground(bg);
         SetHomeBackground(bg);
         SetDailyStreakBackground(bg);
-
 
         if (mapBackground != null)
         {
             mapBackground.sprite = bg;
         }
     }
-
     public void SetGameplayBackground(Sprite bg)
     {
         if (gameplayBackground == null || bg == null)
@@ -127,15 +131,21 @@ public class BackgroundManager : MonoBehaviour
             playerLevel -
             country.startLevel;
 
-        float progress =
-    (float)levelInsideCountry /
-    (countryLevels - 1);
+        int levelsPerDestination =
+     Mathf.CeilToInt(
+         (float)countryLevels /
+         country.backgrounds.Length
+     );
 
         int bgIndex =
-            Mathf.FloorToInt(
-                progress *
-                country.backgrounds.Length
-            );
+            levelInsideCountry /
+            levelsPerDestination;
+
+        bgIndex = Mathf.Clamp(
+            bgIndex,
+            0,
+            country.backgrounds.Length - 1
+        );
 
         bgIndex = Mathf.Clamp(
             bgIndex,
@@ -146,6 +156,7 @@ public class BackgroundManager : MonoBehaviour
         return country.backgrounds[bgIndex];
     }
 
+
     public bool IsNextDestinationUnlock()
     {
         int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
@@ -155,71 +166,91 @@ public class BackgroundManager : MonoBehaviour
         if (country == null)
             return false;
 
+        // COUNTRY CHANGE CHECK
+        CountryData nextCountry =
+            CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+
+        if (nextCountry != country)
+        {
+            Debug.Log("Country changing!");
+            return true;
+        }
+
         int countryLevels =
             country.endLevel -
             country.startLevel + 1;
 
-        float currentProgress =
-            (float)(currentLevel - country.startLevel) /
-            (countryLevels - 1);
+        int levelsPerDestination =
+            Mathf.CeilToInt(
+                (float)countryLevels /
+                country.backgrounds.Length
+            );
 
         int currentIndex =
-            Mathf.FloorToInt(
-                currentProgress *
-                country.backgrounds.Length
+            Mathf.Clamp(
+                (currentLevel - country.startLevel) /
+                levelsPerDestination,
+                0,
+                country.backgrounds.Length - 1
             );
-
-        int nextLevel = currentLevel + 1;
-
-        float nextProgress =
-            (float)(nextLevel - country.startLevel) /
-            (countryLevels - 1);
 
         int nextIndex =
-            Mathf.FloorToInt(
-                nextProgress *
-                country.backgrounds.Length
+            Mathf.Clamp(
+                (currentLevel + 1 - country.startLevel) /
+                levelsPerDestination,
+                0,
+                country.backgrounds.Length - 1
             );
+
+        Debug.Log(
+            "CurrentLevel=" + currentLevel +
+            " CurrentIndex=" + currentIndex +
+            " NextIndex=" + nextIndex +
+            " Country=" + country.countryName
+        );
 
         return nextIndex > currentIndex;
     }
 
+
     public int GetNextDestinationIndex()
     {
         int currentLevel =
-            PlayerPrefs.GetInt(
-                "Level",
-                0
-            ) + 1;
+            PlayerPrefs.GetInt("Level", 0) + 1;
 
-        CountryData country =
+        CountryData currentCountry =
             GetCurrentCountry();
 
-        if (country == null)
+        if (currentCountry == null)
             return 0;
 
+        CountryData nextCountry =
+            CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+
+        // COUNTRY CHANGE
+        if (nextCountry != currentCountry)
+        {
+            return 0;
+        }
+
         int countryLevels =
-            country.endLevel -
-            country.startLevel + 1;
+            currentCountry.endLevel -
+            currentCountry.startLevel + 1;
 
-        float nextProgress =
-            (float)(
-                currentLevel + 1 -
-                country.startLevel
-            )
-            /
-            (countryLevels - 1);
-
-        int nextIndex =
-            Mathf.FloorToInt(
-                nextProgress *
-                country.backgrounds.Length
+        int levelsPerDestination =
+            Mathf.CeilToInt(
+                (float)countryLevels /
+                currentCountry.backgrounds.Length
             );
 
-        return Mathf.Clamp(
-            nextIndex,
-            0,
-            country.backgrounds.Length - 1
-        );
+        int nextIndex =
+            Mathf.Clamp(
+                (currentLevel + 1 - currentCountry.startLevel)
+                / levelsPerDestination,
+                0,
+                currentCountry.backgrounds.Length - 1
+            );
+
+        return nextIndex;
     }
 }

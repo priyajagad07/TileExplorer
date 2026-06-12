@@ -22,161 +22,140 @@ public class MapScreenUI : MonoBehaviour
         private const string PendingKey =
             "PendingDestination";
 
-        public static void SetPending(
-            int index
-        )
+        public static void SetPending(int index)
         {
-            PlayerPrefs.SetInt(
-                PendingKey,
-                index
-            );
+            PlayerPrefs.SetInt(PendingKey, index);
         }
 
         public static int GetPending()
         {
-            return PlayerPrefs.GetInt(
-                PendingKey,
-                -1
-            );
+            return PlayerPrefs.GetInt(PendingKey, -1);
         }
 
         public static void Clear()
         {
-            PlayerPrefs.DeleteKey(
-                PendingKey
-            );
+            PlayerPrefs.DeleteKey(PendingKey);
         }
     }
 
     public void PlayPendingUnlock()
     {
-        int pending =
-            DestinationUnlocker.GetPending();
+        int pending = DestinationUnlocker.GetPending();
 
         if (pending < 0)
             return;
 
         CountryData country =
-            BackgroundManager.Instance
-                .GetCurrentCountry();
+     CountryManager.Instance.GetNextCountry();
 
-        if (country == null)
-            return;
+        Debug.Log(
+       "Unlocking Country: " +
+       country.countryName +
+       " Pending Destination: " +
+       pending
+   );
 
         Transform countryTransform =
-            GameObject.Find(
-                country.countryName
-            )?.transform;
+            GameObject.Find(country.countryName)?.transform;
 
         if (countryTransform == null)
             return;
 
         Transform card =
-            countryTransform.Find(
-                "Card" + (pending + 1) + " - Button"
-            );
+            countryTransform.Find("Card" + (pending + 1) + " - Button");
 
         if (card == null)
             return;
 
-        Transform cityImage =
-            card.Find("City - Image");
+        Transform cityImage = card.Find("City - Image");
 
         if (cityImage == null)
             return;
 
-        Image image =
-            cityImage.GetComponent<Image>();
+        Image image = cityImage.GetComponent<Image>();
 
         if (image == null)
             return;
 
-        Vector3 originalPos =
-            cityImage.position;
+        // Store original state
+        Vector3 originalPos = cityImage.position;
+        Vector3 originalScale = cityImage.localScale;
+        int originalSiblingIndex = cityImage.GetSiblingIndex();
+        Color originalColor = image.color;
 
-        Vector3 originalScale =
-            cityImage.localScale;
-
-        Sequence seq =
-            DOTween.Sequence();
-
+        Sequence seq = DOTween.Sequence();
 
         SoundManager.instance.PlayHaptic(
-    MOST_HapticFeedback.HapticTypes.Success
-);
-
-        // Step 1: Small shake
-        seq.Append(
-            cityImage.DOShakeRotation(
-                0.5f,
-                8f,
-                10
-            )
+            MOST_HapticFeedback.HapticTypes.Success
         );
 
-        // Step 2: Reveal destination image
+        // Step 1: Shake the card
+        seq.Append(
+            cityImage.DOShakeRotation(0.45f, 8f, 10)
+        );
+
+        // Step 2: Reveal the destination image
         seq.AppendCallback(() =>
         {
-            image.sprite =
-                country.previewCards[pending];
+            image.sprite = country.previewCards[pending];
         });
 
-        // Step 3: Small pause so player notices reveal
+        // Step 3: Pause
         seq.AppendInterval(0.3f);
 
-        // Step 4: Move image to center
+        // Step 4: Move to center - ✅ NOW IN SEQUENCE!
         seq.Append(
-            cityImage.DOMove(
-                cardZoomTarget.position,
-                0.75f
-            )
-            .SetEase(
-                Ease.OutCubic
-            )
+            cityImage.DOMove(cardZoomTarget.position, 0.8f)
+                .SetEase(Ease.OutCubic)
         );
 
-        // Step 5: Zoom image
+        // Step 5: Bring card to front BEFORE zoom
+        seq.AppendCallback(() =>
+        {
+            cityImage.SetAsLastSibling();
+        });
+
+        // Step 6: Zoom - ✅ NOW IN SEQUENCE!
         seq.Append(
-            cityImage.DOScale(
-                3f,
-                0.75f
-            )
-            .SetEase(
-                Ease.OutBack
-            )
+            cityImage.DOScale(3f, 0.7f)
+                .SetEase(Ease.OutBack)
         );
 
-        // Step 6: Open info screen
+        // Step 7: Pause before fade
+        seq.AppendInterval(0.4f);
+
+        // Step 8: Fade out card and show info screen
         seq.AppendCallback(() =>
         {
             DestinationUnlocker.Clear();
 
-            CountryInfoScreen.instance
-                .openedFromUnlock = true;
+            // Fade out the zoomed card
+            image.DOFade(0, 0.3f);
 
-            UIManager.Instance.Show(
-                ScreenType.CountryInfoScreen
+            // Show the destination info screen
+            CountryInfoScreen.instance.openedFromUnlock = true;
+            CountryInfoScreen.instance.ShowDestination(
+                country.destinations[pending],
+                true  // Flag for unlock animation
             );
 
-            DOVirtual.DelayedCall(
-                0.05f,
-                () =>
-                {
-                    CountryInfoScreen.instance
-                        .ShowDestination(
-                            country.destinations[pending]
-                        );
-                }
-            );
+            UIManager.Instance.Show(ScreenType.CountryInfoScreen);
+            MapManager.instance?.RefreshMap();
+        });
 
-            MapManager.instance
-                ?.RefreshMap();
+        // Step 9: Reset card state after animation completes
+        seq.OnComplete(() =>
+        {
+            Debug.Log("Animation Complete - Resetting card to original state");
 
-            cityImage.position =
-                originalPos;
+            // Reset everything to original state
+            cityImage.position = originalPos;
+            cityImage.localScale = originalScale;
+            cityImage.SetSiblingIndex(originalSiblingIndex);
+            image.color = originalColor;  // Restore full opacity
+            image.sprite = null;  // Clear the preview card image
 
-            cityImage.localScale =
-                originalScale;
+            Debug.Log("Card reset complete");
         });
     }
 
@@ -184,11 +163,9 @@ public class MapScreenUI : MonoBehaviour
     {
         lockedMessagePopup.SetActive(true);
 
-        lockedMessagePopup.transform.localScale =
-            Vector3.zero;
+        lockedMessagePopup.transform.localScale = Vector3.zero;
 
-        Sequence seq =
-            DOTween.Sequence();
+        Sequence seq = DOTween.Sequence();
 
         seq.Append(
             lockedMessagePopup.transform

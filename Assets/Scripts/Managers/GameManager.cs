@@ -28,8 +28,8 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         SoundManager.instance.PlayHaptic(
-    MOST_HapticFeedback.HapticTypes.Warning
-);
+            MOST_HapticFeedback.HapticTypes.Warning
+        );
         SoundManager.instance.PlaySound(SoundName.GameOver);
         UIManager.Instance.ShowPopup(ScreenType.GameOver);
         Debug.Log("Game Over");
@@ -46,8 +46,8 @@ public class GameManager : MonoBehaviour
         rewardClaimed = false;
         claimButton.interactable = true;
         SoundManager.instance.PlayHaptic(
-    MOST_HapticFeedback.HapticTypes.Success
-);
+            MOST_HapticFeedback.HapticTypes.Success
+        );
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
 
         DailyStreakManager.instance.OnLevelCompleted();
@@ -86,50 +86,75 @@ public class GameManager : MonoBehaviour
 
     private void CompleteLevelReward(int coinAmount)
     {
+        Debug.Log("=== CompleteLevelReward Called ===");
+        Debug.Log("Coin Amount: " + coinAmount);
+
         SoundManager.instance.PlaySound(SoundName.CoinReach);
         CoinManager.instance.AddCoins(coinAmount);
 
+        // Check for daily streak reward FIRST
         if (DailyStreakManager.instance.ShouldShowRewardPopup())
         {
+            Debug.Log("Daily Streak Reward showing - skipping destination unlock check");
             UIManager.Instance.Show(ScreenType.DailyStreakScreen);
             DOVirtual.DelayedCall(0.1f, () =>
-                {
-                    DailyStreakUI.instance.OpenDailyReward();
-                }
-            );
+            {
+                DailyStreakUI.instance.OpenDailyReward();
+            });
         }
         else
         {
+            Debug.Log("No daily streak reward - checking for destination unlock");
+
+            // Clear pending reward
             DailyStreakManager.instance.ClearPendingReward();
-            if (BackgroundManager.Instance.IsNextDestinationUnlock())
+
+            // Check if next destination unlocks
+            int currentLevel =
+    PlayerPrefs.GetInt("Level", 0) + 1;
+
+            CountryData currentCountry =
+                BackgroundManager.Instance.GetCurrentCountry();
+
+            CountryData nextCountry =
+                CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+
+            bool countryChanging =
+                nextCountry != currentCountry;
+
+            bool willUnlock =
+                BackgroundManager.Instance.IsNextDestinationUnlock()
+                || countryChanging;
+
+            Debug.Log("Will Unlock Next Destination: " + willUnlock);
+
+            if (willUnlock)
             {
+                Debug.Log("✓ NEXT DESTINATION UNLOCKING!");
+
                 int nextDestination =
-                    BackgroundManager.Instance
-                        .GetNextDestinationIndex();
+                    BackgroundManager.Instance.GetNextDestinationIndex();
 
-                MapScreenUI.DestinationUnlocker
-                    .SetPending(nextDestination);
+                Debug.Log("Next Destination Index: " + nextDestination);
 
-                UIManager.Instance.HidePopup(
-    ScreenType.LevelCompleted
-);
+                MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
 
-                UIManager.Instance.Show(
-     ScreenType.MapScreen
- );
+                // Hide level complete popup
+                UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
 
-                DOVirtual.DelayedCall(
-                    0.2f,
-                    () =>
-                    {
-                        MapScreenUI.instance
-                            .PlayPendingUnlock();
-                    }
-                );
+                // Show map screen
+                UIManager.Instance.Show(ScreenType.MapScreen);
 
+                // Delay before playing unlock animation
+                DOVirtual.DelayedCall(0.8f, () =>
+                {
+                    Debug.Log("Playing pending unlock animation...");
+                    MapScreenUI.instance.PlayPendingUnlock();
+                });
             }
             else
             {
+                Debug.Log("Regular level progression - no new destination");
                 LevelManager.instance.NextLevel(false);
             }
         }
@@ -149,14 +174,13 @@ public class GameManager : MonoBehaviour
             LevelManager.instance.nextLevelParticles.Play();
         }
         SoundManager.instance.PlayHaptic(
-    MOST_HapticFeedback.HapticTypes.Success
-);
+            MOST_HapticFeedback.HapticTypes.Success
+        );
 
         DOVirtual.DelayedCall(1.1f, () =>
         {
             CompleteLevelReward(200);
-        }
-        );
+        });
     }
 
     public void ClaimWinCoins()
@@ -171,14 +195,14 @@ public class GameManager : MonoBehaviour
         {
             LevelManager.instance.nextLevelParticles.Play();
         }
-SoundManager.instance.PlayHaptic(
-    MOST_HapticFeedback.HapticTypes.Success
-);
+        SoundManager.instance.PlayHaptic(
+            MOST_HapticFeedback.HapticTypes.Success
+        );
+
         DOVirtual.DelayedCall(1.1f, () =>
         {
             CompleteLevelReward(100);
-        }
-        );
+        });
     }
 
     public void ResetLevelState()
