@@ -54,15 +54,19 @@ public partial class DailyStreakUI : MonoBehaviour
 
     public void OpenDailyReward()
     {
+        Debug.Log("OpenDailyReward");
+
         openedAfterReward = true;
 
-        if (DailyStreakManager.instance
-            .HasPendingReward())
+        if (DailyStreakManager.instance.HasPendingReward())
         {
+            Debug.Log("Has Pending Reward");
             PlayRewardSequence();
         }
         else
         {
+            Debug.Log("No Pending Reward");
+
             Refresh();
 
             streakText.text =
@@ -71,7 +75,6 @@ public partial class DailyStreakUI : MonoBehaviour
                     .ToString();
         }
     }
-
     public void OpenFromHome()
     {
         openedAfterReward = false;

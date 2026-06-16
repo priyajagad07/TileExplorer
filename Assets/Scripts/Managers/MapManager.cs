@@ -6,7 +6,7 @@ public class MapManager : MonoBehaviour
     public static MapManager instance;
 
     [Header("Lock Sprite")]
-    [SerializeField] private Sprite lockedCardSprite;
+    public Sprite lockedCardSprite;
 
     void Awake()
     {
@@ -20,9 +20,7 @@ public class MapManager : MonoBehaviour
 
     public void RefreshMap()
     {
-        Debug.Log("RefreshMap Called");
-
-        Debug.Log("CountryManager = " + CountryManager.Instance);
+        Debug.Log("RefreshMap Level = " + (PlayerPrefs.GetInt("Level", 0) + 1));
 
         if (CountryManager.Instance == null)
         {
@@ -30,32 +28,22 @@ public class MapManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Database = " + CountryManager.Instance.GetDatabase());
-
         int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
-
         UpdateAllCountries(currentLevel);
     }
 
     private void UpdateAllCountries(int currentLevel)
     {
-
-        CountryDatabase database =
-     CountryManager.Instance.GetDatabase();
+        CountryDatabase database = CountryManager.Instance.GetDatabase();
 
         if (database == null)
         {
-            //Debug.LogError("Country Database Missing");
             return;
         }
 
         foreach (CountryData country in database.countries)
         {
-            //Debug.Log("Searching Country: " + country.countryName);
-
             Transform countryTransform = GameObject.Find(country.countryName)?.transform;
-
-            //Debug.Log("Found? " + (countryTransform != null));
 
             if (countryTransform == null)
                 continue;
@@ -70,7 +58,6 @@ public class MapManager : MonoBehaviour
 
     private void UpdateCountryCards(Transform countryTransform, CountryData country, int currentLevel)
     {
-
         int totalLevels = country.endLevel - country.startLevel + 1;
 
         int totalCards = country.previewCards.Length;
@@ -86,34 +73,20 @@ public class MapManager : MonoBehaviour
             unlockedCards = Mathf.CeilToInt(progress / levelsPerCard);
         }
 
-        // Debug.Log("Country: " + country.countryName);
-        // Debug.Log("Current Level: " + currentLevel);
-        // Debug.Log("Unlocked Cards: " + unlockedCards);
-        // Debug.Log("Total Cards: " + totalCards);
+        Debug.Log(country.countryName + " unlockedCards=" + unlockedCards);
 
-        unlockedCards =
-            Mathf.Clamp(
-                unlockedCards,
-                0,
-                totalCards);
+        unlockedCards = Mathf.Clamp(unlockedCards, 0, totalCards);
 
         for (int i = 0; i < totalCards; i++)
         {
-            //Debug.Log("Looking for: Card" + (i + 1) + "-Button");
-            Transform card =
-                countryTransform.Find(
-                    "Card" + (i + 1) + " - Button");
+            Transform card = countryTransform.Find("Card" + (i + 1) + " - Button");
 
             if (card == null)
             {
-                // Debug.LogError(
-                //     "Card not found: Card" + (i + 1) + " -Button in " + country.countryName
-                // );
                 continue;
             }
 
-            DestinationCard destinationCard =
-    card.GetComponent<DestinationCard>();
+            DestinationCard destinationCard = card.GetComponent<DestinationCard>();
 
             if (destinationCard != null)
             {
@@ -159,9 +132,6 @@ public class MapManager : MonoBehaviour
                     unlocked
                 );
             }
-
-            // Debug.Log("Found Card: " + card.name);
-            // Debug.Log("Found City: " + cityImage.name);
         }
     }
 }

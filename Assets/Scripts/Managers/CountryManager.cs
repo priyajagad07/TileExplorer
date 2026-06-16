@@ -44,10 +44,10 @@ public class CountryManager : MonoBehaviour
     }
 
     public CountryData GetNextCountry()
-{
-    int nextLevel =
-        PlayerPrefs.GetInt("Level", 0) + 2;
+    {
+        int nextLevel =
+            PlayerPrefs.GetInt("Level", 0) + 2;
 
-    return GetCountryForLevel(nextLevel);
-}
+        return GetCountryForLevel(nextLevel);
+    }
 }

@@ -6,6 +6,8 @@ public partial class DailyStreakUI
 {
     public void PlayRewardSequence()
     {
+
+        Debug.Log("PlayRewardSequence");
         int streak =
             DailyStreakManager.instance
                 .GetStreak();
@@ -52,6 +54,13 @@ public partial class DailyStreakUI
         {
             DailyStreakManager.instance
                 .GiveRewardForCurrentDay();
+        });
+
+        seq.AppendInterval(0.3f);
+
+        seq.AppendCallback(() =>
+        {
+            ShowKeepGoing();
         });
     }
 
@@ -123,6 +132,7 @@ public partial class DailyStreakUI
 
     void ShowKeepGoing()
     {
+         Debug.Log("ShowKeepGoing");
         SoundManager.instance.PlaySound(
             SoundName.ButtonPop
         );

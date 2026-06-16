@@ -86,6 +86,7 @@ public class MatchBoardMatch : MonoBehaviour
         removedTiles = 0;
         activePopAnimation = 0;
         activeDestroyParticles = 0;
+        CancelInvoke(nameof(Rearrange));
     }
 
     public void AddRemovedTile()

@@ -49,8 +49,6 @@ public class GameManager : MonoBehaviour
             MOST_HapticFeedback.HapticTypes.Success
         );
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
-
-        DailyStreakManager.instance.OnLevelCompleted();
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
         LevelManager.instance.UpdateNextButtonText();
 
@@ -92,71 +90,42 @@ public class GameManager : MonoBehaviour
         SoundManager.instance.PlaySound(SoundName.CoinReach);
         CoinManager.instance.AddCoins(coinAmount);
 
-        // Check for daily streak reward FIRST
-        if (DailyStreakManager.instance.ShouldShowRewardPopup())
+        // Check if next destination unlocks
+        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+
+        CountryData currentCountry = BackgroundManager.Instance.GetCurrentCountry();
+
+        CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+
+        bool countryChanging = nextCountry != currentCountry;
+
+        bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || countryChanging;
+
+        Debug.Log("Will Unlock Next Destination: " + willUnlock);
+
+        if (willUnlock)
         {
-            Debug.Log("Daily Streak Reward showing - skipping destination unlock check");
-            UIManager.Instance.Show(ScreenType.DailyStreakScreen);
-            DOVirtual.DelayedCall(0.1f, () =>
+            int nextDestination = BackgroundManager.Instance.GetNextDestinationIndex();
+
+            LevelManager.instance.skipMapRefresh = true;
+            LevelManager.instance.loadLevelSilently = true;
+            LevelManager.instance.NextLevel(false);
+
+            MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
+
+
+            UIManager.Instance.Show(ScreenType.MapScreen);
+
+            DOVirtual.DelayedCall(0.8f, () =>
             {
-                DailyStreakUI.instance.OpenDailyReward();
-            });
+                MapScreenUI.instance.PlayPendingUnlock();
+            }
+            );
         }
         else
         {
-            Debug.Log("No daily streak reward - checking for destination unlock");
-
-            // Clear pending reward
-            DailyStreakManager.instance.ClearPendingReward();
-
-            // Check if next destination unlocks
-            int currentLevel =
-    PlayerPrefs.GetInt("Level", 0) + 1;
-
-            CountryData currentCountry =
-                BackgroundManager.Instance.GetCurrentCountry();
-
-            CountryData nextCountry =
-                CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
-
-            bool countryChanging =
-                nextCountry != currentCountry;
-
-            bool willUnlock =
-                BackgroundManager.Instance.IsNextDestinationUnlock()
-                || countryChanging;
-
-            Debug.Log("Will Unlock Next Destination: " + willUnlock);
-
-            if (willUnlock)
-            {
-                Debug.Log("✓ NEXT DESTINATION UNLOCKING!");
-
-                int nextDestination =
-                    BackgroundManager.Instance.GetNextDestinationIndex();
-
-                Debug.Log("Next Destination Index: " + nextDestination);
-
-                MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
-
-                // Hide level complete popup
-                UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
-
-                // Show map screen
-                UIManager.Instance.Show(ScreenType.MapScreen);
-
-                // Delay before playing unlock animation
-                DOVirtual.DelayedCall(0.8f, () =>
-                {
-                    Debug.Log("Playing pending unlock animation...");
-                    MapScreenUI.instance.PlayPendingUnlock();
-                });
-            }
-            else
-            {
-                Debug.Log("Regular level progression - no new destination");
-                LevelManager.instance.NextLevel(false);
-            }
+            Debug.Log("Regular level progression - no new destination");
+            LevelManager.instance.NextLevel(false);
         }
     }
 

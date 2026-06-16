@@ -147,12 +147,6 @@ public class BackgroundManager : MonoBehaviour
             country.backgrounds.Length - 1
         );
 
-        bgIndex = Mathf.Clamp(
-            bgIndex,
-            0,
-            country.backgrounds.Length - 1
-        );
-
         return country.backgrounds[bgIndex];
     }
 

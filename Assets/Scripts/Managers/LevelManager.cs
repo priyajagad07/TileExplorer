@@ -22,6 +22,7 @@ public class LevelManager : MonoBehaviour
     public bool loadLevelSilently = false;
     [SerializeField]
     private TMP_Text nextLevelText;
+    public bool skipMapRefresh;
 
     void Awake()
     {
@@ -45,14 +46,19 @@ public class LevelManager : MonoBehaviour
         Debug.Log("Loading Level Index: " + index);
 
         currentLevelIndex = index;
-
-        // ← IMPORTANT! Get the country for this level and update backgrounds
         CountryData country = CountryManager.Instance.GetCountryForLevel(index + 1);
 
         if (country != null)
         {
             Debug.Log("Country found: " + country.countryName);
             BackgroundManager.Instance.UpdateBackgrounds(country, index + 1);
+
+            if (!skipMapRefresh)
+            {
+                MapManager.instance?.RefreshMap();
+            }
+
+            skipMapRefresh = false;
         }
         else
         {

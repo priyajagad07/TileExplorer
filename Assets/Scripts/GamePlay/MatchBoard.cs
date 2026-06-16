@@ -88,7 +88,10 @@ public class MatchBoard : MonoBehaviour
         foreach (GameObject tile in placedTiles)
         {
             if (tile != null)
+            {
+                tile.transform.DOKill();
                 Destroy(tile);
+            }
         }
 
         placedTiles.Clear();
@@ -99,6 +102,7 @@ public class MatchBoard : MonoBehaviour
             {
                 if (child != null)
                 {
+                    child.DOKill();
                     Destroy(child.gameObject);
                 }
             }

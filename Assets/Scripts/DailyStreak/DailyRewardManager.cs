@@ -14,11 +14,20 @@ public class DailyRewardManager : MonoBehaviour
     private const string DAY1_KEY =
         "Day1Reward";
 
+    private const string DAY2_KEY =
+       "Day2Reward";
+
     private const string DAY3_KEY =
         "Day3Reward";
 
+    private const string DAY4_KEY =
+       "Day4Reward";
+
     private const string DAY5_KEY =
         "Day5Reward";
+
+    private const string DAY6_KEY =
+       "Day6Reward";
 
     private const string DAY7_KEY =
         "Day7Reward";
@@ -89,13 +98,28 @@ public class DailyRewardManager : MonoBehaviour
         );
 
         SelectReward(
+            database.day2Rewards.Count,
+            DAY2_KEY
+        );
+
+        SelectReward(
             database.day3Rewards.Count,
             DAY3_KEY
         );
 
         SelectReward(
+            database.day4Rewards.Count,
+            DAY4_KEY
+        );
+
+        SelectReward(
             database.day5Rewards.Count,
             DAY5_KEY
+        );
+
+        SelectReward(
+            database.day6Rewards.Count,
+            DAY6_KEY
         );
 
         SelectReward(
@@ -151,6 +175,15 @@ public class DailyRewardManager : MonoBehaviour
                         )
                     ];
 
+            case 2:
+                return database
+                    .day2Rewards[
+                        PlayerPrefs.GetInt(
+                            DAY2_KEY,
+                            0
+                        )
+                    ];
+
             case 3:
                 return database
                     .day3Rewards[
@@ -160,6 +193,14 @@ public class DailyRewardManager : MonoBehaviour
                         )
                     ];
 
+            case 4:
+                return database
+                    .day4Rewards[
+                        PlayerPrefs.GetInt(
+                            DAY4_KEY,
+                            0
+                        )
+                    ];
             case 5:
                 return database
                     .day5Rewards[
@@ -168,6 +209,16 @@ public class DailyRewardManager : MonoBehaviour
                             0
                         )
                     ];
+
+            case 6:
+                return database
+                    .day6Rewards[
+                        PlayerPrefs.GetInt(
+                            DAY6_KEY,
+                            0
+                        )
+                    ];
+
 
             case 7:
                 return database

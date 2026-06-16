@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
@@ -26,13 +27,13 @@ public class UIManager : MonoBehaviour
         Show(startScreenType);
     }
 
-    public void Show(ScreenType type)
+    public void Show(ScreenType type, bool isBack = false)
     {
         foreach (var s in screens)
         {
             if (s.screenType == type)
             {
-                if (currentScreen != null && currentScreen != s.screen)
+                if (!isBack && currentScreen != null && currentScreen != s.screen)
                 {
                     screenHistory.Push(currentScreenType);
                 }
@@ -51,6 +52,21 @@ public class UIManager : MonoBehaviour
                 currentScreenType = type;
 
                 currentScreen.Show();
+
+                if (type == ScreenType.HomeScreen)
+                {
+                    DOVirtual.DelayedCall(0.5f, () =>
+                    {
+                        if (DailyStreakManager.instance.CanShowReward())
+                        {
+                            UIManager.Instance.Show(
+                                ScreenType.DailyStreakScreen
+                            );
+
+                            DailyStreakUI.instance.OpenDailyReward();
+                        }
+                    });
+                }
                 return;
             }
         }
@@ -109,7 +125,7 @@ public class UIManager : MonoBehaviour
                 Time.timeScale = 1f;
             }
 
-            Show(previous);
+            Show(previous, true);
         }
     }
 }

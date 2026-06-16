@@ -8,12 +8,11 @@ public class DailyStreakManager : MonoBehaviour
     private int streak;
 
     private const string STREAK_KEY = "DailyStreak";
-    private const string LAST_DATE_KEY = "LastPlayedDate";
-    private const string CLAIMED_KEY = "ClaimedToday";
-    private const string WEEK_COMPLETE_KEY =
-    "WeekComplete";
-    private const string REWARD_PENDING_KEY =
-    "DailyRewardPending";
+    private const string REWARD_PENDING_KEY = "DailyRewardPending";
+    private const string FIRST_LAUNCH_KEY = "FirstLaunchCompleted";
+    private const string LAST_LOGIN_DATE_KEY = "LastLoginDate";
+    private const string FIRST_HOME_REWARD_KEY = "FirstHomeRewardShown";
+    private bool rewardCheckSkippedThisSession;
 
     public bool HasPendingReward()
     {
@@ -23,12 +22,125 @@ public class DailyStreakManager : MonoBehaviour
     void Awake()
     {
         instance = this;
+
+        rewardCheckSkippedThisSession = true;
     }
 
     void Start()
     {
         LoadData();
-        CheckMissedDay();
+        CheckDailyLogin();
+    }
+    void CheckDailyLogin()
+    {
+        string today =
+            DateTime.Today.ToString(
+                "yyyy-MM-dd"
+            );
+
+        bool firstLaunch =
+            PlayerPrefs.GetInt(
+                FIRST_LAUNCH_KEY,
+                0
+            ) == 0;
+
+        if (firstLaunch)
+        {
+            Debug.Log(
+                "First Launch"
+            );
+
+            PlayerPrefs.SetInt(
+                FIRST_LAUNCH_KEY,
+                1
+            );
+
+            streak = 1;
+
+            PlayerPrefs.SetInt(
+                STREAK_KEY,
+                streak
+            );
+
+            PlayerPrefs.SetInt(
+                REWARD_PENDING_KEY,
+                1
+            );
+
+            PlayerPrefs.SetInt(
+                FIRST_HOME_REWARD_KEY,
+                0
+            );
+
+            PlayerPrefs.SetString(
+                LAST_LOGIN_DATE_KEY,
+                today
+            );
+
+            PlayerPrefs.Save();
+
+            return;
+        }
+
+        string lastLogin =
+            PlayerPrefs.GetString(
+                LAST_LOGIN_DATE_KEY,
+                ""
+            );
+
+        if (lastLogin == today)
+        {
+            return;
+        }
+
+        DateTime previous =
+            DateTime.Parse(
+                lastLogin
+            );
+
+        int daysPassed =
+            (DateTime.Today -
+             previous.Date).Days;
+
+        if (daysPassed > 1)
+        {
+            streak = 1;
+
+            Debug.Log(
+                "Missed day. Reset streak."
+            );
+        }
+        else
+        {
+            streak++;
+        }
+
+        if (streak > 7)
+        {
+            streak = 1;
+        }
+
+        PlayerPrefs.SetInt(
+            STREAK_KEY,
+            streak
+        );
+
+        PlayerPrefs.SetString(
+            LAST_LOGIN_DATE_KEY,
+            today
+        );
+
+        PlayerPrefs.SetInt(
+            REWARD_PENDING_KEY,
+            1
+        );
+
+        PlayerPrefs.Save();
+
+        Debug.Log(
+            "New Daily Reward Available. Streak = "
+            + streak
+        );
     }
 
     void LoadData()
@@ -40,68 +152,6 @@ public class DailyStreakManager : MonoBehaviour
     public int GetStreak()
     {
         return streak;
-    }
-
-    void CheckMissedDay()
-    {
-        string lastDateString = PlayerPrefs.GetString(LAST_DATE_KEY, "");
-
-        if (string.IsNullOrEmpty(lastDateString))
-            return;
-
-        DateTime lastDate = DateTime.Parse(lastDateString);
-        int daysPassed = (DateTime.Today - lastDate.Date).Days;
-
-        if (daysPassed > 1)
-        {
-            ResetStreak();
-        }
-
-        if (daysPassed >= 1)
-        {
-            PlayerPrefs.SetInt(CLAIMED_KEY, 0);
-        }
-    }
-
-    public void OnLevelCompleted()
-    {
-        if (PlayerPrefs.GetInt(CLAIMED_KEY, 0) == 1)
-            return;
-
-        bool weekComplete = PlayerPrefs.GetInt(WEEK_COMPLETE_KEY, 0) == 1;
-
-        if (weekComplete)
-        {
-            streak = 1;
-
-            PlayerPrefs.SetInt(WEEK_COMPLETE_KEY, 0);
-        }
-        else
-        {
-            streak++;
-        }
-
-        if (streak >= 7)
-        {
-            streak = 7;
-
-            PlayerPrefs.SetInt(WEEK_COMPLETE_KEY, 1);
-        }
-
-        PlayerPrefs.SetInt(STREAK_KEY, streak);
-        Debug.Log("STREAK SAVED: " + streak);
-        PlayerPrefs.SetString(LAST_DATE_KEY, DateTime.Today.ToString("yyyy-MM-dd"));
-        PlayerPrefs.SetInt(CLAIMED_KEY, 1);
-        PlayerPrefs.SetInt(REWARD_PENDING_KEY, 1);
-        PlayerPrefs.Save();
-    }
-
-    void ResetStreak()
-    {
-        streak = 0;
-
-        PlayerPrefs.SetInt(STREAK_KEY, 0);
-        PlayerPrefs.Save();
     }
 
     public void GiveRewardForCurrentDay()
@@ -122,16 +172,24 @@ public class DailyStreakManager : MonoBehaviour
 
     public void ContinueFromDailyReward()
     {
+        UIManager.Instance.HidePopup(
+            ScreenType.LevelCompleted
+        );
+
         if (DailyStreakUI.instance.openedAfterReward)
         {
-            LevelManager.instance.loadLevelSilently = true;
-            LevelManager.instance.NextLevel(false);
-        }
+            DailyStreakUI.instance.openedAfterReward = false;
 
-        UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
-        UIManager.Instance.Show(
-            ScreenType.HomeScreen
-        );
+            UIManager.Instance.Show(
+                ScreenType.GamePlay
+            );
+        }
+        else
+        {
+            UIManager.Instance.Show(
+                ScreenType.HomeScreen
+            );
+        }
     }
 
     public bool ShouldShowRewardPopup()
@@ -147,5 +205,16 @@ public class DailyStreakManager : MonoBehaviour
     {
         PlayerPrefs.SetInt(REWARD_PENDING_KEY, 0);
         PlayerPrefs.Save();
+    }
+
+    public bool CanShowReward()
+    {
+        if (rewardCheckSkippedThisSession)
+        {
+            rewardCheckSkippedThisSession = false;
+            return false;
+        }
+
+        return HasPendingReward();
     }
 }

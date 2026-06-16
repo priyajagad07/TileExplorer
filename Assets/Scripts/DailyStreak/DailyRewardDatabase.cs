@@ -8,10 +8,11 @@ using UnityEngine;
 public class DailyRewardDatabase : ScriptableObject
 {
     public List<WeeklyReward> day1Rewards;
-
+    public List<WeeklyReward> day2Rewards;
     public List<WeeklyReward> day3Rewards;
 
+    public List<WeeklyReward> day4Rewards;
     public List<WeeklyReward> day5Rewards;
-
+    public List<WeeklyReward> day6Rewards;
     public List<WeeklyReward> day7Rewards;
 }

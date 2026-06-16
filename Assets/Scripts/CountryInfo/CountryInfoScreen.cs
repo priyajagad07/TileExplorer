@@ -19,36 +19,26 @@ public class CountryInfoScreen : MonoBehaviour
     [SerializeField] private CanvasGroup continueButtonGroup;
 
     public bool openedFromUnlock;
-
-    Coroutine descriptionRoutine;
-
     void Awake()
     {
         instance = this;
     }
 
-    // ← NEW! Parameter for detecting unlock animation
-    public void ShowDestination(
-        DestinationData destination,
-        bool isFromUnlock = false)  // ← NEW!
+    public void ShowDestination(DestinationData destination, bool isFromUnlock = false)
     {
-        if (descriptionRoutine != null)
-        {
-            StopCoroutine(descriptionRoutine);
-        }
-
         titleText.text = destination.destinationName;
         descriptionText.text = destination.description;
 
         BackgroundManager.Instance.SetCountryInfoScreen(destination.background);
 
-        PlayIntroAnimation(isFromUnlock);  // ← Pass the flag!
+        PlayIntroAnimation(isFromUnlock);
     }
 
-    void PlayIntroAnimation(
-    bool isFromUnlock
-)
+    void PlayIntroAnimation(bool isFromUnlock)
     {
+        backButton.gameObject.SetActive(
+    !isFromUnlock
+);
         backButton.localScale = Vector3.zero;
         titleTextRect.localScale = Vector3.zero;
         continueButton.localScale = Vector3.zero;
@@ -64,11 +54,19 @@ public class CountryInfoScreen : MonoBehaviour
             DOTween.Sequence();
 
         float startDelay =
-            isFromUnlock ? 0.8f : 0f;
+     isFromUnlock ? 0.3f : 0f;
 
         seq.AppendInterval(
             startDelay
         );
+
+        if (isFromUnlock)
+        {
+            DOVirtual.DelayedCall(0.25f, () =>
+            {
+                MapScreenUI.instance.HideUnlockTransition();
+            });
+        }
 
         // Back Button
         seq.Append(
@@ -149,20 +147,10 @@ public class CountryInfoScreen : MonoBehaviour
 
     public void ContinueExploring()
     {
-        if (openedFromUnlock)
-        {
-            LevelManager.instance
-                .loadLevelSilently = true;
-
-            LevelManager.instance
-                .NextLevel(false);
-
-            openedFromUnlock = false;
-            return;
-        }
+        openedFromUnlock = false;
 
         UIManager.Instance.Show(
-            ScreenType.HomeScreen
+            ScreenType.GamePlay
         );
     }
 }
