@@ -9,6 +9,8 @@ public class MatchBoard : MonoBehaviour
     private List<GameObject> placedTiles = new List<GameObject>();
     private MatchBoardMovement movement;
     private MatchBoardMatch matchSystem;
+    public bool isInputLocked = false;
+    private Tween matchTimer; 
 
     void Awake()
     {
@@ -19,6 +21,12 @@ public class MatchBoard : MonoBehaviour
 
     public bool AddTile(GameObject tile)
     {
+        if (TutorialManager.instance != null)
+        {
+            if (!TutorialManager.instance.IsTileClickAllowed(tile)) return false;
+            TutorialManager.instance.CloseSoftTutorial(); 
+        }
+
         if (placedTiles.Count >= slots.Count)
         {
             return false;
@@ -47,17 +55,50 @@ public class MatchBoard : MonoBehaviour
         }
 
         RearrangeBoard();
-        DOVirtual.DelayedCall(0.16f, () =>
-            {
-                matchSystem.CheckMatch(
-                placedTiles,
-                tileID
-            );
 
-                CheckGameOver();
-            }
-        );
+        if (matchTimer != null) matchTimer.Kill();
+
+        matchTimer = DOVirtual.DelayedCall(0.18f, () =>
+        {
+            ProcessBoard();
+            if (BoosterManager.instance != null) BoosterManager.instance.CheckAndUnlockUndoAfterFirstTile();
+        });
+
         return true;
+    }
+
+    void ProcessBoard()
+    {
+        bool matchFound = false;
+
+        for (int i = 0; i < placedTiles.Count; i++)
+        {
+            if (placedTiles[i] == null) continue;
+
+            int id = placedTiles[i].GetComponent<Tile>().tileId;
+            int count = 0;
+
+            foreach (GameObject t in placedTiles)
+            {
+                if (t != null && t.GetComponent<Tile>().tileId == id) count++;
+            }
+
+            if (count >= 3)
+            {
+                matchSystem.CheckMatch(placedTiles, id);
+                matchFound = true;
+                break; // Only process one match at a time
+            }
+        }
+
+        if (matchFound)
+        {
+            matchTimer = DOVirtual.DelayedCall(0.65f, () => ProcessBoard());
+        }
+        else
+        {
+            CheckGameOver();
+        }
     }
 
     void CheckGameOver()
@@ -65,7 +106,6 @@ public class MatchBoard : MonoBehaviour
         if (placedTiles.Count >= slots.Count)
         {
             Debug.Log("Game Over");
-
             GameManager.instance.GameOver();
         }
     }
@@ -74,7 +114,10 @@ public class MatchBoard : MonoBehaviour
     {
         for (int i = 0; i < placedTiles.Count; i++)
         {
-            movement.MoveTile(placedTiles[i], slots[i]);
+            if (placedTiles[i] != null)
+            {
+                movement.MoveTile(placedTiles[i], slots[i]);
+            }
         }
     }
 
@@ -85,10 +128,13 @@ public class MatchBoard : MonoBehaviour
 
     public void ResetBoard()
     {
+        if (matchTimer != null) matchTimer.Kill();
+
         foreach (GameObject tile in placedTiles)
         {
             if (tile != null)
             {
+                // --> FROM OUR RESTART FIX
                 tile.transform.DOKill();
                 Destroy(tile);
             }
@@ -102,6 +148,7 @@ public class MatchBoard : MonoBehaviour
             {
                 if (child != null)
                 {
+                    // --> FROM OUR RESTART FIX
                     child.DOKill();
                     Destroy(child.gameObject);
                 }
@@ -123,5 +170,4 @@ public class MatchBoard : MonoBehaviour
     {
         placedTiles.RemoveAll(tile => tile == null);
     }
-
 }

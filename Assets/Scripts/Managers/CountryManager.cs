@@ -34,7 +34,7 @@ public class CountryManager : MonoBehaviour
     public bool IsCountryChanging()
     {
         int nextLevel =
-            PlayerPrefs.GetInt("Level", 0) + 2;
+            PlayerPrefs.GetInt("Level", 0) + 1;
 
         CountryData nextCountry =
             GetCountryForLevel(nextLevel);
@@ -46,7 +46,7 @@ public class CountryManager : MonoBehaviour
     public CountryData GetNextCountry()
     {
         int nextLevel =
-            PlayerPrefs.GetInt("Level", 0) + 2;
+            PlayerPrefs.GetInt("Level", 0) + 1;
 
         return GetCountryForLevel(nextLevel);
     }

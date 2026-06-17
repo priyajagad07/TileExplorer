@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,9 @@ public class MapManager : MonoBehaviour
     [Header("Lock Sprite")]
     public Sprite lockedCardSprite;
 
+    [Header("Country Panels")]
+    [Tooltip("Drag all your CountryUIPanel objects (France, Italy, etc.) into this list")]
+    public List<CountryUIPanel> countryPanels;
     void Awake()
     {
         instance = this;
@@ -20,13 +24,7 @@ public class MapManager : MonoBehaviour
 
     public void RefreshMap()
     {
-        Debug.Log("RefreshMap Level = " + (PlayerPrefs.GetInt("Level", 0) + 1));
-
-        if (CountryManager.Instance == null)
-        {
-            Debug.LogError("CountryManager Instance NULL");
-            return;
-        }
+        if (CountryManager.Instance == null) return;
 
         int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
         UpdateAllCountries(currentLevel);
@@ -35,102 +33,57 @@ public class MapManager : MonoBehaviour
     private void UpdateAllCountries(int currentLevel)
     {
         CountryDatabase database = CountryManager.Instance.GetDatabase();
-
-        if (database == null)
-        {
-            return;
-        }
+        if (database == null) return;
 
         foreach (CountryData country in database.countries)
         {
-            Transform countryTransform = GameObject.Find(country.countryName)?.transform;
+            // Safely find the matching panel from our list instead of searching the whole scene by string
+            CountryUIPanel matchingPanel = countryPanels.Find(p => p.countryData == country);
 
-            if (countryTransform == null)
-                continue;
+            if (matchingPanel == null) continue;
 
-            UpdateCountryCards(
-                countryTransform,
-                country,
-                currentLevel
-            );
+            UpdateCountryCards(matchingPanel, country, currentLevel);
         }
     }
 
-    private void UpdateCountryCards(Transform countryTransform, CountryData country, int currentLevel)
+    private void UpdateCountryCards(CountryUIPanel panel, CountryData country, int currentLevel)
     {
         int totalLevels = country.endLevel - country.startLevel + 1;
-
         int totalCards = country.previewCards.Length;
 
+        // Exact same float division as BackgroundManager
         float levelsPerCard = (float)totalLevels / totalCards;
-
         int unlockedCards = 0;
 
         if (currentLevel >= country.startLevel)
         {
-            int progress = Mathf.Clamp(currentLevel - country.startLevel + 1, 0, totalLevels);
+            int levelInsideCountry = currentLevel - country.startLevel;
 
-            unlockedCards = Mathf.CeilToInt(progress / levelsPerCard);
+            // Exact same FloorToInt math
+            int currentIndex = Mathf.FloorToInt(levelInsideCountry / levelsPerCard);
+
+            // The number of unlocked cards is just the index + 1
+            unlockedCards = currentIndex + 1;
         }
-
-        Debug.Log(country.countryName + " unlockedCards=" + unlockedCards);
 
         unlockedCards = Mathf.Clamp(unlockedCards, 0, totalCards);
 
         for (int i = 0; i < totalCards; i++)
         {
-            Transform card = countryTransform.Find("Card" + (i + 1) + " - Button");
+            if (i >= panel.destinationCards.Length) continue;
 
-            if (card == null)
-            {
-                continue;
-            }
+            DestinationCard destinationCard = panel.destinationCards[i];
+            if (destinationCard == null) continue;
 
-            DestinationCard destinationCard = card.GetComponent<DestinationCard>();
-
-            if (destinationCard != null)
-            {
-                destinationCard.SetUnlocked(
-                    i < unlockedCards
-                );
-            }
-
-            if (destinationCard != null)
-            {
-                destinationCard.country = country;
-                destinationCard.destinationIndex = i;
-            }
-
-            Transform cityImage =
-                card.Find("City - Image");
-
-            if (cityImage == null)
-                continue;
-
-            Image image =
-                cityImage.GetComponent<Image>();
-
-            if (image == null)
-                continue;
+            destinationCard.country = country;
+            destinationCard.destinationIndex = i;
 
             bool unlocked = i < unlockedCards;
+            destinationCard.SetUnlocked(unlocked);
 
-            if (unlocked)
+            if (destinationCard.cityImage != null)
             {
-                image.sprite =
-                    country.previewCards[i];
-            }
-            else
-            {
-                image.sprite =
-                    lockedCardSprite;
-            }
-
-            if (destinationCard != null)
-            {
-                destinationCard.SetUnlocked(
-                    unlocked
-                );
+                destinationCard.cityImage.sprite = unlocked ? country.previewCards[i] : lockedCardSprite;
             }
         }
     }

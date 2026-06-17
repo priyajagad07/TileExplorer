@@ -113,10 +113,10 @@ public class BoardSpawner : MonoBehaviour
 
         Sequence masterSequence = DOTween.Sequence();
         float currentTime = 0f;
-        float dropDuration = 0.3f;
-        float delayBetweenTiles = 0.02f;
-        float pauseBetweenLayers = 0.02f;
-        float dropHeight = 1800f;
+        float dropDuration = 0.2f;
+        float delayBetweenTiles = 0.015f;
+        float pauseBetweenLayers = 0.015f;
+        float dropHeight = 2500f;
 
         bool glowSoundInserted = false;
 
@@ -215,6 +215,19 @@ public class BoardSpawner : MonoBehaviour
 
             currentTime += dropDuration + pauseBetweenLayers;
         }
+
+        masterSequence.OnComplete(() =>
+        {
+            if (TutorialManager.instance != null)
+            {
+                TutorialManager.instance.CheckAndStartTutorial();
+            }
+            
+            if (BoosterManager.instance != null)
+            {
+                BoosterManager.instance.PlayUnlockAnimationIfNeeded();
+            }
+        });
 
         masterSequence.Play();
     }

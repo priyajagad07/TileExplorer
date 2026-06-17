@@ -55,13 +55,6 @@ public partial class DailyStreakUI
             DailyStreakManager.instance
                 .GiveRewardForCurrentDay();
         });
-
-        seq.AppendInterval(0.3f);
-
-        seq.AppendCallback(() =>
-        {
-            ShowKeepGoing();
-        });
     }
 
     void AnimateStreak(int targetValue)
@@ -132,7 +125,7 @@ public partial class DailyStreakUI
 
     void ShowKeepGoing()
     {
-         Debug.Log("ShowKeepGoing");
+        Debug.Log("ShowKeepGoing");
         SoundManager.instance.PlaySound(
             SoundName.ButtonPop
         );

@@ -18,4 +18,6 @@ public enum SoundName
     RewardReveal,
     ButtonPop,
     NumberPop,
+    UnlockBooster,
+    MapUnlock, 
 }

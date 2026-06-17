@@ -13,7 +13,7 @@ public class AutoSlider : MonoBehaviour
         {
             slider.value += fillSpeed * Time.deltaTime;
 
-            if(slider.value >= slider.maxValue)
+            if (slider.value >= slider.maxValue)
             {
                 FinishLoading();
             }
@@ -23,7 +23,33 @@ public class AutoSlider : MonoBehaviour
     void FinishLoading()
     {
         isFinished = true;
+
         Debug.Log("Sliding completed");
-        UIManager.Instance.Show(ScreenType.HomeScreen);
+
+        bool firstLaunch =
+            PlayerPrefs.GetInt(
+                "FirstGameplayLaunch",
+                0
+            ) == 0;
+
+        if (firstLaunch)
+        {
+            PlayerPrefs.SetInt(
+                "FirstGameplayLaunch",
+                1
+            );
+
+            PlayerPrefs.Save();
+
+            UIManager.Instance.Show(
+                ScreenType.GamePlay
+            );
+        }
+        else
+        {
+            UIManager.Instance.Show(
+                ScreenType.HomeScreen
+            );
+        }
     }
 }

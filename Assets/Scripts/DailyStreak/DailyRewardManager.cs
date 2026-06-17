@@ -128,106 +128,72 @@ public class DailyRewardManager : MonoBehaviour
         );
     }
 
-    void SelectReward(
-        int rewardCount,
-        string saveKey
-    )
+    void SelectReward(int rewardCount, string saveKey)
     {
-        int lastReward =
-            PlayerPrefs.GetInt(
-                saveKey,
-                -1
-            );
+        if (rewardCount == 0)
+        {
+            PlayerPrefs.SetInt(saveKey, -1);
+            return;
+        }
 
+        int lastReward = PlayerPrefs.GetInt(saveKey, -1);
         int newReward;
 
         do
         {
-            newReward =
-                UnityEngine.Random.Range(
-                    0,
-                    rewardCount
-                );
+            newReward = UnityEngine.Random.Range(0, rewardCount);
         }
-        while (
-            rewardCount > 1 &&
-            newReward == lastReward
-        );
+        while (rewardCount > 1 && newReward == lastReward);
 
-        PlayerPrefs.SetInt(
-            saveKey,
-            newReward
-        );
+        PlayerPrefs.SetInt(saveKey, newReward);
     }
 
-    public WeeklyReward GetRewardForDay(
-        int day
-    )
+    public WeeklyReward GetRewardForDay(int day)
     {
         switch (day)
         {
             case 1:
-                return database
-                    .day1Rewards[
-                        PlayerPrefs.GetInt(
-                            DAY1_KEY,
-                            0
-                        )
-                    ];
+                int day1Index = PlayerPrefs.GetInt(DAY1_KEY, -1);
+                if (day1Index >= 0 && day1Index < database.day1Rewards.Count)
+                    return database.day1Rewards[day1Index];
+                break;
 
             case 2:
-                return database
-                    .day2Rewards[
-                        PlayerPrefs.GetInt(
-                            DAY2_KEY,
-                            0
-                        )
-                    ];
+                int day2Index = PlayerPrefs.GetInt(DAY2_KEY, -1);
+                if (day2Index >= 0 && day2Index < database.day2Rewards.Count)
+                    return database.day2Rewards[day2Index];
+                break;
 
             case 3:
-                return database
-                    .day3Rewards[
-                        PlayerPrefs.GetInt(
-                            DAY3_KEY,
-                            0
-                        )
-                    ];
+                int day3Index = PlayerPrefs.GetInt(DAY3_KEY, -1);
+                if (day3Index >= 0 && day3Index < database.day3Rewards.Count)
+                    return database.day3Rewards[day3Index];
+                break;
 
             case 4:
-                return database
-                    .day4Rewards[
-                        PlayerPrefs.GetInt(
-                            DAY4_KEY,
-                            0
-                        )
-                    ];
+                int day4Index = PlayerPrefs.GetInt(DAY4_KEY, -1);
+                if (day4Index >= 0 && day4Index < database.day4Rewards.Count)
+                    return database.day4Rewards[day4Index];
+                break;
+
             case 5:
-                return database
-                    .day5Rewards[
-                        PlayerPrefs.GetInt(
-                            DAY5_KEY,
-                            0
-                        )
-                    ];
+                int day5Index = PlayerPrefs.GetInt(DAY5_KEY, -1);
+                if (day5Index >= 0 && day5Index < database.day5Rewards.Count)
+                    return database.day5Rewards[day5Index];
+                break;
+
 
             case 6:
-                return database
-                    .day6Rewards[
-                        PlayerPrefs.GetInt(
-                            DAY6_KEY,
-                            0
-                        )
-                    ];
-
+                int day6Index = PlayerPrefs.GetInt(DAY6_KEY, -1);
+                if (day6Index >= 0 && day6Index < database.day6Rewards.Count)
+                    return database.day6Rewards[day6Index];
+                break;
 
             case 7:
-                return database
-                    .day7Rewards[
-                        PlayerPrefs.GetInt(
-                            DAY7_KEY,
-                            0
-                        )
-                    ];
+                int day7Index = PlayerPrefs.GetInt(DAY7_KEY, -1);
+                if (day7Index >= 0 && day7Index < database.day7Rewards.Count)
+                    return database.day7Rewards[day7Index];
+                break;
         }
 
         return null;
@@ -247,31 +213,19 @@ public class DailyRewardManager : MonoBehaviour
             switch (rewardData.rewardType)
             {
                 case RewardType.Coins:
-                    CoinManager.instance
-                        .AddCoins(
-                            rewardData.amount
-                        );
+                    CoinManager.instance.AddCoins(rewardData.amount);
                     break;
 
                 case RewardType.Undo:
-                    BoosterManager.instance
-                        .AddUndo(
-                            rewardData.amount
-                        );
+                    BoosterManager.instance.AddUndo(rewardData.amount);
                     break;
 
                 case RewardType.Shuffle:
-                    BoosterManager.instance
-                        .AddShuffle(
-                            rewardData.amount
-                        );
+                    BoosterManager.instance.AddShuffle(rewardData.amount);
                     break;
 
                 case RewardType.Magic:
-                    BoosterManager.instance
-                        .AddMagic(
-                            rewardData.amount
-                        );
+                    BoosterManager.instance.AddMagic(rewardData.amount);
                     break;
             }
         }

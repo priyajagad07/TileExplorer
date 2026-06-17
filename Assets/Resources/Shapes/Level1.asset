@@ -9,11 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec8b7eaee7db042939390bebf28bc37c, type: 3}
-  m_Name: Level_1
-  m_EditorClassIdentifier: Assembly-CSharp::LevelData
-  levelNumber: 0
-  rewardCoins: 100
+  m_Script: {fileID: 11500000, guid: 0999abbe5f34545ce8fd30c34cd55e17, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: Assembly-CSharp::ShapeData
+  shapeName: Level1
+  layout:
+  - 00000
+  - 00000
+  - 10101
+  - 00000
+  - 00000
   difficulty: 1
-  layers:
-  - {fileID: 11400000, guid: c3faa4e80fd8d4fe8b1f9702507fed16, type: 2}

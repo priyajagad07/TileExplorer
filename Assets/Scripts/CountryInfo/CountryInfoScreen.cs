@@ -19,6 +19,7 @@ public class CountryInfoScreen : MonoBehaviour
     [SerializeField] private CanvasGroup continueButtonGroup;
 
     public bool openedFromUnlock;
+    
     void Awake()
     {
         instance = this;
@@ -36,9 +37,19 @@ public class CountryInfoScreen : MonoBehaviour
 
     void PlayIntroAnimation(bool isFromUnlock)
     {
-        backButton.gameObject.SetActive(
-    !isFromUnlock
-);
+        // ---> FIX: Kill all existing tweens on these objects so they don't overlap!
+        DOTween.Kill("CountryInfoSeq");
+        DOTween.Kill(descriptionText);
+        backButton.DOKill();
+        titleTextRect.DOKill();
+        continueButton.DOKill();
+        backButtonGroup.DOKill();
+        titleGroup.DOKill();
+        descriptionGroup.DOKill();
+        continueButtonGroup.DOKill();
+
+        backButton.gameObject.SetActive(!isFromUnlock);
+        
         backButton.localScale = Vector3.zero;
         titleTextRect.localScale = Vector3.zero;
         continueButton.localScale = Vector3.zero;
@@ -50,15 +61,12 @@ public class CountryInfoScreen : MonoBehaviour
 
         descriptionText.maxVisibleCharacters = 0;
 
-        Sequence seq =
-            DOTween.Sequence();
+        // ---> FIX: Give this sequence an ID so we can kill it easily next time
+        Sequence seq = DOTween.Sequence().SetId("CountryInfoSeq");
 
-        float startDelay =
-     isFromUnlock ? 0.3f : 0f;
+        float startDelay = isFromUnlock ? 0.3f : 0f;
 
-        seq.AppendInterval(
-            startDelay
-        );
+        seq.AppendInterval(startDelay);
 
         if (isFromUnlock)
         {
@@ -69,52 +77,21 @@ public class CountryInfoScreen : MonoBehaviour
         }
 
         // Back Button
-        seq.Append(
-            backButton.DOScale(
-                1f,
-                0.3f
-            ).SetEase(Ease.OutBack)
-        );
-
-        seq.Join(
-            backButtonGroup.DOFade(
-                1f,
-                0.25f
-            )
-        );
+        seq.Append(backButton.DOScale(1f, 0.3f).SetEase(Ease.OutBack));
+        seq.Join(backButtonGroup.DOFade(1f, 0.25f));
 
         // Title
-        seq.Append(
-            titleTextRect.DOScale(
-                1f,
-                0.35f
-            ).SetEase(Ease.OutBack)
-        );
-
-        seq.Join(
-            titleGroup.DOFade(
-                1f,
-                0.25f
-            )
-        );
+        seq.Append(titleTextRect.DOScale(1f, 0.35f).SetEase(Ease.OutBack));
+        seq.Join(titleGroup.DOFade(1f, 0.25f));
 
         // Description
-        seq.Append(
-            descriptionGroup.DOFade(
-                1f,
-                0.3f
-            )
-        );
+        seq.Append(descriptionGroup.DOFade(1f, 0.3f));
 
         seq.AppendCallback(() =>
         {
-            descriptionText
-                .ForceMeshUpdate();
+            descriptionText.ForceMeshUpdate();
 
-            int totalChars =
-                descriptionText
-                    .textInfo
-                    .characterCount;
+            int totalChars = descriptionText.textInfo.characterCount;
 
             DOTween.To(
                 () => descriptionText.maxVisibleCharacters,
@@ -122,35 +99,20 @@ public class CountryInfoScreen : MonoBehaviour
                 totalChars,
                 2.5f
             )
+            .SetTarget(descriptionText)
             .SetEase(Ease.Linear);
         });
 
-        seq.AppendInterval(
-            2.6f
-        );
+        seq.AppendInterval(2.6f);
 
         // Continue Button
-        seq.Append(
-            continueButton.DOScale(
-                1f,
-                0.35f
-            ).SetEase(Ease.OutBack)
-        );
-
-        seq.Join(
-            continueButtonGroup.DOFade(
-                1f,
-                0.25f
-            )
-        );
+        seq.Append(continueButton.DOScale(1f, 0.35f).SetEase(Ease.OutBack));
+        seq.Join(continueButtonGroup.DOFade(1f, 0.25f));
     }
 
     public void ContinueExploring()
     {
         openedFromUnlock = false;
-
-        UIManager.Instance.Show(
-            ScreenType.GamePlay
-        );
+        UIManager.Instance.Show(ScreenType.GamePlay);
     }
 }

@@ -45,42 +45,30 @@ public class MapScreenUI : MonoBehaviour
     public void PlayPendingUnlock()
     {
         int pending = DestinationUnlocker.GetPending();
-
-        if (pending < 0)
-            return;
+        if (pending < 0) return;
 
         CountryData country = CountryManager.Instance.GetNextCountry();
-        Debug.Log("Unlocking Country: " + country.countryName + " Pending Destination: " + pending);
 
-        Transform countryTransform = GameObject.Find(country.countryName)?.transform;
+        // 1. Find the correct panel via MapManager
+        CountryUIPanel panel = MapManager.instance.countryPanels.Find(p => p.countryData == country);
+        if (panel == null) return;
 
-        if (countryTransform == null)
-            return;
+        // 2. Safely get the card and its image
+        if (pending >= panel.destinationCards.Length) return;
+        DestinationCard card = panel.destinationCards[pending];
 
-        Transform card = countryTransform.Find("Card" + (pending + 1) + " - Button");
-
-        if (card == null)
-            return;
-
-        Transform cityImage = card.Find("City - Image");
-
-        if (cityImage == null)
-            return;
-
-        Image image = cityImage.GetComponent<Image>();
-
-        if (image == null)
-            return;
+        if (card == null || card.cityImage == null) return;
+        Image image = card.cityImage;
 
         Sequence seq = DOTween.Sequence();
-
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
 
-        seq.Append(cityImage.DOShakeRotation(0.45f, 8f, 10)
-        );
+        // Shake the image transform directly
+        seq.Append(image.transform.DOShakeRotation(0.45f, 8f, 10));
 
         seq.AppendCallback(() =>
         {
+            if (SoundManager.instance != null) SoundManager.instance.PlaySound(SoundName.MapUnlock);
             image.sprite = country.previewCards[pending];
         });
 
@@ -95,27 +83,18 @@ public class MapScreenUI : MonoBehaviour
         });
 
         seq.Append(unlockZoomImage.rectTransform.DOScale(1f, 0.8f).SetEase(Ease.OutBack));
-        seq.AppendInterval(0.3f);
+        seq.AppendInterval(0.5f);
 
-        seq.AppendInterval(0.2f);
         seq.AppendCallback(() =>
         {
             DestinationUnlocker.Clear();
-
             MapManager.instance.RefreshMap();
-
             CountryInfoScreen.instance.openedFromUnlock = true;
-
-            CountryInfoScreen.instance.ShowDestination(
-                country.destinations[pending],
-                true
-            );
-
-            UIManager.Instance.Show(
-                ScreenType.CountryInfoScreen
-            );
+            CountryInfoScreen.instance.ShowDestination(country.destinations[pending], true);
+            UIManager.Instance.Show(ScreenType.CountryInfoScreen);
         });
     }
+
     public void HideUnlockTransition()
     {
         unlockZoomImage.gameObject.SetActive(false);

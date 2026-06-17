@@ -80,6 +80,12 @@ public class GameManager : MonoBehaviour
     {
         levelText.text = "Level " + (levelIndex + 1);
         levelTextHomeScreen.text = "Level " + (levelIndex + 1);
+
+        if (BoosterManager.instance != null)
+        {
+            BoosterManager.instance.CheckUnlockRewards();
+            BoosterManager.instance.UpdateUI();
+        }
     }
 
     private void CompleteLevelReward(int coinAmount)
@@ -112,7 +118,6 @@ public class GameManager : MonoBehaviour
             LevelManager.instance.NextLevel(false);
 
             MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
-
 
             UIManager.Instance.Show(ScreenType.MapScreen);
 

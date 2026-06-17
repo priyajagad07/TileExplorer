@@ -130,6 +130,8 @@ public class BoosterSystem : MonoBehaviour
             return;
         }
 
+        MatchBoard.instance.isInputLocked = true;
+
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.HeavyImpact);
 
         Dictionary<int, List<Tile>> layerGroups = new Dictionary<int, List<Tile>>();
@@ -187,6 +189,7 @@ public class BoosterSystem : MonoBehaviour
                                 if (completedAnimations >= totalAnimations)
                                 {
                                     Tile.RefreshAllTileVisuals(tileParent);
+                                    MatchBoard.instance.isInputLocked = false;
                                 }
                             });
             }
@@ -202,17 +205,49 @@ public class BoosterSystem : MonoBehaviour
         float targetRotation = Random.Range(-30f, 30f);
 
         Sequence seq = DOTween.Sequence();
-
         seq.Append(rect.DOAnchorPos(targetPos, 0.35f).SetEase(Ease.OutCubic));
-
         seq.Join(rect.DORotate(new Vector3(0, 0, targetRotation), 0.2f));
-
         seq.Append(rect.DORotate(Vector3.zero, 0.15f));
-
         seq.OnComplete(() =>
         {
             onComplete?.Invoke();
         });
+    }
+
+    public bool CanShuffle()
+    {
+        if (BoardSpawner.instance == null) return false;
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        int availableTiles = 0;
+        foreach (Transform child in tileParent)
+        {
+            Tile tile = child.GetComponent<Tile>();
+            if (tile != null && !tile.IsMoved())
+            {
+                availableTiles++;
+            }
+        }
+
+        return availableTiles > 1;
+    }
+
+    public bool CanUseMagic()
+    {
+        if (BoardSpawner.instance == null) return false;
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        int availableTiles = 0;
+        foreach (Transform child in tileParent)
+        {
+            Tile tile = child.GetComponent<Tile>();
+            if (tile != null && !tile.IsMoved())
+            {
+                availableTiles++;
+            }
+        }
+
+        return availableTiles > 0;
     }
 
     public void UseMagicBooster()
@@ -276,6 +311,8 @@ public class BoosterSystem : MonoBehaviour
 
             availableBoardTiles.Add(tile);
         }
+
+        availableBoardTiles.Sort((a, b) => b.layer.CompareTo(a.layer));
 
         if (targetTileId != -1)
         {

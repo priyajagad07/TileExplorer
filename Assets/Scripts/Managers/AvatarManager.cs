@@ -38,12 +38,20 @@ public class AvatarManager : MonoBehaviour
 
     public void ConfirmAvatar()
     {
+        string playerName = nameInput.text.Trim();
+
+        if (string.IsNullOrEmpty(playerName))
+        {
+            playerName = "Player" + Random.Range(1000, 9999);
+        }
+
         PlayerPrefs.SetInt("Avatar", selectedAvatar);
-        PlayerPrefs.SetString("PlayerName", nameInput.text);
+        PlayerPrefs.SetString("PlayerName", playerName);
 
         PlayerPrefs.Save();
 
         avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
+        nameInput.text = playerName;
     }
 
     void LoadAvatar()
@@ -52,6 +60,16 @@ public class AvatarManager : MonoBehaviour
         SelectAvatar(selectedAvatar);
 
         avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
-        nameInput.text = PlayerPrefs.GetString("PlayerName", "");
+
+        string playerName = PlayerPrefs.GetString("PlayerName", "");
+
+        if (string.IsNullOrEmpty(playerName))
+        {
+            playerName = "Player" + Random.Range(1000, 9999);
+            PlayerPrefs.SetString("PlayerName", playerName);
+            PlayerPrefs.Save();
+        }
+
+        nameInput.text = playerName;
     }
 }

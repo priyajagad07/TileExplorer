@@ -27,13 +27,14 @@ public class LevelManager : MonoBehaviour
     void Awake()
     {
         instance = this;
+       
     }
 
     void Start()
-    {
+    { 
         //PlayerPrefs.DeleteAll();
+        
         currentLevelIndex = PlayerPrefs.GetInt("Level", 0);
-
         levelDatabase = Resources.Load<LevelDatabase>("LevelDatabase");
 
         LoadLevel(currentLevelIndex);

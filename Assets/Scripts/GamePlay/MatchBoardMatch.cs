@@ -33,10 +33,11 @@ public class MatchBoardMatch : MonoBehaviour
         if (matched.Count >= 3)
         {
             SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
-            removedTiles += matched.Count;
+            removedTiles += 3;
 
-            foreach (GameObject matchtile in matched)
+            for (int i = 0; i < 3; i++)
             {
+                GameObject matchtile = matched[i];
                 MatchBoard.instance.RemoveTile(matchtile);
                 activePopAnimation++;
                 PopAndDestroy(matchtile);

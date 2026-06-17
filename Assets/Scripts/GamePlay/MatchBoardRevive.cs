@@ -10,66 +10,68 @@ public class MatchBoardRevive : MonoBehaviour
             return;
 
         List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
+        if (placedTiles.Count == 0) return;
 
-        Dictionary<int, int> tileCounts = new Dictionary<int, int>();
+        HashSet<int> targetTileIds = new HashSet<int>();
+        int tilesToCheck = Mathf.Min(3, placedTiles.Count);
 
-        foreach (GameObject tile in placedTiles)
+        for (int i = 0; i < tilesToCheck; i++)
         {
-            if (tile == null)
-                continue;
-
-            int id = tile.GetComponent<Tile>().tileId;
-            if (!tileCounts.ContainsKey(id))
+            int index = placedTiles.Count - 1 - i;
+            if (placedTiles[index] != null)
             {
-                tileCounts[id] = 0;
-            }
-
-            tileCounts[id]++;
-        }
-
-        Transform tileParent = BoardSpawner.instance.GetTileParent();
-        List<GameObject> tilesToRemove = new List<GameObject>();
-
-        foreach (var pair in tileCounts)
-        {
-            int tileId = pair.Key;
-            int currentCount = pair.Value;
-
-            int needed = 3 - currentCount;
-
-            foreach (Transform child in tileParent)
-            {
-                if (needed <= 0)
-                    break;
-
-                Tile tile = child.GetComponent<Tile>();
-
-                if (tile == null)
-                    continue;
-
-                if (tile.tileId == tileId)
+                Tile tile = placedTiles[index].GetComponent<Tile>();
+                if (tile != null)
                 {
-                    tilesToRemove.Add(child.gameObject);
-                    needed--;
+                    targetTileIds.Add(tile.tileId);
                 }
             }
         }
 
-        foreach (GameObject tile in placedTiles)
+        List<GameObject> tilesToDestroy = new List<GameObject>();
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        foreach (int id in targetTileIds)
         {
-            tilesToRemove.Add(tile);
+            List<GameObject> matchedGroup = new List<GameObject>();
+
+            foreach (GameObject t in placedTiles)
+            {
+                if (t != null && t.GetComponent<Tile>().tileId == id)
+                {
+                    matchedGroup.Add(t);
+                }
+            }
+
+            if (matchedGroup.Count < 3)
+            {
+                foreach (Transform child in tileParent)
+                {
+                    if (matchedGroup.Count >= 3) break;
+
+                    Tile boardTile = child.GetComponent<Tile>();
+
+                    if (boardTile != null && boardTile.tileId == id && !boardTile.IsMoved())
+                    {
+                        matchedGroup.Add(child.gameObject);
+                    }
+                }
+            }
+
+            tilesToDestroy.AddRange(matchedGroup);
         }
 
-        foreach (GameObject tile in tilesToRemove)
+        foreach (GameObject tileObj in tilesToDestroy)
         {
+            if (placedTiles.Contains(tileObj))
+            {
+                MatchBoard.instance.RemoveTile(tileObj);
+            }
+
             MatchBoardMatch.instance.AddRemovedTile();
-            MatchBoard.instance.RemoveTile(tile);
-
-            MatchBoardMatch.instance.PlayDestroyEffect(tile);
+            MatchBoardMatch.instance.PlayDestroyEffect(tileObj);
         }
 
-        placedTiles.Clear();
-        MatchBoard.instance.ResetBoard();
         MatchBoard.instance.RearrangeBoard();
 
         Time.timeScale = 1f;
@@ -80,7 +82,6 @@ public class MatchBoardRevive : MonoBehaviour
     IEnumerator RefreshTilesAfterRevive(Transform tileParent)
     {
         yield return new WaitForSeconds(0.25f);
-
         Tile.RefreshAllTileVisuals(tileParent);
     }
 }

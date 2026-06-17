@@ -20,6 +20,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (MatchBoard.instance.isInputLocked) return;
+
         if (isMoved)
             return;
 
@@ -94,7 +96,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (isMoved)
             return;
 
-        //BoosterSystem.instance.RecordMove(gameObject);
         PlayClickAnimation();
         bool added = MatchBoard.instance.AddTile(gameObject);
 
@@ -158,16 +159,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     void PlayBlockedFeedback()
     {
-        SoundManager.instance.PlayHaptic(
-    MOST_HapticFeedback.HapticTypes.LightImpact
-);
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.LightImpact);
         transform.DOKill();
 
-        transform
-            .DOPunchScale(Vector3.one * 0.05f, 0.2f, 5, 0.5f);
+        transform.DOPunchScale(Vector3.one * 0.05f, 0.2f, 5, 0.5f);
 
-        transform
-            .DOPunchPosition(
+        transform.DOPunchPosition(
                 Vector3.right * 8f, 0.2f, 8, 0.5f);
 
         SoundManager.instance.PlaySound(SoundName.TileBlocked);
@@ -183,4 +180,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             tile.RefreshVisual();
         }
     }
+
+
 }

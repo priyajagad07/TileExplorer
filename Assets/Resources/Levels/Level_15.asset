@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec8b7eaee7db042939390bebf28bc37c, type: 3}
-  m_Name: Level_1
+  m_Name: Level_15
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelNumber: 0
   rewardCoins: 100
   difficulty: 1
   layers:
-  - {fileID: 11400000, guid: c3faa4e80fd8d4fe8b1f9702507fed16, type: 2}
+  - {fileID: 11400000, guid: dc678cfceaa4246ef9afe61fdfc3e7e8, type: 2}
+  - {fileID: 11400000, guid: aeda2a5c9bcce43dd97068419b3743ff, type: 2}
+  - {fileID: 11400000, guid: c544e75158e8a43e6a00f19ab2d9f4fc, type: 2}

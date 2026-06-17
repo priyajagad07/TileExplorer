@@ -6,40 +6,32 @@ public class DestinationCard : MonoBehaviour
     public CountryData country;
     public int destinationIndex;
     private bool isUnlocked;
+    
     [SerializeField]
     private GameObject lockedMessagePopup;
+
+    [Header("UI References")]
+    [Tooltip("Drag the 'City - Image' child object here")]
+    public Image cityImage;
+
     public void OnClick()
     {
         if (!isUnlocked)
         {
-            MapScreenUI.instance.ShowLockedMessage(); return;
+            MapScreenUI.instance.ShowLockedMessage(); 
+            return;
         }
 
-        Debug.Log("CARD CLICKED");
-        if (country == null)
-            return;
+        if (country == null) return;
 
         if (destinationIndex < 0 || destinationIndex >= country.destinations.Length)
         {
-            Debug.LogError(
-                "Invalid destination index: "
-                + destinationIndex
-                + " for "
-                + country.countryName
-            );
-
+            Debug.LogError("Invalid destination index: " + destinationIndex + " for " + country.countryName);
             return;
         }
 
-        Debug.Log(country.countryName + " index=" + destinationIndex);
-
-        CountryInfoScreen.instance.ShowDestination(
-            country.destinations[destinationIndex]
-        );
-
+        CountryInfoScreen.instance.ShowDestination(country.destinations[destinationIndex]);
         CountryInfoScreen.instance.openedFromUnlock = false;
-        Debug.Log("SHOWING SCREEN");
-
         UIManager.Instance.Show(ScreenType.CountryInfoScreen);
     }
 
@@ -47,5 +39,4 @@ public class DestinationCard : MonoBehaviour
     {
         isUnlocked = unlocked;
     }
-
 }
