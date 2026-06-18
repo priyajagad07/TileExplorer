@@ -27,14 +27,11 @@ public class LevelManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-       
     }
 
     void Start()
     { 
-        //PlayerPrefs.DeleteAll();
-        
-        currentLevelIndex = PlayerPrefs.GetInt("Level", 0);
+        currentLevelIndex = SaveManager.instance.data.level;
         levelDatabase = Resources.Load<LevelDatabase>("LevelDatabase");
 
         LoadLevel(currentLevelIndex);
@@ -66,13 +63,10 @@ public class LevelManager : MonoBehaviour
             Debug.LogWarning("No country found for level: " + (index + 1));
         }
 
-        // HANDMADE LEVELS
         if (index < levelDatabase.levels.Count)
         {
             LevelData handmadeLevel = levelDatabase.levels[index];
-
             ProceduralLevelData data = new ProceduralLevelData();
-
             data.layerLayouts = new List<string[]>();
 
             foreach (ShapeData shape in handmadeLevel.layers)
@@ -81,7 +75,6 @@ public class LevelManager : MonoBehaviour
             }
 
             string[] biggestLayout = data.layerLayouts[0];
-
             data.layout = biggestLayout;
             data.rows = biggestLayout.Length;
             data.cols = biggestLayout[0].Length;
@@ -89,11 +82,9 @@ public class LevelManager : MonoBehaviour
             BoardGenerator.instance.SetProceduralLevel(data);
             GameManager.instance.UpdateLevelText(index);
             Debug.Log("Loaded Handmade Level: " + index);
-
             return;
         }
 
-        // PROCEDURAL INFINITE
         ProceduralLevelData levelData = ProceduralLevelGenerator.instance.GenerateLevel(index);
 
         if (levelData == null)
@@ -123,25 +114,21 @@ public class LevelManager : MonoBehaviour
     private IEnumerator NextLevelRoutine(bool playParticle)
     {
         isLoadingNextLevel = true;
-
         nextLevelButton.interactable = false;
 
         if (playParticle && nextLevelParticles != null)
         {
             nextLevelParticles.Play();
-
             yield return new WaitForSeconds(nextLevelParticleDuration);
         }
 
         currentLevelIndex++;
-
         Debug.Log("Moving to next level: " + currentLevelIndex);
 
-        PlayerPrefs.SetInt("Level", currentLevelIndex);
-        PlayerPrefs.Save();
+        SaveManager.instance.data.level = currentLevelIndex;
+        SaveManager.instance.SaveData();
 
         UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
-
         LoadLevel(currentLevelIndex);
 
         if (!loadLevelSilently)
@@ -156,34 +143,21 @@ public class LevelManager : MonoBehaviour
         }
 
         loadLevelSilently = false;
-
         GameManager.instance.ResetLevelState();
-
         nextLevelButton.interactable = true;
-
         isLoadingNextLevel = false;
     }
 
     public void UpdateNextButtonText()
     {
-        int currentLevel =
-            PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
 
-        CountryData currentCountry =
-            BackgroundManager.Instance.GetCurrentCountry();
+        CountryData currentCountry = BackgroundManager.Instance.GetCurrentCountry();
+        CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
 
-        CountryData nextCountry =
-            CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+        bool countryChanging = nextCountry != currentCountry;
+        bool unlockingDestination = BackgroundManager.Instance.IsNextDestinationUnlock();
 
-        bool countryChanging =
-            nextCountry != currentCountry;
-
-        bool unlockingDestination =
-            BackgroundManager.Instance.IsNextDestinationUnlock();
-
-        nextLevelText.text =
-            (unlockingDestination || countryChanging)
-            ? "Next Destination"
-            : "Next Level";
+        nextLevelText.text = (unlockingDestination || countryChanging) ? "Next Destination" : "Next Level";
     }
 }

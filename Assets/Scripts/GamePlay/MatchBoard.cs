@@ -10,7 +10,7 @@ public class MatchBoard : MonoBehaviour
     private MatchBoardMovement movement;
     private MatchBoardMatch matchSystem;
     public bool isInputLocked = false;
-    private Tween matchTimer; 
+    private Tween matchTimer;
 
     void Awake()
     {
@@ -24,7 +24,7 @@ public class MatchBoard : MonoBehaviour
         if (TutorialManager.instance != null)
         {
             if (!TutorialManager.instance.IsTileClickAllowed(tile)) return false;
-            TutorialManager.instance.CloseSoftTutorial(); 
+            TutorialManager.instance.CloseSoftTutorial();
         }
 
         if (placedTiles.Count >= slots.Count)
@@ -87,7 +87,7 @@ public class MatchBoard : MonoBehaviour
             {
                 matchSystem.CheckMatch(placedTiles, id);
                 matchFound = true;
-                break; // Only process one match at a time
+                break;
             }
         }
 
@@ -97,6 +97,10 @@ public class MatchBoard : MonoBehaviour
         }
         else
         {
+            if (AutoShuffleManager.instance != null)
+            {
+                AutoShuffleManager.instance.CheckForDeadlock();
+            }
             CheckGameOver();
         }
     }
@@ -134,7 +138,6 @@ public class MatchBoard : MonoBehaviour
         {
             if (tile != null)
             {
-                // --> FROM OUR RESTART FIX
                 tile.transform.DOKill();
                 Destroy(tile);
             }
@@ -148,7 +151,6 @@ public class MatchBoard : MonoBehaviour
             {
                 if (child != null)
                 {
-                    // --> FROM OUR RESTART FIX
                     child.DOKill();
                     Destroy(child.gameObject);
                 }

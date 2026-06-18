@@ -1,6 +1,6 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using Solo.MOST_IN_ONE;
 
 public class AvatarManager : MonoBehaviour
@@ -26,9 +26,7 @@ public class AvatarManager : MonoBehaviour
 
     public void SelectAvatar(int index)
     {
-        SoundManager.instance.PlayHaptic(
-       MOST_HapticFeedback.HapticTypes.LightImpact
-                );
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.LightImpact);
         selectedAvatar = index;
         avatarPreview.sprite = avatars[index].iconImage.sprite;
 
@@ -45,10 +43,9 @@ public class AvatarManager : MonoBehaviour
             playerName = "Player" + Random.Range(1000, 9999);
         }
 
-        PlayerPrefs.SetInt("Avatar", selectedAvatar);
-        PlayerPrefs.SetString("PlayerName", playerName);
-
-        PlayerPrefs.Save();
+        SaveManager.instance.data.avatarIndex = selectedAvatar;
+        SaveManager.instance.data.playerName = playerName;
+        SaveManager.instance.SaveData();
 
         avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
         nameInput.text = playerName;
@@ -56,18 +53,18 @@ public class AvatarManager : MonoBehaviour
 
     void LoadAvatar()
     {
-        selectedAvatar = PlayerPrefs.GetInt("Avatar", 0);
+        selectedAvatar = SaveManager.instance.data.avatarIndex;
         SelectAvatar(selectedAvatar);
 
         avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
 
-        string playerName = PlayerPrefs.GetString("PlayerName", "");
+        string playerName = SaveManager.instance.data.playerName;
 
         if (string.IsNullOrEmpty(playerName))
         {
             playerName = "Player" + Random.Range(1000, 9999);
-            PlayerPrefs.SetString("PlayerName", playerName);
-            PlayerPrefs.Save();
+            SaveManager.instance.data.playerName = playerName;
+            SaveManager.instance.SaveData();
         }
 
         nameInput.text = playerName;

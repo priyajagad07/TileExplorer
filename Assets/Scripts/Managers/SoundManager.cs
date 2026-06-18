@@ -108,137 +108,64 @@ public class SoundManager : MonoBehaviour
     public void ToggleMusic()
     {
         isMusicMuted = !isMusicMuted;
-
-        if (isMusicMuted)
-        {
-            musicSource.volume = 0;
-        }
-        else
-        {
-            musicSource.volume = musicVolume;
-        }
-
+        musicSource.volume = isMusicMuted ? 0 : musicVolume;
         SaveSettings();
     }
 
     public void ToggleSfx()
     {
         isSfxMuted = !isSfxMuted;
-
-        if (isSfxMuted)
-        {
-            sfxSource.volume = 0;
-        }
-        else
-        {
-            sfxSource.volume = sfxVolume;
-        }
-
+        sfxSource.volume = isSfxMuted ? 0 : sfxVolume;
         SaveSettings();
     }
 
     public void ToggleVibration()
     {
-        isVibrationMuted =
-            !isVibrationMuted;
-
+        isVibrationMuted = !isVibrationMuted;
         SaveSettings();
     }
 
     public void ForceMusicMute(bool val)
     {
         isMusicMuted = val;
-
-        if (val)
-        {
-            musicSource.volume = 0;
-        }
-        else
-        {
-            musicSource.volume = musicVolume;
-        }
+        musicSource.volume = val ? 0 : musicVolume;
         SaveSettings();
     }
 
     public void ForceSfxMute(bool val)
     {
         isSfxMuted = val;
-
-        if (val)
-        {
-            sfxSource.volume = 0;
-        }
-        else
-        {
-            sfxSource.volume = sfxVolume;
-        }
+        sfxSource.volume = val ? 0 : sfxVolume;
         SaveSettings();
     }
 
     void LoadSettings()
     {
-        isMusicMuted =
-            PlayerPrefs.GetInt("MusicMuted", 0) == 1;
+        if (SaveManager.instance == null) return; 
 
-        isSfxMuted =
-            PlayerPrefs.GetInt("SfxMuted", 0) == 1;
+        isMusicMuted = SaveManager.instance.data.musicMuted == 1;
+        isSfxMuted = SaveManager.instance.data.sfxMuted == 1;
+        musicVolume = SaveManager.instance.data.musicVolume;
+        sfxVolume = SaveManager.instance.data.sfxVolume;
+        isVibrationMuted = SaveManager.instance.data.vibrationMuted == 1;
 
-        musicVolume =
-            PlayerPrefs.GetFloat("MusicVolume", 1f);
-
-        sfxVolume =
-            PlayerPrefs.GetFloat("SfxVolume", 1f);
-
-        musicSource.volume =
-            isMusicMuted ? 0 : musicVolume;
-
-        sfxSource.volume =
-            isSfxMuted ? 0 : sfxVolume;
-
-        isVibrationMuted =
-PlayerPrefs.GetInt(
-    "VibrationMuted",
-    0
-) == 1;
+        musicSource.volume = isMusicMuted ? 0 : musicVolume;
+        sfxSource.volume = isSfxMuted ? 0 : sfxVolume;
     }
 
     void SaveSettings()
     {
-        PlayerPrefs.SetInt(
-            "MusicMuted",
-            isMusicMuted ? 1 : 0
-        );
-
-        PlayerPrefs.SetInt(
-            "SfxMuted",
-            isSfxMuted ? 1 : 0
-        );
-
-        PlayerPrefs.SetFloat(
-            "MusicVolume",
-            musicVolume
-        );
-
-        PlayerPrefs.SetFloat(
-            "SfxVolume",
-            sfxVolume
-        );
-
-        PlayerPrefs.SetInt(
-    "VibrationMuted",
-    isVibrationMuted ? 1 : 0
-);
-
-        PlayerPrefs.Save();
+        SaveManager.instance.data.musicMuted = isMusicMuted ? 1 : 0;
+        SaveManager.instance.data.sfxMuted = isSfxMuted ? 1 : 0;
+        SaveManager.instance.data.musicVolume = musicVolume;
+        SaveManager.instance.data.sfxVolume = sfxVolume;
+        SaveManager.instance.data.vibrationMuted = isVibrationMuted ? 1 : 0;
+        SaveManager.instance.SaveData();
     }
 
-    public void PlayHaptic(
-    MOST_HapticFeedback.HapticTypes type
-)
+    public void PlayHaptic(MOST_HapticFeedback.HapticTypes type)
     {
-        if (isVibrationMuted)
-            return;
-
+        if (isVibrationMuted) return;
         MOST_HapticFeedback.Generate(type);
     }
 }

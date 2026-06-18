@@ -10,7 +10,6 @@ public class MapManager : MonoBehaviour
     public Sprite lockedCardSprite;
 
     [Header("Country Panels")]
-    [Tooltip("Drag all your CountryUIPanel objects (France, Italy, etc.) into this list")]
     public List<CountryUIPanel> countryPanels;
     void Awake()
     {
@@ -26,7 +25,7 @@ public class MapManager : MonoBehaviour
     {
         if (CountryManager.Instance == null) return;
 
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
         UpdateAllCountries(currentLevel);
     }
 
@@ -37,7 +36,6 @@ public class MapManager : MonoBehaviour
 
         foreach (CountryData country in database.countries)
         {
-            // Safely find the matching panel from our list instead of searching the whole scene by string
             CountryUIPanel matchingPanel = countryPanels.Find(p => p.countryData == country);
 
             if (matchingPanel == null) continue;
@@ -51,18 +49,13 @@ public class MapManager : MonoBehaviour
         int totalLevels = country.endLevel - country.startLevel + 1;
         int totalCards = country.previewCards.Length;
 
-        // Exact same float division as BackgroundManager
         float levelsPerCard = (float)totalLevels / totalCards;
         int unlockedCards = 0;
 
         if (currentLevel >= country.startLevel)
         {
             int levelInsideCountry = currentLevel - country.startLevel;
-
-            // Exact same FloorToInt math
             int currentIndex = Mathf.FloorToInt(levelInsideCountry / levelsPerCard);
-
-            // The number of unlocked cards is just the index + 1
             unlockedCards = currentIndex + 1;
         }
 

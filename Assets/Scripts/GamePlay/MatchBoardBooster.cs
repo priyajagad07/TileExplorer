@@ -5,8 +5,8 @@ public class MatchBoardBooster : MonoBehaviour
     public void UseUndo()
     {
         if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
-        bool isUnlocked = currentLevel > 3 || (currentLevel == 3 && PlayerPrefs.GetInt("UndoAnimPlayed", 0) == 1);
+        int currentLevel = SaveManager.instance.data.level + 1;
+        bool isUnlocked = currentLevel > 3 || (currentLevel == 3 && SaveManager.instance.data.undoAnimPlayed == 1);
 
         if (!isUnlocked)
         {
@@ -35,8 +35,8 @@ public class MatchBoardBooster : MonoBehaviour
     public void ShuffleTiles()
     {
         if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
-        bool isUnlocked = currentLevel > 5 || (currentLevel == 5 && PlayerPrefs.GetInt("ShuffleAnimPlayed", 0) == 1);
+        int currentLevel = SaveManager.instance.data.level + 1;
+        bool isUnlocked = currentLevel > 5 || (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 1);
 
         if (!isUnlocked)
         {
@@ -66,11 +66,8 @@ public class MatchBoardBooster : MonoBehaviour
     {
         if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
 
-
-
-
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
-        bool isUnlocked = currentLevel > 7 || (currentLevel == 7 && PlayerPrefs.GetInt("MagicAnimPlayed", 0) == 1);
+        int currentLevel = SaveManager.instance.data.level + 1;
+        bool isUnlocked = currentLevel > 7 || (currentLevel == 7 && SaveManager.instance.data.magicAnimPlayed == 1);
 
         if (!isUnlocked)
         {

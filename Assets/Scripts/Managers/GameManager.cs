@@ -12,24 +12,35 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI levelTextHomeScreen;
     public GameObject nextLevelButton;
     public Button claimButton;
-    private GameObject coinParticle;
+
     private bool rewardClaimed = false;
+    private bool levelCompleted = false;
+
+    [Header("Juice Particles")]
     [SerializeField] private ParticleSystem leftConfetti;
     [SerializeField] private ParticleSystem rightConfetti;
-    private bool levelCompleted = false;
+
     [SerializeField]
     private UIAnimations birdAnimation;
+
+    public bool isGameInProgress = false;
+
+    public bool returnToHomeAfterMap = false;
 
     void Awake()
     {
         instance = this;
     }
 
+    public void StartGame()
+    {
+        isGameInProgress = true;
+    }
+
     public void GameOver()
     {
-        SoundManager.instance.PlayHaptic(
-            MOST_HapticFeedback.HapticTypes.Warning
-        );
+        isGameInProgress = false;
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Warning);
         SoundManager.instance.PlaySound(SoundName.GameOver);
         UIManager.Instance.ShowPopup(ScreenType.GameOver);
         Debug.Log("Game Over");
@@ -38,42 +49,140 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
-        if (levelCompleted)
-            return;
+        if (levelCompleted) return;
 
+        isGameInProgress = false;
         levelCompleted = true;
-
         rewardClaimed = false;
         claimButton.interactable = true;
-        SoundManager.instance.PlayHaptic(
-            MOST_HapticFeedback.HapticTypes.Success
-        );
+
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
         SoundManager.instance.PlaySound(SoundName.LevelComplete);
         UIManager.Instance.ShowPopup(ScreenType.LevelCompleted);
         LevelManager.instance.UpdateNextButtonText();
 
         PlayConfetti();
-
         Debug.Log("Level Completed");
+    }
+
+    public void GoHomeAndReset()
+    {
+        Time.timeScale = 1f;
+
+        if (levelCompleted && !rewardClaimed)
+        {
+            rewardClaimed = true;
+
+            SoundManager.instance.PlaySound(SoundName.Coins);
+            if (LevelManager.instance.nextLevelParticles != null)
+            {
+                LevelManager.instance.nextLevelParticles.Play();
+            }
+            SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
+
+            DOVirtual.DelayedCall(1.1f, () =>
+            {
+                CoinManager.instance.AddCoins(100);
+
+                int currentLevel = SaveManager.instance.data.level + 1;
+                CountryData currentCountry = BackgroundManager.Instance.GetCurrentCountry();
+                CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+
+                bool countryChanging = nextCountry != currentCountry;
+                bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || countryChanging;
+
+                SaveManager.instance.data.level++;
+                SaveManager.instance.SaveData();
+
+                UpdateLevelText(SaveManager.instance.data.level);
+
+                if (willUnlock)
+                {
+                    returnToHomeAfterMap = true;
+
+                    int nextDestination = BackgroundManager.Instance.GetNextDestinationIndex();
+                    LevelManager.instance.skipMapRefresh = true;
+                    MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
+
+                    UIManager.Instance.HidePopup(ScreenType.GameOver);
+                    UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
+
+                    MatchBoardMatch.instance.ResetBoardState();
+                    BoosterSystem.instance.ClearUndoStack();
+                    MatchBoard.instance.ResetBoard();
+                    BoardSpawner.instance.ClearBoard();
+
+                    UIManager.Instance.Show(ScreenType.MapScreen);
+
+                    DOVirtual.DelayedCall(0.8f, () =>
+                    {
+                        MapScreenUI.instance.PlayPendingUnlock();
+                    });
+
+                    ResetLevelState();
+                }
+                else
+                {
+                    ExecuteHomeTransition();
+                }
+            });
+
+            return;
+        }
+
+        ExecuteHomeTransition();
+    }
+
+    private void ExecuteHomeTransition()
+    {
+        UIManager.Instance.HidePopup(ScreenType.GameOver);
+        UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
+
+        MatchBoardMatch.instance.ResetBoardState();
+        BoosterSystem.instance.ClearUndoStack();
+        MatchBoard.instance.ResetBoard();
+        BoardSpawner.instance.ClearBoard();
+
+        UIManager.Instance.Show(ScreenType.HomeScreen);
+        ResetLevelState();
+    }
+
+    public void ContinueMidGame()
+    {
+        UIManager.Instance.HidePopup(ScreenType.ContinueGame);
+        UIManager.Instance.Show(ScreenType.GamePlay);
+    }
+
+    public void RestartMidGame()
+    {
+        UIManager.Instance.HidePopup(ScreenType.ContinueGame);
+        ReplayGame();
     }
 
     public void ReplayGame()
     {
         ResetLevelState();
         Time.timeScale = 1f;
-        Debug.Log(Time.timeScale);
 
         MatchBoardMatch.instance.ResetBoardState();
-
         BoosterSystem.instance.ClearUndoStack();
         MatchBoard.instance.ResetBoard();
         BoardSpawner.instance.ClearBoard();
 
-        int currentLevel = PlayerPrefs.GetInt("Level", 0);
+        int currentLevel = SaveManager.instance.data.level;
 
         LevelManager.instance.LoadLevel(currentLevel);
         UIManager.Instance.HidePopup(ScreenType.GameOver);
+        UIManager.Instance.HidePopup(ScreenType.ContinueGame);
         UIManager.Instance.Show(ScreenType.GamePlay);
+
+        DOVirtual.DelayedCall(0.1f, () =>
+        {
+            if (BoardSpawner.instance != null)
+            {
+                BoardSpawner.instance.PlaySpawnAnimation();
+            }
+        });
     }
 
     public void UpdateLevelText(int levelIndex)
@@ -90,24 +199,15 @@ public class GameManager : MonoBehaviour
 
     private void CompleteLevelReward(int coinAmount)
     {
-        Debug.Log("=== CompleteLevelReward Called ===");
-        Debug.Log("Coin Amount: " + coinAmount);
-
         SoundManager.instance.PlaySound(SoundName.CoinReach);
         CoinManager.instance.AddCoins(coinAmount);
 
-        // Check if next destination unlocks
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
-
+        int currentLevel = SaveManager.instance.data.level + 1;
         CountryData currentCountry = BackgroundManager.Instance.GetCurrentCountry();
-
         CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
 
         bool countryChanging = nextCountry != currentCountry;
-
         bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || countryChanging;
-
-        Debug.Log("Will Unlock Next Destination: " + willUnlock);
 
         if (willUnlock)
         {
@@ -118,65 +218,61 @@ public class GameManager : MonoBehaviour
             LevelManager.instance.NextLevel(false);
 
             MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
-
             UIManager.Instance.Show(ScreenType.MapScreen);
 
             DOVirtual.DelayedCall(0.8f, () =>
             {
                 MapScreenUI.instance.PlayPendingUnlock();
-            }
-            );
+            });
         }
         else
         {
-            Debug.Log("Regular level progression - no new destination");
             LevelManager.instance.NextLevel(false);
         }
     }
 
     public void ClaimReward()
     {
-        if (rewardClaimed)
-            return;
+        if (rewardClaimed) return;
 
-        rewardClaimed = true;
-        claimButton.interactable = false;
+        SoundManager.instance.PlaySound(SoundName.ButtonPop);
 
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        if (LevelManager.instance.nextLevelParticles != null)
+        AdManager.instance.ShowRewardedAd(() =>
         {
-            LevelManager.instance.nextLevelParticles.Play();
-        }
-        SoundManager.instance.PlayHaptic(
-            MOST_HapticFeedback.HapticTypes.Success
-        );
+            DOVirtual.DelayedCall(0.2f, () =>
+            {
+                rewardClaimed = true;
+                claimButton.interactable = false;
 
-        DOVirtual.DelayedCall(1.1f, () =>
-        {
-            CompleteLevelReward(200);
+                SoundManager.instance.PlaySound(SoundName.Coins);
+
+                if (LevelManager.instance.nextLevelParticles != null)
+                {
+                    LevelManager.instance.nextLevelParticles.Play();
+                }
+                SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
+                DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(200));
+
+            });
         });
     }
 
     public void ClaimWinCoins()
     {
-        if (rewardClaimed)
-            return;
+        if (rewardClaimed) return;
 
         rewardClaimed = true;
 
         SoundManager.instance.PlaySound(SoundName.Coins);
+
         if (LevelManager.instance.nextLevelParticles != null)
         {
             LevelManager.instance.nextLevelParticles.Play();
         }
-        SoundManager.instance.PlayHaptic(
-            MOST_HapticFeedback.HapticTypes.Success
-        );
 
-        DOVirtual.DelayedCall(1.1f, () =>
-        {
-            CompleteLevelReward(100);
-        });
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
+
+        DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(100));
     }
 
     public void ResetLevelState()

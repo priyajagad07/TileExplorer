@@ -58,7 +58,7 @@ public class SimpleShapeEditor : EditorWindow
         );
 
         int newCols = EditorGUILayout.IntSlider(
-            "Cols", 
+            "Cols",
             cols,
             1,
             9

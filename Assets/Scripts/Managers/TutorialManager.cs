@@ -26,8 +26,6 @@ public class TutorialManager : MonoBehaviour
         instance = this;
     }
 
-    // --- THE ULTIMATE SIMPLIFIED FOCUS TRICK ---
-
     private void SetUIFocus(GameObject target, bool isFocused, int sortOrder = 30000)
     {
         if (target == null) return;
@@ -36,26 +34,21 @@ public class TutorialManager : MonoBehaviour
         
         if (isFocused)
         {
-            // Add components only if they are missing
             if (canvas == null) canvas = target.AddComponent<Canvas>();
             if (target.GetComponent<GraphicRaycaster>() == null) target.AddComponent<GraphicRaycaster>();
 
-            // Pop it out of the darkness!
             canvas.overrideSorting = true;
             canvas.sortingOrder = sortOrder;
         }
         else
         {
-            // Put it back to normal instantly by turning off the override
             if (canvas != null) canvas.overrideSorting = false;
         }
     }
 
-    // --- STRICT TILE TUTORIAL (LEVEL 1) ---
-
     public void CheckAndStartTutorial()
     {
-        if (PlayerPrefs.GetInt("Level", 0) == 0 && PlayerPrefs.GetInt("TutorialCompleted", 0) == 0)
+        if (SaveManager.instance.data.level == 0 && SaveManager.instance.data.tutorialCompleted == 0)
         {
             isTutorialActive = true;
             tutorialStep = 0;
@@ -100,7 +93,6 @@ public class TutorialManager : MonoBehaviour
         pointer.localScale = Vector3.one;
         pointer.DOScale(1.2f, 0.45f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.OutQuad);
 
-        // Pop the tile to 30000, and the Pointer to 30001 so the hand stays on top!
         SetUIFocus(currentTargetTile, true, 30000);
         SetUIFocus(pointer.gameObject, true, 30001);
 
@@ -131,13 +123,13 @@ public class TutorialManager : MonoBehaviour
             
             pointer.DOKill();
             pointer.gameObject.SetActive(false);
-            SetUIFocus(pointer.gameObject, false); // Put pointer back to normal
+            SetUIFocus(pointer.gameObject, false); 
 
             if (currentTargetTile != null)
             {
                 currentTargetTile.transform.DOKill();
                 currentTargetTile.transform.localScale = Vector3.one;
-                SetUIFocus(currentTargetTile, false); // Put tile back to normal
+                SetUIFocus(currentTargetTile, false); 
             }
 
             DOVirtual.DelayedCall(0.4f, () => ShowNextStep());
@@ -149,8 +141,8 @@ public class TutorialManager : MonoBehaviour
     private void EndTutorial()
     {
         isTutorialActive = false;
-        PlayerPrefs.SetInt("TutorialCompleted", 1);
-        PlayerPrefs.Save();
+        SaveManager.instance.data.tutorialCompleted = 1;
+        SaveManager.instance.SaveData();
 
         pointer.DOKill();
         pointer.gameObject.SetActive(false);
@@ -169,16 +161,12 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // --- SOFT BOOSTER TUTORIAL ---
-
     public void StartBoosterTutorial(RectTransform boosterRect, string boosterName)
     {
-        string prefKey = boosterName + "_TutorialSeen";
-
-        if (PlayerPrefs.GetInt(prefKey, 0) == 1) return;
+        if (SaveManager.instance.data.softTutorialsSeen.Contains(boosterName)) return;
 
         isSoftTutorialActive = true;
-        currentSoftTutorialKey = prefKey;
+        currentSoftTutorialKey = boosterName;
         activeBooster = boosterRect.gameObject; 
 
         tutorialOverlay.gameObject.SetActive(true);
@@ -196,7 +184,6 @@ public class TutorialManager : MonoBehaviour
         pointer.localScale = Vector3.one;
         pointer.DOScale(1.2f, 0.45f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.OutQuad);
 
-        // Pop the Booster to 30000, and the Pointer to 30001!
         SetUIFocus(activeBooster, true, 30000);
         SetUIFocus(pointer.gameObject, true, 30001);
     }
@@ -207,12 +194,15 @@ public class TutorialManager : MonoBehaviour
 
         isSoftTutorialActive = false;
         
-        PlayerPrefs.SetInt(currentSoftTutorialKey, 1);
-        PlayerPrefs.Save();
+        if (!SaveManager.instance.data.softTutorialsSeen.Contains(currentSoftTutorialKey))
+        {
+            SaveManager.instance.data.softTutorialsSeen.Add(currentSoftTutorialKey);
+            SaveManager.instance.SaveData();
+        }
 
         pointer.DOKill();
         pointer.gameObject.SetActive(false);
-        SetUIFocus(pointer.gameObject, false); // Put pointer back to normal
+        SetUIFocus(pointer.gameObject, false);
 
         tutorialOverlay.DOKill();
         tutorialOverlay.DOFade(0f, 0.4f).OnComplete(() => 
@@ -222,7 +212,7 @@ public class TutorialManager : MonoBehaviour
 
         if (activeBooster != null)
         {
-            SetUIFocus(activeBooster, false); // Put booster back to normal
+            SetUIFocus(activeBooster, false);
             activeBooster = null;
         }
     }

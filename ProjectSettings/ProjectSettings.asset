@@ -798,7 +798,7 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Android: DOTWEEN;DOTWEEN_EPO
+    Android: DOTWEEN;DOTWEEN_EPO;LEVELPLAY_DEPENDENCIES_INSTALLED
     EmbeddedLinux: DOTWEEN;DOTWEEN_EPO
     GameCoreScarlett: DOTWEEN;DOTWEEN_EPO
     GameCoreXboxOne: DOTWEEN;DOTWEEN_EPO
@@ -892,7 +892,8 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 

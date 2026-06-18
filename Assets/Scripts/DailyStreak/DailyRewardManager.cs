@@ -8,30 +8,6 @@ public class DailyRewardManager : MonoBehaviour
     [SerializeField]
     private DailyRewardDatabase database;
 
-    private const string WEEK_KEY =
-        "RewardWeek";
-
-    private const string DAY1_KEY =
-        "Day1Reward";
-
-    private const string DAY2_KEY =
-       "Day2Reward";
-
-    private const string DAY3_KEY =
-        "Day3Reward";
-
-    private const string DAY4_KEY =
-       "Day4Reward";
-
-    private const string DAY5_KEY =
-        "Day5Reward";
-
-    private const string DAY6_KEY =
-       "Day6Reward";
-
-    private const string DAY7_KEY =
-        "Day7Reward";
-
     void Awake()
     {
         instance = this;
@@ -42,7 +18,6 @@ public class DailyRewardManager : MonoBehaviour
         CheckWeeklyRewards();
 
         WeeklyReward reward = GetRewardForDay(1);
-
         if (reward != null)
         {
             Debug.Log(reward.rewardName);
@@ -51,92 +26,47 @@ public class DailyRewardManager : MonoBehaviour
 
     void CheckWeeklyRewards()
     {
-        int currentWeek =
-            GetCurrentWeekNumber();
+        int currentWeek = GetCurrentWeekNumber();
+        int savedWeek = SaveManager.instance.data.rewardWeek;
 
-        int savedWeek =
-            PlayerPrefs.GetInt(
-                WEEK_KEY,
-                -1
-            );
-
-        if (currentWeek == savedWeek)
-            return;
+        if (currentWeek == savedWeek) return;
 
         GenerateNewWeek();
 
-        PlayerPrefs.SetInt(
-            WEEK_KEY,
-            currentWeek
-        );
-
-        PlayerPrefs.Save();
+        SaveManager.instance.data.rewardWeek = currentWeek;
+        SaveManager.instance.SaveData();
     }
 
     int GetCurrentWeekNumber()
     {
-        return
-            DateTime.Now.Year * 100 +
-            System.Globalization
-            .CultureInfo
-            .CurrentCulture
-            .Calendar
-            .GetWeekOfYear(
+        return DateTime.Now.Year * 100 +
+            System.Globalization.CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
                 DateTime.Now,
-                System.Globalization
-                .CalendarWeekRule
-                .FirstDay,
+                System.Globalization.CalendarWeekRule.FirstDay,
                 DayOfWeek.Monday
             );
     }
 
     void GenerateNewWeek()
     {
-        SelectReward(
-            database.day1Rewards.Count,
-            DAY1_KEY
-        );
-
-        SelectReward(
-            database.day2Rewards.Count,
-            DAY2_KEY
-        );
-
-        SelectReward(
-            database.day3Rewards.Count,
-            DAY3_KEY
-        );
-
-        SelectReward(
-            database.day4Rewards.Count,
-            DAY4_KEY
-        );
-
-        SelectReward(
-            database.day5Rewards.Count,
-            DAY5_KEY
-        );
-
-        SelectReward(
-            database.day6Rewards.Count,
-            DAY6_KEY
-        );
-
-        SelectReward(
-            database.day7Rewards.Count,
-            DAY7_KEY
-        );
+        SelectReward(database.day1Rewards.Count, 0); // Day 1
+        SelectReward(database.day2Rewards.Count, 1); // Day 2
+        SelectReward(database.day3Rewards.Count, 2); // Day 3
+        SelectReward(database.day4Rewards.Count, 3); // Day 4
+        SelectReward(database.day5Rewards.Count, 4); // Day 5
+        SelectReward(database.day6Rewards.Count, 5); // Day 6
+        SelectReward(database.day7Rewards.Count, 6); // Day 7
     }
 
-    void SelectReward(int rewardCount, string saveKey)
+    void SelectReward(int rewardCount, int dayIndex)
     {
         if (rewardCount == 0)
         {
-            PlayerPrefs.SetInt(saveKey, -1);
+            SaveManager.instance.data.dayRewards[dayIndex] = -1;
             return;
         }
 
-        int lastReward = PlayerPrefs.GetInt(saveKey, -1);
+        int lastReward = SaveManager.instance.data.dayRewards[dayIndex];
         int newReward;
 
         do
@@ -145,55 +75,23 @@ public class DailyRewardManager : MonoBehaviour
         }
         while (rewardCount > 1 && newReward == lastReward);
 
-        PlayerPrefs.SetInt(saveKey, newReward);
+        SaveManager.instance.data.dayRewards[dayIndex] = newReward;
     }
 
     public WeeklyReward GetRewardForDay(int day)
     {
+        int index = SaveManager.instance.data.dayRewards[day - 1];
+        if (index < 0) return null;
+
         switch (day)
         {
-            case 1:
-                int day1Index = PlayerPrefs.GetInt(DAY1_KEY, -1);
-                if (day1Index >= 0 && day1Index < database.day1Rewards.Count)
-                    return database.day1Rewards[day1Index];
-                break;
-
-            case 2:
-                int day2Index = PlayerPrefs.GetInt(DAY2_KEY, -1);
-                if (day2Index >= 0 && day2Index < database.day2Rewards.Count)
-                    return database.day2Rewards[day2Index];
-                break;
-
-            case 3:
-                int day3Index = PlayerPrefs.GetInt(DAY3_KEY, -1);
-                if (day3Index >= 0 && day3Index < database.day3Rewards.Count)
-                    return database.day3Rewards[day3Index];
-                break;
-
-            case 4:
-                int day4Index = PlayerPrefs.GetInt(DAY4_KEY, -1);
-                if (day4Index >= 0 && day4Index < database.day4Rewards.Count)
-                    return database.day4Rewards[day4Index];
-                break;
-
-            case 5:
-                int day5Index = PlayerPrefs.GetInt(DAY5_KEY, -1);
-                if (day5Index >= 0 && day5Index < database.day5Rewards.Count)
-                    return database.day5Rewards[day5Index];
-                break;
-
-
-            case 6:
-                int day6Index = PlayerPrefs.GetInt(DAY6_KEY, -1);
-                if (day6Index >= 0 && day6Index < database.day6Rewards.Count)
-                    return database.day6Rewards[day6Index];
-                break;
-
-            case 7:
-                int day7Index = PlayerPrefs.GetInt(DAY7_KEY, -1);
-                if (day7Index >= 0 && day7Index < database.day7Rewards.Count)
-                    return database.day7Rewards[day7Index];
-                break;
+            case 1: if (index < database.day1Rewards.Count) return database.day1Rewards[index]; break;
+            case 2: if (index < database.day2Rewards.Count) return database.day2Rewards[index]; break;
+            case 3: if (index < database.day3Rewards.Count) return database.day3Rewards[index]; break;
+            case 4: if (index < database.day4Rewards.Count) return database.day4Rewards[index]; break;
+            case 5: if (index < database.day5Rewards.Count) return database.day5Rewards[index]; break;
+            case 6: if (index < database.day6Rewards.Count) return database.day6Rewards[index]; break;
+            case 7: if (index < database.day7Rewards.Count) return database.day7Rewards[index]; break;
         }
 
         return null;
@@ -201,45 +99,26 @@ public class DailyRewardManager : MonoBehaviour
 
     public void GiveRewardForDay(int day)
     {
-        WeeklyReward reward =
-            GetRewardForDay(day);
+        WeeklyReward reward = GetRewardForDay(day);
 
-        if (reward == null)
-            return;
+        if (reward == null) return;
 
-        foreach (RewardData rewardData
-            in reward.rewards)
+        foreach (RewardData rewardData in reward.rewards)
         {
             switch (rewardData.rewardType)
             {
-                case RewardType.Coins:
-                    CoinManager.instance.AddCoins(rewardData.amount);
-                    break;
-
-                case RewardType.Undo:
-                    BoosterManager.instance.AddUndo(rewardData.amount);
-                    break;
-
-                case RewardType.Shuffle:
-                    BoosterManager.instance.AddShuffle(rewardData.amount);
-                    break;
-
-                case RewardType.Magic:
-                    BoosterManager.instance.AddMagic(rewardData.amount);
-                    break;
+                case RewardType.Coins: CoinManager.instance.AddCoins(rewardData.amount); break;
+                case RewardType.Undo: BoosterManager.instance.AddUndo(rewardData.amount); break;
+                case RewardType.Shuffle: BoosterManager.instance.AddShuffle(rewardData.amount); break;
+                case RewardType.Magic: BoosterManager.instance.AddMagic(rewardData.amount); break;
             }
         }
     }
 
     public string GetRewardTextForDay(int day)
     {
-        WeeklyReward reward =
-            GetRewardForDay(day);
-
-        if (reward == null)
-            return "Reward";
-
-        return reward.rewardName;
+        WeeklyReward reward = GetRewardForDay(day);
+        return reward == null ? "Reward" : reward.rewardName;
     }
 
     public bool HasRewardForDay(int day)

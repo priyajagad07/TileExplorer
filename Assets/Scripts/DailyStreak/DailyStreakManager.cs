@@ -4,17 +4,11 @@ using UnityEngine;
 public class DailyStreakManager : MonoBehaviour
 {
     public static DailyStreakManager instance;
-
     private int streak;
-
-    private const string STREAK_KEY = "DailyStreak";
-    private const string REWARD_PENDING_KEY = "DailyRewardPending";
-    private const string FIRST_LAUNCH_KEY = "FirstLaunchCompleted";
-    private const string LAST_LOGIN_DATE_KEY = "LastLoginDate";
 
     public bool HasPendingReward()
     {
-        return PlayerPrefs.GetInt(REWARD_PENDING_KEY, 0) == 1;
+        return SaveManager.instance.data.dailyRewardPending == 1;
     }
 
     void Awake()
@@ -31,22 +25,22 @@ public class DailyStreakManager : MonoBehaviour
     void CheckDailyLogin()
     {
         string today = DateTime.Today.ToString("yyyy-MM-dd");
-        bool firstLaunch = PlayerPrefs.GetInt(FIRST_LAUNCH_KEY, 0) == 0;
+        bool firstLaunch = SaveManager.instance.data.firstLaunchCompleted == 0;
 
         if (firstLaunch)
         {
             Debug.Log("First Launch");
-            PlayerPrefs.SetInt(FIRST_LAUNCH_KEY, 1);
+            SaveManager.instance.data.firstLaunchCompleted = 1;
             streak = 1;
-            PlayerPrefs.SetInt(STREAK_KEY, streak);
-            PlayerPrefs.SetInt(REWARD_PENDING_KEY, 1);
-            PlayerPrefs.SetString(LAST_LOGIN_DATE_KEY, today);
-            PlayerPrefs.Save();
+            
+            SaveManager.instance.data.dailyStreak = streak;
+            SaveManager.instance.data.dailyRewardPending = 1;
+            SaveManager.instance.data.lastLoginDate = today;
+            SaveManager.instance.SaveData();
             return;
         }
 
-        string lastLogin = PlayerPrefs.GetString(LAST_LOGIN_DATE_KEY, "");
-
+        string lastLogin = SaveManager.instance.data.lastLoginDate;
         if (lastLogin == today) return;
 
         DateTime previous = DateTime.Parse(lastLogin);
@@ -64,17 +58,17 @@ public class DailyStreakManager : MonoBehaviour
 
         if (streak > 7) streak = 1;
 
-        PlayerPrefs.SetInt(STREAK_KEY, streak);
-        PlayerPrefs.SetString(LAST_LOGIN_DATE_KEY, today);
-        PlayerPrefs.SetInt(REWARD_PENDING_KEY, 1);
-        PlayerPrefs.Save();
+        SaveManager.instance.data.dailyStreak = streak;
+        SaveManager.instance.data.lastLoginDate = today;
+        SaveManager.instance.data.dailyRewardPending = 1;
+        SaveManager.instance.SaveData();
 
         Debug.Log("New Daily Reward Available. Streak = " + streak);
     }
 
     void LoadData()
     {
-        streak = PlayerPrefs.GetInt(STREAK_KEY, 0);
+        streak = SaveManager.instance.data.dailyStreak;
         Debug.Log("LOADED STREAK: " + streak);
     }
 
@@ -87,8 +81,8 @@ public class DailyStreakManager : MonoBehaviour
     {
         if (!HasPendingReward()) return;
 
-        PlayerPrefs.SetInt(REWARD_PENDING_KEY, 0);
-        PlayerPrefs.Save();
+        SaveManager.instance.data.dailyRewardPending = 0;
+        SaveManager.instance.SaveData();
         DailyRewardManager.instance.GiveRewardForDay(streak);
     }
 
@@ -115,8 +109,8 @@ public class DailyStreakManager : MonoBehaviour
 
     public void ClearPendingReward()
     {
-        PlayerPrefs.SetInt(REWARD_PENDING_KEY, 0);
-        PlayerPrefs.Save();
+        SaveManager.instance.data.dailyRewardPending = 0;
+        SaveManager.instance.SaveData();
     }
 
     public bool CanShowReward()

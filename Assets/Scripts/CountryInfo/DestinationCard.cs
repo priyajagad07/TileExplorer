@@ -6,7 +6,7 @@ public class DestinationCard : MonoBehaviour
     public CountryData country;
     public int destinationIndex;
     private bool isUnlocked;
-    
+
     [SerializeField]
     private GameObject lockedMessagePopup;
 
@@ -18,7 +18,7 @@ public class DestinationCard : MonoBehaviour
     {
         if (!isUnlocked)
         {
-            MapScreenUI.instance.ShowLockedMessage(); 
+            MapScreenUI.instance.ShowLockedMessage();
             return;
         }
 

@@ -22,7 +22,6 @@ public class CoinManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         coins += amount;
-
         SaveCoins();
         UpdateCoinUI();
     }
@@ -33,7 +32,6 @@ public class CoinManager : MonoBehaviour
             return false;
 
         coins -= amount;
-
         SaveCoins();
         UpdateCoinUI();
 
@@ -42,8 +40,8 @@ public class CoinManager : MonoBehaviour
 
     void SaveCoins()
     {
-        PlayerPrefs.SetInt("Coins", coins);
-        PlayerPrefs.Save();
+        SaveManager.instance.data.coins = coins;
+        SaveManager.instance.SaveData();
     }
 
     void UpdateCoinUI()
@@ -56,7 +54,7 @@ public class CoinManager : MonoBehaviour
 
     void LoadCoins()
     {
-        coins = PlayerPrefs.GetInt("Coins", 300);
+        coins = SaveManager.instance.data.coins;
         UpdateCoinUI();
     }
 

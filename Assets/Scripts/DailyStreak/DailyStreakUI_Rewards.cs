@@ -51,11 +51,8 @@ public partial class DailyStreakUI
         if (reward == null) return;
 
         Transform popup = rewardPreviewPopup.transform;
-
-        // 1. Check if the popup is ALREADY fully visible
         bool isOpen = rewardPreviewPopup.activeSelf && popup.localScale.x > 0.1f;
 
-        // 2. NEW: Kill the OLD sequence timer so it doesn't accidentally hide the popup early!
         DOTween.Kill("RewardPreviewSeq");
         popup.DOKill();
 
@@ -77,8 +74,6 @@ public partial class DailyStreakUI
 
         rewardPreviewPopup.SetActive(true);
         SoundManager.instance.PlaySound(SoundName.RewardReveal);
-
-        // 3. NEW: Create the sequence and give it an ID so we can kill it next time!
         Sequence seq = DOTween.Sequence().SetId("RewardPreviewSeq");
 
         if (isOpen)
@@ -92,7 +87,6 @@ public partial class DailyStreakUI
             seq.Append(popup.DOScale(1f, 0.3f).SetEase(Ease.OutBack));
         }
 
-        // Keep it on screen for 1.2 seconds before hiding it again
         seq.AppendInterval(1.2f);
         seq.Append(popup.DOScale(0f, 0.2f).SetEase(Ease.InBack));
 

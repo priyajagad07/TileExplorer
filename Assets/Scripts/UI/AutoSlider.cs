@@ -3,9 +3,15 @@ using UnityEngine.UI;
 
 public class AutoSlider : MonoBehaviour
 {
+    public static bool isSliding = true;
     public Slider slider;
     public float fillSpeed = 0.5f;
     private bool isFinished = false;
+
+    void Awake()
+    {
+        isSliding = true;
+    }
 
     void Update()
     {
@@ -23,33 +29,20 @@ public class AutoSlider : MonoBehaviour
     void FinishLoading()
     {
         isFinished = true;
-
+        isSliding = false; 
         Debug.Log("Sliding completed");
 
-        bool firstLaunch =
-            PlayerPrefs.GetInt(
-                "FirstGameplayLaunch",
-                0
-            ) == 0;
+        bool firstLaunch = SaveManager.instance.data.firstGameplayLaunch == 0;
 
         if (firstLaunch)
         {
-            PlayerPrefs.SetInt(
-                "FirstGameplayLaunch",
-                1
-            );
-
-            PlayerPrefs.Save();
-
-            UIManager.Instance.Show(
-                ScreenType.GamePlay
-            );
+            SaveManager.instance.data.firstGameplayLaunch = 1;
+            SaveManager.instance.SaveData();
+            UIManager.Instance.Show(ScreenType.GamePlay);
         }
         else
         {
-            UIManager.Instance.Show(
-                ScreenType.HomeScreen
-            );
+            UIManager.Instance.Show(ScreenType.HomeScreen);
         }
     }
 }

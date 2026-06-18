@@ -16,13 +16,11 @@ public class CountryManager : MonoBehaviour
     {
         foreach (CountryData country in countryDatabase.countries)
         {
-            if (level >= country.startLevel &&
-                level <= country.endLevel)
+            if (level >= country.startLevel && level <= country.endLevel)
             {
                 return country;
             }
         }
-
         return null;
     }
 
@@ -33,21 +31,14 @@ public class CountryManager : MonoBehaviour
 
     public bool IsCountryChanging()
     {
-        int nextLevel =
-            PlayerPrefs.GetInt("Level", 0) + 1;
-
-        CountryData nextCountry =
-            GetCountryForLevel(nextLevel);
-
-        return nextCountry !=
-               BackgroundManager.Instance.GetCurrentCountry();
+        int nextLevel = SaveManager.instance.data.level + 1;
+        CountryData nextCountry = GetCountryForLevel(nextLevel);
+        return nextCountry != BackgroundManager.Instance.GetCurrentCountry();
     }
 
     public CountryData GetNextCountry()
     {
-        int nextLevel =
-            PlayerPrefs.GetInt("Level", 0) + 1;
-
+        int nextLevel = SaveManager.instance.data.level + 1;
         return GetCountryForLevel(nextLevel);
     }
 }

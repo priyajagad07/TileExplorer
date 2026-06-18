@@ -34,7 +34,6 @@ public class BoosterManager : MonoBehaviour
     [SerializeField] private GameObject nothingToUndoMessage;
     [SerializeField] private GameObject nothingToShuffleMessage;
     [SerializeField] private GameObject nothingToMagicMessage;
-
     [SerializeField] private GameObject lockedBoosterMessage;
     [SerializeField] private TextMeshProUGUI lockedBoosterText;
 
@@ -52,76 +51,71 @@ public class BoosterManager : MonoBehaviour
 
     void LoadBoosters()
     {
-        undoCount = PlayerPrefs.GetInt("UndoCount", 0);
-        shuffleCount = PlayerPrefs.GetInt("ShuffleCount", 0);
-        magicCount = PlayerPrefs.GetInt("MagicCount", 0);
+        undoCount = SaveManager.instance.data.undoCount;
+        shuffleCount = SaveManager.instance.data.shuffleCount;
+        magicCount = SaveManager.instance.data.magicCount;
     }
 
     void SaveBoosters()
     {
-        PlayerPrefs.SetInt("UndoCount", undoCount);
-        PlayerPrefs.SetInt("ShuffleCount", shuffleCount);
-        PlayerPrefs.SetInt("MagicCount", magicCount);
-        PlayerPrefs.Save();
+        SaveManager.instance.data.undoCount = undoCount;
+        SaveManager.instance.data.shuffleCount = shuffleCount;
+        SaveManager.instance.data.magicCount = magicCount;
+        SaveManager.instance.SaveData();
     }
 
     public void UpdateUI()
     {
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
 
-        // FIX: Only remove the lock if the level is completely passed, OR if it's the exact level AND the animation has finished!
-        bool undoUnlocked = currentLevel > 3 || (currentLevel == 3 && PlayerPrefs.GetInt("UndoAnimPlayed", 0) == 1);
+        bool undoUnlocked = currentLevel > 3 || (currentLevel == 3 && SaveManager.instance.data.undoAnimPlayed == 1);
         if (undoLockImage != null) undoLockImage.SetActive(!undoUnlocked);
         foreach (TextMeshProUGUI undo in undoText) undo.text = undoUnlocked ? undoCount.ToString() : "Lv.3";
 
-        bool shuffleUnlocked = currentLevel > 5 || (currentLevel == 5 && PlayerPrefs.GetInt("ShuffleAnimPlayed", 0) == 1);
+        bool shuffleUnlocked = currentLevel > 5 || (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 1);
         if (shuffleLockImage != null) shuffleLockImage.SetActive(!shuffleUnlocked);
         foreach (TextMeshProUGUI shuffle in shuffleText) shuffle.text = shuffleUnlocked ? shuffleCount.ToString() : "Lv.5";
 
-        bool magicUnlocked = currentLevel > 7 || (currentLevel == 7 && PlayerPrefs.GetInt("MagicAnimPlayed", 0) == 1);
+        bool magicUnlocked = currentLevel > 7 || (currentLevel == 7 && SaveManager.instance.data.magicAnimPlayed == 1);
         if (magicLockImage != null) magicLockImage.SetActive(!magicUnlocked);
         foreach (TextMeshProUGUI magic in magicText) magic.text = magicUnlocked ? magicCount.ToString() : "Lv.7";
     }
 
     public void CheckUnlockRewards()
     {
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
 
-        // Note: Undo no longer instantly gives you +3 here! It waits for the new method below.
-
-        if (currentLevel >= 5 && PlayerPrefs.GetInt("ShuffleUnlocked", 0) == 0)
+        if (currentLevel >= 5 && SaveManager.instance.data.shuffleUnlocked == 0)
         {
             shuffleCount += 3;
-            PlayerPrefs.SetInt("ShuffleUnlocked", 1);
+            SaveManager.instance.data.shuffleUnlocked = 1;
         }
-        if (currentLevel >= 7 && PlayerPrefs.GetInt("MagicUnlocked", 0) == 0)
+        if (currentLevel >= 7 && SaveManager.instance.data.magicUnlocked == 0)
         {
             magicCount += 3;
-            PlayerPrefs.SetInt("MagicUnlocked", 1);
+            SaveManager.instance.data.magicUnlocked = 1;
         }
         SaveBoosters();
     }
 
     public void PlayUnlockAnimationIfNeeded()
     {
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
 
-        // Note: Undo animation check is gone from here!
-
-        if (currentLevel == 5 && PlayerPrefs.GetInt("ShuffleAnimPlayed", 0) == 0)
+        if (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 0)
         {
-            PlayerPrefs.SetInt("ShuffleAnimPlayed", 1);
-            PlayerPrefs.Save();
+            SaveManager.instance.data.shuffleAnimPlayed = 1;
+            SaveManager.instance.SaveData();
             PlayUnlockBounce(shuffleButtonRect, () =>
             {
                 UpdateUI();
                 if (TutorialManager.instance != null) TutorialManager.instance.StartBoosterTutorial(shuffleButtonRect, "Shuffle");
             });
         }
-        if (currentLevel == 7 && PlayerPrefs.GetInt("MagicAnimPlayed", 0) == 0)
+        if (currentLevel == 7 && SaveManager.instance.data.magicAnimPlayed == 0)
         {
-            PlayerPrefs.SetInt("MagicAnimPlayed", 1);
-            PlayerPrefs.Save();
+            SaveManager.instance.data.magicAnimPlayed = 1;
+            SaveManager.instance.SaveData();
             PlayUnlockBounce(magicButtonRect, () =>
             {
                 UpdateUI();
@@ -132,18 +126,15 @@ public class BoosterManager : MonoBehaviour
 
     public void CheckAndUnlockUndoAfterFirstTile()
     {
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
 
-        // If it's Level 3, and we haven't unlocked it yet...
-        if (currentLevel == 3 && PlayerPrefs.GetInt("UndoUnlocked", 0) == 0)
+        if (currentLevel == 3 && SaveManager.instance.data.undoUnlocked == 0)
         {
-            // Give the 3 free ones and mark as unlocked
             undoCount += 3;
-            PlayerPrefs.SetInt("UndoUnlocked", 1);
-            PlayerPrefs.SetInt("UndoAnimPlayed", 1);
+            SaveManager.instance.data.undoUnlocked = 1;
+            SaveManager.instance.data.undoAnimPlayed = 1;
             SaveBoosters();
 
-            // Play the bounce and show the tutorial!
             PlayUnlockBounce(undoButtonRect, () =>
             {
                 UpdateUI();
@@ -156,22 +147,15 @@ public class BoosterManager : MonoBehaviour
     {
         if (rect == null) return;
 
-        // Force complete any old animations so we start from a clean slate
         rect.DOKill(true);
         rect.localRotation = Quaternion.identity;
 
         Sequence seq = DOTween.Sequence();
-
         seq.AppendInterval(0.6f);
-
-        // Anticipation: Squash and shake
         seq.Append(rect.DOScale(0.8f, 0.25f).SetEase(Ease.OutQuad));
         seq.Join(rect.DOShakeRotation(0.25f, 15f, 20, 90f));
-
         seq.Append(rect.DOScale(1.45f, 0.35f).SetEase(Ease.OutBack));
         rect.DOPunchRotation(new Vector3(0, 0, 20f), 0.4f, 10, 1f);
-
-        // Settle: Snap back to normal size
         seq.Append(rect.DOScale(1f, 0.2f).SetEase(Ease.InBack));
         seq.Append(rect.DOPunchScale(Vector3.one * 0.15f, 0.3f, 6, 0.5f));
 
@@ -180,12 +164,12 @@ public class BoosterManager : MonoBehaviour
             if (SoundManager.instance != null) SoundManager.instance.PlaySound(SoundName.UnlockBooster);
         });
 
-        // Tutorial trigger waits until the animation is totally finished
         seq.OnComplete(() =>
         {
             onUnlock?.Invoke();
         });
     }
+
     public void ShowBoosterLockedMessage(string msg)
     {
         if (lockedBoosterText != null) lockedBoosterText.text = msg;
@@ -198,7 +182,6 @@ public class BoosterManager : MonoBehaviour
         CanvasGroup canvasGroup = messageObject.GetComponent<CanvasGroup>();
         RectTransform rect = messageObject.GetComponent<RectTransform>();
 
-        // FIX: The exact same ID + Kill logic used in the Daily Streak to stop the jitter!
         string seqId = "Msg_" + messageObject.GetInstanceID();
         bool isOpen = messageObject.activeSelf && canvasGroup.alpha > 0.1f;
 
@@ -213,7 +196,6 @@ public class BoosterManager : MonoBehaviour
 
         if (isOpen)
         {
-            // If already open, just punch it up and keep it visible
             rect.anchoredPosition = targetPos;
             canvasGroup.alpha = 1f;
             rect.localScale = Vector3.one;
@@ -222,7 +204,6 @@ public class BoosterManager : MonoBehaviour
         }
         else
         {
-            // If closed, fade and slide up
             rect.anchoredPosition = new Vector2(targetPos.x, targetPos.y - 20f);
             rect.localScale = Vector3.one;
             canvasGroup.alpha = 0f;

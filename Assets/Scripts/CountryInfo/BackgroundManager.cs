@@ -34,14 +34,13 @@ public class BackgroundManager : MonoBehaviour
         }
     }
 
-    private int lastUpdatedLevel = -1;  // ← NEW!
+    private int lastUpdatedLevel = -1;  
 
     public void UpdateBackgrounds(CountryData country, int playerLevel)
     {
         if (country == null)
             return;
 
-        // ← NEW! Prevent duplicate updates
         if (lastUpdatedLevel == playerLevel && currentCountry == country)
         {
             Debug.Log($"Background already updated for level {playerLevel}, skipping...");
@@ -49,7 +48,7 @@ public class BackgroundManager : MonoBehaviour
         }
 
         currentCountry = country;
-        lastUpdatedLevel = playerLevel;  // ← NEW! Track this level
+        lastUpdatedLevel = playerLevel; 
 
         Sprite bg = GetBackgroundForLevel(country, playerLevel);
 
@@ -64,33 +63,25 @@ public class BackgroundManager : MonoBehaviour
     }
     public void SetGameplayBackground(Sprite bg)
     {
-        if (gameplayBackground == null || bg == null)
-            return;
-
+        if (gameplayBackground == null || bg == null) return;
         gameplayBackground.sprite = bg;
     }
 
     public void SetHomeBackground(Sprite bg)
     {
-        if (homeScreenBackground == null || bg == null)
-            return;
-
+        if (homeScreenBackground == null || bg == null) return;
         homeScreenBackground.sprite = bg;
     }
 
     public void SetDailyStreakBackground(Sprite bg)
     {
-        if (dailyStreakScreenBackground == null || bg == null)
-            return;
-
+        if (dailyStreakScreenBackground == null || bg == null) return;
         dailyStreakScreenBackground.sprite = bg;
     }
 
     public void SetCountryInfoScreen(Sprite bg)
     {
-        if (countryInfoScreenBackground == null || bg == null)
-            return;
-
+        if (countryInfoScreenBackground == null || bg == null) return;
         countryInfoScreenBackground.sprite = bg;
     }
 
@@ -101,16 +92,10 @@ public class BackgroundManager : MonoBehaviour
 
     public void RefreshCurrentCountry()
     {
-        if (currentCountry == null)
-            return;
+        if (currentCountry == null) return;
 
-        int currentLevel =
-            PlayerPrefs.GetInt("Level", 0) + 1;
-
-        UpdateBackgrounds(
-            currentCountry,
-            currentLevel
-        );
+        int currentLevel = SaveManager.instance.data.level + 1;
+        UpdateBackgrounds(currentCountry, currentLevel);
     }
 
     Sprite GetBackgroundForLevel(CountryData country, int playerLevel)
@@ -119,11 +104,9 @@ public class BackgroundManager : MonoBehaviour
 
         int countryLevels = country.endLevel - country.startLevel + 1;
 
-        // Use float division to get exact pacing
         float levelsPerDestination = (float)countryLevels / country.backgrounds.Length;
         int levelInsideCountry = playerLevel - country.startLevel;
 
-        // Use FloorToInt to safely get the current index
         int bgIndex = Mathf.FloorToInt(levelInsideCountry / levelsPerDestination);
         bgIndex = Mathf.Clamp(bgIndex, 0, country.backgrounds.Length - 1);
 
@@ -132,7 +115,7 @@ public class BackgroundManager : MonoBehaviour
 
     public bool IsNextDestinationUnlock()
     {
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
         CountryData country = GetCurrentCountry();
         if (country == null) return false;
 
@@ -150,7 +133,7 @@ public class BackgroundManager : MonoBehaviour
 
     public int GetNextDestinationIndex()
     {
-        int currentLevel = PlayerPrefs.GetInt("Level", 0) + 1;
+        int currentLevel = SaveManager.instance.data.level + 1;
         CountryData currentCountry = GetCurrentCountry();
         if (currentCountry == null) return 0;
 

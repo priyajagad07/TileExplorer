@@ -23,22 +23,21 @@ public class MapScreenUI : MonoBehaviour
 
     public static class DestinationUnlocker
     {
-        private const string PendingKey =
-            "PendingDestination";
-
         public static void SetPending(int index)
         {
-            PlayerPrefs.SetInt(PendingKey, index);
+            SaveManager.instance.data.pendingDestination = index;
+            SaveManager.instance.SaveData();
         }
 
         public static int GetPending()
         {
-            return PlayerPrefs.GetInt(PendingKey, -1);
+            return SaveManager.instance.data.pendingDestination;
         }
 
         public static void Clear()
         {
-            PlayerPrefs.DeleteKey(PendingKey);
+            SaveManager.instance.data.pendingDestination = -1;
+            SaveManager.instance.SaveData();
         }
     }
 
@@ -49,11 +48,9 @@ public class MapScreenUI : MonoBehaviour
 
         CountryData country = CountryManager.Instance.GetNextCountry();
 
-        // 1. Find the correct panel via MapManager
         CountryUIPanel panel = MapManager.instance.countryPanels.Find(p => p.countryData == country);
         if (panel == null) return;
 
-        // 2. Safely get the card and its image
         if (pending >= panel.destinationCards.Length) return;
         DestinationCard card = panel.destinationCards[pending];
 
@@ -63,7 +60,6 @@ public class MapScreenUI : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
 
-        // Shake the image transform directly
         seq.Append(image.transform.DOShakeRotation(0.45f, 8f, 10));
 
         seq.AppendCallback(() =>
@@ -98,33 +94,19 @@ public class MapScreenUI : MonoBehaviour
     public void HideUnlockTransition()
     {
         unlockZoomImage.gameObject.SetActive(false);
-
         unlockZoomGroup.alpha = 1f;
-
-        unlockZoomImage.rectTransform.localScale =
-            Vector3.one;
+        unlockZoomImage.rectTransform.localScale = Vector3.one;
     }
+    
     public void ShowLockedMessage()
     {
         lockedMessagePopup.SetActive(true);
-
         lockedMessagePopup.transform.localScale = Vector3.zero;
 
         Sequence seq = DOTween.Sequence();
-
-        seq.Append(
-            lockedMessagePopup.transform
-                .DOScale(1f, 0.25f)
-                .SetEase(Ease.OutBack)
-        );
-
+        seq.Append(lockedMessagePopup.transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack));
         seq.AppendInterval(1.2f);
-
-        seq.Append(
-            lockedMessagePopup.transform
-                .DOScale(0f, 0.2f)
-                .SetEase(Ease.InBack)
-        );
+        seq.Append(lockedMessagePopup.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack));
 
         seq.OnComplete(() =>
         {

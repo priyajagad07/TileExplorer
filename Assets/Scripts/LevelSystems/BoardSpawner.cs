@@ -8,7 +8,7 @@ using System.Linq;
 public class BoardSpawner : MonoBehaviour
 {
     public static BoardSpawner instance;
-
+    private bool isSpawning = false;
     [SerializeField] private RectTransform tileParent;
 
     void Awake()
@@ -108,6 +108,9 @@ public class BoardSpawner : MonoBehaviour
 
     public void PlaySpawnAnimation(bool playSound = true)
     {
+        if (isSpawning) return;
+        isSpawning = true;
+
         Tile[] allTiles = tileParent.GetComponentsInChildren<Tile>();
         int highestLayer = GetHighestLayer(allTiles);
 
@@ -218,11 +221,18 @@ public class BoardSpawner : MonoBehaviour
 
         masterSequence.OnComplete(() =>
         {
+            isSpawning = false;
+            
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.StartGame();
+            }
+
             if (TutorialManager.instance != null)
             {
                 TutorialManager.instance.CheckAndStartTutorial();
             }
-            
+
             if (BoosterManager.instance != null)
             {
                 BoosterManager.instance.PlayUnlockAnimationIfNeeded();

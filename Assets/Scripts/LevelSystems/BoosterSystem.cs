@@ -112,11 +112,9 @@ public class BoosterSystem : MonoBehaviour
 
         return false;
     }
+    
     public void ShuffleTiles()
     {
-        int completedAnimations = 0;
-        int totalAnimations = 0;
-
         if (BoardSpawner.instance == null)
         {
             Debug.Log("BoardSpawner Missing");
@@ -131,68 +129,86 @@ public class BoosterSystem : MonoBehaviour
         }
 
         MatchBoard.instance.isInputLocked = true;
-
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.HeavyImpact);
 
-        Dictionary<int, List<Tile>> layerGroups = new Dictionary<int, List<Tile>>();
+        // SAFETY LOCK: Clear the undo history so they don't break the new board state
+        ClearUndoStack();
+
+        // 1. Gather all active tiles and record their exact original slots on the board
+        List<Tile> activeTiles = new List<Tile>();
+        List<Vector2> originalPositions = new List<Vector2>();
+        List<int> originalLayers = new List<int>();
+        List<int> originalSiblingIndices = new List<int>();
 
         foreach (Transform child in tileParent)
         {
-            if (child == null)
-                continue;
+            if (child == null) continue;
 
             Tile tile = child.GetComponent<Tile>();
+            if (tile == null || tile.IsMoved()) continue;
 
-            if (tile == null)
-                continue;
-
-            if (tile.IsMoved())
-                continue;
-
-            if (!layerGroups.ContainsKey(tile.layer))
-            {
-                layerGroups[tile.layer] = new List<Tile>();
-            }
-
-            layerGroups[tile.layer].Add(tile);
+            activeTiles.Add(tile);
+            originalPositions.Add(child.GetComponent<RectTransform>().anchoredPosition);
+            originalLayers.Add(tile.layer);
+            originalSiblingIndices.Add(child.GetSiblingIndex());
         }
 
-        foreach (var group in layerGroups)
+        // If there's 1 or 0 tiles, no need to shuffle
+        if (activeTiles.Count <= 1)
         {
-            List<Tile> tiles = group.Value;
+            MatchBoard.instance.isInputLocked = false;
+            return;
+        }
 
-            List<Vector2> positions = new List<Vector2>();
+        // 2. Shuffle the tiles list
+        List<Tile> shuffledTiles = new List<Tile>(activeTiles);
+        for (int i = 0; i < shuffledTiles.Count; i++)
+        {
+            int randomIndex = Random.Range(i, shuffledTiles.Count);
+            Tile temp = shuffledTiles[i];
+            shuffledTiles[i] = shuffledTiles[randomIndex];
+            shuffledTiles[randomIndex] = temp;
+        }
 
-            foreach (Tile tile in tiles)
+        // 3. Map the newly shuffled tiles to the exact structural data of the original slots
+        int completedAnimations = 0;
+        int totalAnimations = activeTiles.Count;
+
+        Dictionary<Tile, int> tileToTargetSibling = new Dictionary<Tile, int>();
+        Dictionary<Tile, Vector2> tileToTargetPos = new Dictionary<Tile, Vector2>();
+
+        for (int i = 0; i < shuffledTiles.Count; i++)
+        {
+            Tile tile = shuffledTiles[i];
+            tile.layer = originalLayers[i]; // Inherit the slot's logical layer
+            tileToTargetPos[tile] = originalPositions[i];
+            tileToTargetSibling[tile] = originalSiblingIndices[i];
+        }
+
+        // 4. Safely apply the visual rendering order before animation so tiles overlap correctly
+        shuffledTiles.Sort((a, b) => tileToTargetSibling[a].CompareTo(tileToTargetSibling[b]));
+        foreach (Tile t in shuffledTiles)
+        {
+            t.transform.SetSiblingIndex(tileToTargetSibling[t]);
+        }
+
+        // 5. Animate them globally to their newly assigned positions
+        foreach (Tile t in shuffledTiles)
+        {
+            RectTransform rect = t.GetComponent<RectTransform>();
+            Vector2 targetPos = tileToTargetPos[t];
+
+            AnimateShuffle(rect, targetPos, () =>
             {
-                positions.Add(tile.GetComponent<RectTransform>().anchoredPosition);
-            }
+                completedAnimations++;
 
-            for (int i = 0; i < positions.Count; i++)
-            {
-                int randomIndex = Random.Range(i, positions.Count);
-
-                Vector2 tempPos = positions[i];
-                positions[i] = positions[randomIndex];
-                positions[randomIndex] = tempPos;
-            }
-
-            totalAnimations += tiles.Count;
-
-            for (int i = 0; i < tiles.Count; i++)
-            {
-                RectTransform rect = tiles[i].GetComponent<RectTransform>();
-                AnimateShuffle(rect, positions[i], () =>
-                            {
-                                completedAnimations++;
-
-                                if (completedAnimations >= totalAnimations)
-                                {
-                                    Tile.RefreshAllTileVisuals(tileParent);
-                                    MatchBoard.instance.isInputLocked = false;
-                                }
-                            });
-            }
+                if (completedAnimations >= totalAnimations)
+                {
+                    // Update logical shadows/interactivity now that everything has settled
+                    Tile.RefreshAllTileVisuals(tileParent);
+                    MatchBoard.instance.isInputLocked = false;
+                }
+            });
         }
 
         SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);

@@ -37,7 +37,6 @@ public class CountryInfoScreen : MonoBehaviour
 
     void PlayIntroAnimation(bool isFromUnlock)
     {
-        // ---> FIX: Kill all existing tweens on these objects so they don't overlap!
         DOTween.Kill("CountryInfoSeq");
         DOTween.Kill(descriptionText);
         backButton.DOKill();
@@ -61,7 +60,6 @@ public class CountryInfoScreen : MonoBehaviour
 
         descriptionText.maxVisibleCharacters = 0;
 
-        // ---> FIX: Give this sequence an ID so we can kill it easily next time
         Sequence seq = DOTween.Sequence().SetId("CountryInfoSeq");
 
         float startDelay = isFromUnlock ? 0.3f : 0f;
@@ -113,6 +111,20 @@ public class CountryInfoScreen : MonoBehaviour
     public void ContinueExploring()
     {
         openedFromUnlock = false;
-        UIManager.Instance.Show(ScreenType.GamePlay);
+
+        if (GameManager.instance != null && GameManager.instance.returnToHomeAfterMap)
+        {
+            GameManager.instance.returnToHomeAfterMap = false;
+            UIManager.Instance.Show(ScreenType.HomeScreen);
+        }
+        else
+        {
+            UIManager.Instance.Show(ScreenType.GamePlay);
+
+            if (BoardSpawner.instance != null)
+            {
+                BoardSpawner.instance.PlaySpawnAnimation();
+            }
+        }
     }
 }

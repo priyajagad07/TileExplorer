@@ -6,77 +6,82 @@ public class MatchBoardRevive : MonoBehaviour
 {
     public void ReviveBoard()
     {
-        if (BoardSpawner.instance == null)
-            return;
+        SoundManager.instance.PlaySound(SoundName.ButtonPop);
 
-        List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
-        if (placedTiles.Count == 0) return;
-
-        HashSet<int> targetTileIds = new HashSet<int>();
-        int tilesToCheck = Mathf.Min(3, placedTiles.Count);
-
-        for (int i = 0; i < tilesToCheck; i++)
+        AdManager.instance.ShowRewardedAd(() =>
         {
-            int index = placedTiles.Count - 1 - i;
-            if (placedTiles[index] != null)
+            if (BoardSpawner.instance == null)
+                return;
+
+            List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
+            if (placedTiles.Count == 0) return;
+
+            HashSet<int> targetTileIds = new HashSet<int>();
+            int tilesToCheck = Mathf.Min(3, placedTiles.Count);
+
+            for (int i = 0; i < tilesToCheck; i++)
             {
-                Tile tile = placedTiles[index].GetComponent<Tile>();
-                if (tile != null)
+                int index = placedTiles.Count - 1 - i;
+                if (placedTiles[index] != null)
                 {
-                    targetTileIds.Add(tile.tileId);
-                }
-            }
-        }
-
-        List<GameObject> tilesToDestroy = new List<GameObject>();
-        Transform tileParent = BoardSpawner.instance.GetTileParent();
-
-        foreach (int id in targetTileIds)
-        {
-            List<GameObject> matchedGroup = new List<GameObject>();
-
-            foreach (GameObject t in placedTiles)
-            {
-                if (t != null && t.GetComponent<Tile>().tileId == id)
-                {
-                    matchedGroup.Add(t);
-                }
-            }
-
-            if (matchedGroup.Count < 3)
-            {
-                foreach (Transform child in tileParent)
-                {
-                    if (matchedGroup.Count >= 3) break;
-
-                    Tile boardTile = child.GetComponent<Tile>();
-
-                    if (boardTile != null && boardTile.tileId == id && !boardTile.IsMoved())
+                    Tile tile = placedTiles[index].GetComponent<Tile>();
+                    if (tile != null)
                     {
-                        matchedGroup.Add(child.gameObject);
+                        targetTileIds.Add(tile.tileId);
                     }
                 }
             }
 
-            tilesToDestroy.AddRange(matchedGroup);
-        }
+            List<GameObject> tilesToDestroy = new List<GameObject>();
+            Transform tileParent = BoardSpawner.instance.GetTileParent();
 
-        foreach (GameObject tileObj in tilesToDestroy)
-        {
-            if (placedTiles.Contains(tileObj))
+            foreach (int id in targetTileIds)
             {
-                MatchBoard.instance.RemoveTile(tileObj);
+                List<GameObject> matchedGroup = new List<GameObject>();
+
+                foreach (GameObject t in placedTiles)
+                {
+                    if (t != null && t.GetComponent<Tile>().tileId == id)
+                    {
+                        matchedGroup.Add(t);
+                    }
+                }
+
+                if (matchedGroup.Count < 3)
+                {
+                    foreach (Transform child in tileParent)
+                    {
+                        if (matchedGroup.Count >= 3) break;
+
+                        Tile boardTile = child.GetComponent<Tile>();
+
+                        if (boardTile != null && boardTile.tileId == id && !boardTile.IsMoved())
+                        {
+                            matchedGroup.Add(child.gameObject);
+                        }
+                    }
+                }
+
+                tilesToDestroy.AddRange(matchedGroup);
             }
 
-            MatchBoardMatch.instance.AddRemovedTile();
-            MatchBoardMatch.instance.PlayDestroyEffect(tileObj);
-        }
+            foreach (GameObject tileObj in tilesToDestroy)
+            {
+                if (placedTiles.Contains(tileObj))
+                {
+                    MatchBoard.instance.RemoveTile(tileObj);
+                }
 
-        MatchBoard.instance.RearrangeBoard();
+                MatchBoardMatch.instance.AddRemovedTile();
+                MatchBoardMatch.instance.PlayDestroyEffect(tileObj);
+            }
 
-        Time.timeScale = 1f;
-        StartCoroutine(RefreshTilesAfterRevive(tileParent));
-        UIManager.Instance.HidePopup(ScreenType.GameOver);
+            MatchBoard.instance.RearrangeBoard();
+
+            Time.timeScale = 1f;
+            StartCoroutine(RefreshTilesAfterRevive(tileParent));
+            UIManager.Instance.HidePopup(ScreenType.GameOver);
+        });
     }
 
     IEnumerator RefreshTilesAfterRevive(Transform tileParent)

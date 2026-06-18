@@ -1,26 +1,32 @@
 using UnityEngine;
-using DG.Tweening;
 
 public class HomeScreenStreakTrigger : MonoBehaviour
 {
+    private CanvasGroup cg;
+    private bool hasTriggered = false;
+
+    void Awake()
+    {
+        cg = GetComponent<CanvasGroup>();
+    }
+
     void OnEnable()
     {
-        // Safe, stable DOTween timer that waits 0.6 seconds after the screen turns on
-        DOVirtual.DelayedCall(0.6f, CheckDailyStreak).SetId("HomeStreakTimer");
+        hasTriggered = false; 
     }
 
-    void OnDisable()
+    void Update()
     {
-        // Safely kill the timer if the player leaves the home screen before 0.6 seconds!
-        DOTween.Kill("HomeStreakTimer");
-    }
+        if (hasTriggered) return;
 
-    void CheckDailyStreak()
-    {
-        if (!gameObject.activeInHierarchy) return;
+        if (AutoSlider.isSliding) return;
+
+        if (cg != null && cg.alpha < 0.5f) return;
 
         if (DailyStreakManager.instance != null && DailyStreakManager.instance.ShouldShowRewardPopup())
         {
+            hasTriggered = true;
+            
             UIManager.Instance.Show(ScreenType.DailyStreakScreen); 
 
             if (DailyStreakUI.instance != null)
