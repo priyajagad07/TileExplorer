@@ -9,7 +9,8 @@ public class AvatarManager : MonoBehaviour
     [SerializeField] private AvatarSlot[] avatars;
     [SerializeField] private Image avatarPreview;
     [SerializeField] private Image avatarHomeScreen;
-    [SerializeField] private GameObject checkMark;
+    [SerializeField] private GameObject[] avatarFrames; 
+    
     [SerializeField] private TMP_InputField nameInput;
 
     private int selectedAvatar = 0;
@@ -30,8 +31,19 @@ public class AvatarManager : MonoBehaviour
         selectedAvatar = index;
         avatarPreview.sprite = avatars[index].iconImage.sprite;
 
-        checkMark.transform.SetParent(avatars[index].transform);
-        checkMark.transform.localPosition = Vector3.zero;
+        // ---> NEW: Turn off all frames, then turn on the selected one <---
+        for (int i = 0; i < avatarFrames.Length; i++)
+        {
+            if (avatarFrames[i] != null)
+            {
+                avatarFrames[i].SetActive(false);
+            }
+        }
+
+        if (avatarFrames[index] != null)
+        {
+            avatarFrames[index].SetActive(true);
+        }
     }
 
     public void ConfirmAvatar()

@@ -39,7 +39,8 @@ public class MatchBoard : MonoBehaviour
 
         for (int i = 0; i < placedTiles.Count; i++)
         {
-            if (placedTiles[i].GetComponent<Tile>().tileId == tileID)
+            Tile t = placedTiles[i].GetComponent<Tile>();
+            if (t.tileId == tileID && !t.isMatched)
             {
                 insertIndex = i + 1;
             }
@@ -75,12 +76,20 @@ public class MatchBoard : MonoBehaviour
         {
             if (placedTiles[i] == null) continue;
 
-            int id = placedTiles[i].GetComponent<Tile>().tileId;
+            Tile currentTile = placedTiles[i].GetComponent<Tile>();
+
+            if (currentTile.isMatched) continue;
+
+            int id = currentTile.tileId;
             int count = 0;
 
             foreach (GameObject t in placedTiles)
             {
-                if (t != null && t.GetComponent<Tile>().tileId == id) count++;
+                if (t != null)
+                {
+                    Tile checkTile = t.GetComponent<Tile>();
+                    if (checkTile.tileId == id && !checkTile.isMatched) count++;
+                }
             }
 
             if (count >= 3)
@@ -107,13 +116,18 @@ public class MatchBoard : MonoBehaviour
 
     void CheckGameOver()
     {
-        if (placedTiles.Count >= slots.Count)
+        bool isAnimating = false;
+        foreach (GameObject t in placedTiles)
+        {
+            if (t != null && t.GetComponent<Tile>().isMatched) isAnimating = true;
+        }
+
+        if (placedTiles.Count >= slots.Count && !isAnimating)
         {
             Debug.Log("Game Over");
             GameManager.instance.GameOver();
         }
     }
-
     public void RearrangeBoard()
     {
         for (int i = 0; i < placedTiles.Count; i++)

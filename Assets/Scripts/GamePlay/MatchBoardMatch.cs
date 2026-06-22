@@ -24,7 +24,9 @@ public class MatchBoardMatch : MonoBehaviour
 
         foreach (GameObject tile in placedTiles)
         {
-            if (tile.GetComponent<Tile>().tileId == tileID)
+            Tile t = tile.GetComponent<Tile>();
+        
+            if (t.tileId == tileID && !t.isMatched)
             {
                 matched.Add(tile);
             }
@@ -38,12 +40,11 @@ public class MatchBoardMatch : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 GameObject matchtile = matched[i];
-                MatchBoard.instance.RemoveTile(matchtile);
+
+                matchtile.GetComponent<Tile>().isMatched = true;
                 activePopAnimation++;
                 PopAndDestroy(matchtile);
             }
-
-            Invoke(nameof(Rearrange), 0.6f);
 
             SoundManager.instance.PlaySound(SoundName.ThreeTilesMatch);
 
@@ -52,11 +53,6 @@ public class MatchBoardMatch : MonoBehaviour
                 ComboManager.instance.RegisterMatch();
             }
         }
-    }
-
-    void Rearrange()
-    {
-        MatchBoard.instance.RearrangeBoard();
     }
 
     void PopAndDestroy(GameObject tile)
@@ -77,15 +73,22 @@ public class MatchBoardMatch : MonoBehaviour
 
         seq.OnComplete(() =>
         {
-            SpawnDestroyParticle(
-                rect.position
-            );
+            SpawnDestroyParticle(rect.position);
 
+            MatchBoard.instance.RemoveTile(tile);
             Destroy(tile);
+
+            MatchBoard.instance.RearrangeBoard();
 
             activePopAnimation--;
         });
     }
+
+    void Rearrange()
+    {
+        MatchBoard.instance.RearrangeBoard();
+    }
+
     public void ResetBoardState()
     {
         StopAllCoroutines();

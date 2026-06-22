@@ -32,7 +32,7 @@ public class DailyStreakManager : MonoBehaviour
             Debug.Log("First Launch");
             SaveManager.instance.data.firstLaunchCompleted = 1;
             streak = 1;
-            
+
             SaveManager.instance.data.dailyStreak = streak;
             SaveManager.instance.data.dailyRewardPending = 1;
             SaveManager.instance.data.lastLoginDate = today;
@@ -89,16 +89,7 @@ public class DailyStreakManager : MonoBehaviour
     public void ContinueFromDailyReward()
     {
         UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
-
-        if (DailyStreakUI.instance.openedAfterReward)
-        {
-            DailyStreakUI.instance.openedAfterReward = false;
-            UIManager.Instance.Show(ScreenType.GamePlay);
-        }
-        else
-        {
-            UIManager.Instance.Show(ScreenType.HomeScreen);
-        }
+        UIManager.Instance.Show(ScreenType.HomeScreen);
     }
 
     public bool ShouldShowRewardPopup()

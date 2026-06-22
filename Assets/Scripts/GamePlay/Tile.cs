@@ -13,6 +13,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public int col;
     public int layer;
     private Image[] tileImages;
+    public bool isMatched = false;
 
     void Awake()
     {
@@ -20,6 +21,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (IdleHintManager.instance != null) IdleHintManager.instance.ResetIdleTimer();
         if (MatchBoard.instance.isInputLocked) return;
 
         if (isMoved)

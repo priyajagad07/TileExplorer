@@ -4,9 +4,7 @@ using Solo.MOST_IN_ONE;
 
 public partial class DailyStreakUI
 {
-    void ShowRewardPopup(
-        string reward
-    )
+    void ShowRewardPopup(string reward)
     {
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
         SoundManager.instance.PlaySound(SoundName.RewardPop);

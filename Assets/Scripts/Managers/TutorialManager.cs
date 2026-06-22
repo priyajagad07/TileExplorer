@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro; // ---> NEW: Added TMPro so we can use modern Text elements! <---
 
 public class TutorialManager : MonoBehaviour
 {
@@ -9,6 +10,22 @@ public class TutorialManager : MonoBehaviour
     [Header("UI Elements")]
     public CanvasGroup tutorialOverlay;
     public RectTransform pointer;
+
+    // ---> NEW: The text element that will show the instructions <---
+    public TMP_Text tutorialText;
+
+    [Header("UI To Hide During Tutorial")]
+    public GameObject topHeaderUI;
+    public GameObject boosterUI;
+
+    // ---> NEW: Edit these directly in the Unity Inspector! <---
+    [Header("Tutorial Messages")]
+    [TextArea]
+    public string[] stepMessages = new string[] {
+        "Tap the highlighted tile to move it to your tray!",
+        "Great! Now tap another matching tile.",
+        "One more! Match 3 identical tiles to clear them!"
+    };
 
     [Header("State")]
     public bool isTutorialActive = false;
@@ -31,7 +48,7 @@ public class TutorialManager : MonoBehaviour
         if (target == null) return;
 
         Canvas canvas = target.GetComponent<Canvas>();
-        
+
         if (isFocused)
         {
             if (canvas == null) canvas = target.AddComponent<Canvas>();
@@ -50,16 +67,53 @@ public class TutorialManager : MonoBehaviour
     {
         if (SaveManager.instance.data.level == 0 && SaveManager.instance.data.tutorialCompleted == 0)
         {
+            if (topHeaderUI != null) topHeaderUI.SetActive(false);
+            if (boosterUI != null) boosterUI.SetActive(false);
+
             isTutorialActive = true;
             tutorialStep = 0;
 
             tutorialOverlay.gameObject.SetActive(true);
+            tutorialOverlay.blocksRaycasts = true;
+
             tutorialOverlay.alpha = 0f;
             pointer.gameObject.SetActive(false);
+
+            // ---> NEW: Turn on the text and set the first message <---
+            if (tutorialText != null)
+            {
+                tutorialText.gameObject.SetActive(true);
+                UpdateTutorialText(0);
+                SetUIFocus(tutorialText.gameObject, true, 30005); // Brings text above the dark overlay
+            }
+
+            if (MatchBoard.instance != null)
+            {
+                SetUIFocus(MatchBoard.instance.gameObject, true, 29999);
+            }
 
             tutorialOverlay.DOFade(0.7f, 0.5f);
             DOVirtual.DelayedCall(0.5f, () => ShowNextStep());
         }
+        else
+        {
+            if (topHeaderUI != null) topHeaderUI.SetActive(true);
+            if (boosterUI != null) boosterUI.SetActive(true);
+            if (tutorialText != null) tutorialText.gameObject.SetActive(false); // Make sure text is hidden normally
+        }
+    }
+
+    // ---> NEW: Method to update and animate the text <---
+    private void UpdateTutorialText(int step)
+    {
+        if (tutorialText == null || step >= stepMessages.Length) return;
+
+        tutorialText.text = stepMessages[step];
+
+        // Give the text a nice little bounce so they notice it changed!
+        tutorialText.transform.DOKill();
+        tutorialText.transform.localScale = Vector3.one;
+        tutorialText.transform.DOPunchScale(Vector3.one * 0.15f, 0.35f, 5, 0.5f);
     }
 
     public void ShowNextStep()
@@ -120,16 +174,22 @@ public class TutorialManager : MonoBehaviour
         if (clickedTile == currentTargetTile)
         {
             tutorialStep++;
-            
+
+            // ---> NEW: Update the text for the next step! <---
+            if (tutorialStep < stepMessages.Length)
+            {
+                UpdateTutorialText(tutorialStep);
+            }
+
             pointer.DOKill();
             pointer.gameObject.SetActive(false);
-            SetUIFocus(pointer.gameObject, false); 
+            SetUIFocus(pointer.gameObject, false);
 
             if (currentTargetTile != null)
             {
                 currentTargetTile.transform.DOKill();
                 currentTargetTile.transform.localScale = Vector3.one;
-                SetUIFocus(currentTargetTile, false); 
+                SetUIFocus(currentTargetTile, false);
             }
 
             DOVirtual.DelayedCall(0.4f, () => ShowNextStep());
@@ -148,9 +208,22 @@ public class TutorialManager : MonoBehaviour
         pointer.gameObject.SetActive(false);
         SetUIFocus(pointer.gameObject, false);
 
+        tutorialOverlay.blocksRaycasts = false;
+
+        // ---> NEW: Hide and unfocus the text <---
+        if (tutorialText != null)
+        {
+            SetUIFocus(tutorialText.gameObject, false);
+            tutorialText.DOFade(0f, 0.5f).OnComplete(() => tutorialText.gameObject.SetActive(false));
+        }
+
         tutorialOverlay.DOFade(0f, 0.5f).OnComplete(() =>
         {
             tutorialOverlay.gameObject.SetActive(false);
+
+            // Bring the UI back when they win the tutorial!
+            if (topHeaderUI != null) topHeaderUI.SetActive(true);
+            if (boosterUI != null) boosterUI.SetActive(true);
         });
 
         if (currentTargetTile != null)
@@ -158,6 +231,11 @@ public class TutorialManager : MonoBehaviour
             currentTargetTile.transform.DOKill();
             currentTargetTile.transform.localScale = Vector3.one;
             SetUIFocus(currentTargetTile, false);
+        }
+
+        if (MatchBoard.instance != null)
+        {
+            SetUIFocus(MatchBoard.instance.gameObject, false);
         }
     }
 
@@ -167,9 +245,13 @@ public class TutorialManager : MonoBehaviour
 
         isSoftTutorialActive = true;
         currentSoftTutorialKey = boosterName;
-        activeBooster = boosterRect.gameObject; 
+        activeBooster = boosterRect.gameObject;
 
         tutorialOverlay.gameObject.SetActive(true);
+
+        // ---> NEW: Block clicks during soft tutorial <---
+        tutorialOverlay.blocksRaycasts = true;
+
         tutorialOverlay.alpha = 0f;
         tutorialOverlay.DOKill();
         tutorialOverlay.DOFade(0.7f, 0.5f);
@@ -178,7 +260,7 @@ public class TutorialManager : MonoBehaviour
         pointer.gameObject.SetActive(true);
 
         pointer.position = boosterRect.position;
-        pointer.anchoredPosition += new Vector2(60f, -60f); 
+        pointer.anchoredPosition += new Vector2(60f, -60f);
         pointer.SetAsLastSibling();
 
         pointer.localScale = Vector3.one;
@@ -193,7 +275,10 @@ public class TutorialManager : MonoBehaviour
         if (!isSoftTutorialActive) return;
 
         isSoftTutorialActive = false;
-        
+
+        // ---> NEW: Unblock clicks <---
+        tutorialOverlay.blocksRaycasts = false;
+
         if (!SaveManager.instance.data.softTutorialsSeen.Contains(currentSoftTutorialKey))
         {
             SaveManager.instance.data.softTutorialsSeen.Add(currentSoftTutorialKey);
@@ -205,7 +290,7 @@ public class TutorialManager : MonoBehaviour
         SetUIFocus(pointer.gameObject, false);
 
         tutorialOverlay.DOKill();
-        tutorialOverlay.DOFade(0f, 0.4f).OnComplete(() => 
+        tutorialOverlay.DOFade(0f, 0.4f).OnComplete(() =>
         {
             tutorialOverlay.gameObject.SetActive(false);
         });

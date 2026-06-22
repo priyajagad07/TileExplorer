@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UIManager : MonoBehaviour
     private BaseScreen activePopup;
     private ScreenType currentScreenType;
     private Stack<ScreenType> screenHistory = new Stack<ScreenType>();
+    public ScrollRect scrollRect;
 
     void Awake()
     {
@@ -116,6 +118,8 @@ public class UIManager : MonoBehaviour
 
     public void GoBack()
     {
+        scrollRect.verticalNormalizedPosition = 1;
+
         if (screenHistory.Count > 0)
         {
             ScreenType previous = screenHistory.Pop();

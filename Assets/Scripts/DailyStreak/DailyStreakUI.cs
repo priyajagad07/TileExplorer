@@ -26,8 +26,7 @@ public partial class DailyStreakUI : MonoBehaviour
     {
         instance = this;
 
-        keepGoingButton.localScale =
-            Vector3.zero;
+        keepGoingButton.localScale = Vector3.zero;
 
         rewardPopup.SetActive(false);
     }
@@ -39,9 +38,7 @@ public partial class DailyStreakUI : MonoBehaviour
 
     public void Refresh()
     {
-        int streak =
-            DailyStreakManager.instance
-                .GetStreak();
+        int streak = DailyStreakManager.instance.GetStreak();
 
         for (int i = 0; i < dayIcons.Length; i++)
         {

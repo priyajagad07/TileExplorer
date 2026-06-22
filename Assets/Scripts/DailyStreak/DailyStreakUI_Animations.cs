@@ -7,11 +7,15 @@ public partial class DailyStreakUI
     public void PlayRewardSequence()
     {
         Debug.Log("PlayRewardSequence");
-
-        // 1. SAFETY LOCK: Kill any ghost timelines if this accidentally fires twice
         DOTween.Kill("RewardSeq");
 
         int streak = DailyStreakManager.instance.GetStreak();
+
+        if (streakText != null)
+        {
+            int previous = Mathf.Max(0, streak - 1);
+            streakText.text = previous.ToString();
+        }
 
         ShowPreviousProgress(streak);
 
@@ -21,25 +25,20 @@ public partial class DailyStreakUI
         Sequence seq = DOTween.Sequence().SetId("RewardSeq");
         seq.AppendInterval(0.5f);
 
-        // 2. Pop the Bird
         seq.AppendCallback(() =>
         {
             PlayBirdAnimation();
         });
 
-        // Wait for the Bird to finish (0.5 seconds)
         seq.AppendInterval(0.5f);
 
-        // 3. Count the streak numbers
         seq.AppendCallback(() =>
         {
             AnimateStreak(streak);
         });
 
-        // Wait for the numbers to finish counting and punching (1 second)
         seq.AppendInterval(1f);
 
-        // 4. Pop the Day Icon
         seq.AppendCallback(() =>
         {
             ClaimDay(streak);
@@ -47,7 +46,6 @@ public partial class DailyStreakUI
 
         seq.AppendInterval(0.25f);
 
-        // 5. Show what they won
         seq.AppendCallback(() =>
         {
             ShowRewardPopup(DailyRewardManager.instance.GetRewardTextForDay(streak));
@@ -55,7 +53,6 @@ public partial class DailyStreakUI
 
         seq.AppendInterval(0.3f);
 
-        // 6. Give the actual rewards in the background
         seq.AppendCallback(() =>
         {
             DailyStreakManager.instance.GiveRewardForCurrentDay();
@@ -117,20 +114,11 @@ public partial class DailyStreakUI
         seq.Join(icon.transform.DOPunchRotation(new Vector3(0, 0, 15), 0.35f, 8, 1));
     }
 
-    void ShowPreviousProgress(
-        int streak
-    )
+    void ShowPreviousProgress(int streak)
     {
-        for (
-            int i = 0;
-            i < dayIcons.Length;
-            i++
-        )
+        for (int i = 0; i < dayIcons.Length; i++)
         {
-            dayIcons[i].color =
-                i < streak - 1
-                ? completedColor
-                : defaultColor;
+            dayIcons[i].color = i < streak - 1 ? completedColor : defaultColor;
         }
     }
 }

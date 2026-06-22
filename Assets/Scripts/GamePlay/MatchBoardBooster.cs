@@ -1,9 +1,14 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class MatchBoardBooster : MonoBehaviour
 {
+    private static bool isBoosterOnCooldown = false;
+
     public void UseUndo()
     {
+        if (isBoosterOnCooldown) return;
+
         if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
         int currentLevel = SaveManager.instance.data.level + 1;
         bool isUnlocked = currentLevel > 3 || (currentLevel == 3 && SaveManager.instance.data.undoAnimPlayed == 1);
@@ -29,11 +34,17 @@ public class MatchBoardBooster : MonoBehaviour
         }
 
         bool success = BoosterSystem.instance.UndoMove();
-        if (success) BoosterManager.instance.UseUndo();
+        if (success)
+        {
+            BoosterManager.instance.UseUndo();
+            StartCooldown(0.4f);
+        }
     }
 
     public void ShuffleTiles()
     {
+        if (isBoosterOnCooldown) return;
+
         if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
         int currentLevel = SaveManager.instance.data.level + 1;
         bool isUnlocked = currentLevel > 5 || (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 1);
@@ -60,10 +71,14 @@ public class MatchBoardBooster : MonoBehaviour
 
         BoosterManager.instance.UseShuffle();
         BoosterSystem.instance.ShuffleTiles();
+
+        StartCooldown(1.2f);
     }
 
     public void UseMagic()
     {
+        if (isBoosterOnCooldown) return;
+
         if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
 
         int currentLevel = SaveManager.instance.data.level + 1;
@@ -91,5 +106,17 @@ public class MatchBoardBooster : MonoBehaviour
 
         BoosterManager.instance.UseMagic();
         BoosterSystem.instance.UseMagicBooster();
+
+        StartCooldown(0.5f);
+    }
+
+    private void StartCooldown(float lockDuration)
+    {
+        isBoosterOnCooldown = true;
+
+        DOVirtual.DelayedCall(lockDuration, () =>
+        {
+            isBoosterOnCooldown = false;
+        });
     }
 }
