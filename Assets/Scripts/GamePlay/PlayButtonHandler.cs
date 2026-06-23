@@ -10,7 +10,7 @@ public class PlayButtonHandler : MonoBehaviour
         if (isHandlingClick) return;
         
         isHandlingClick = true;
-        DOVirtual.DelayedCall(0.5f, () => isHandlingClick = false); // Unlock after 0.5s
+        DOVirtual.DelayedCall(0.5f, () => isHandlingClick = false); 
 
         if (GameManager.instance != null && GameManager.instance.isGameInProgress)
         {

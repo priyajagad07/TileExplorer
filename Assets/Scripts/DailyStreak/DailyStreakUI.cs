@@ -25,9 +25,7 @@ public partial class DailyStreakUI : MonoBehaviour
     void Awake()
     {
         instance = this;
-
         keepGoingButton.localScale = Vector3.zero;
-
         rewardPopup.SetActive(false);
     }
 
@@ -42,10 +40,7 @@ public partial class DailyStreakUI : MonoBehaviour
 
         for (int i = 0; i < dayIcons.Length; i++)
         {
-            dayIcons[i].color =
-                i < streak
-                ? completedColor
-                : defaultColor;
+            dayIcons[i].color = i < streak ? completedColor : defaultColor;
         }
     }
 
@@ -66,10 +61,7 @@ public partial class DailyStreakUI : MonoBehaviour
 
             Refresh();
 
-            streakText.text =
-                DailyStreakManager.instance
-                    .GetStreak()
-                    .ToString();
+            streakText.text = DailyStreakManager.instance.GetStreak().ToString();
         }
     }
     public void OpenFromHome()

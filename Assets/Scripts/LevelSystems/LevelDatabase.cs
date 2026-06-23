@@ -7,6 +7,5 @@ using UnityEngine;
 )]
 public class LevelDatabase : ScriptableObject
 {
-    public List<LevelData> levels =
-        new List<LevelData>();
+    public List<LevelData> levels =        new List<LevelData>();
 }

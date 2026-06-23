@@ -235,15 +235,15 @@ public class GameManager : MonoBehaviour
     {
         if (rewardClaimed) return;
 
+        rewardClaimed = true;
+        claimButton.interactable = false;
+
         SoundManager.instance.PlaySound(SoundName.ButtonPop);
 
         AdManager.instance.ShowRewardedAd(() =>
         {
             DOVirtual.DelayedCall(0.2f, () =>
             {
-                rewardClaimed = true;
-                claimButton.interactable = false;
-
                 SoundManager.instance.PlaySound(SoundName.Coins);
 
                 if (LevelManager.instance.nextLevelParticles != null)
@@ -251,12 +251,11 @@ public class GameManager : MonoBehaviour
                     LevelManager.instance.nextLevelParticles.Play();
                 }
                 SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
-                DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(200));
 
+                DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(200));
             });
         });
     }
-
     public void ClaimWinCoins()
     {
         if (rewardClaimed) return;
@@ -279,6 +278,11 @@ public class GameManager : MonoBehaviour
     {
         levelCompleted = false;
         rewardClaimed = false;
+
+        if (IdleHintManager.instance != null)
+        {
+            IdleHintManager.instance.ResetIdleTimer();
+        }
     }
 
     void PlayConfetti()

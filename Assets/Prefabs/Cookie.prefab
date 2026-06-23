@@ -139,6 +139,11 @@ MonoBehaviour:
   row: 0
   col: 0
   layer: 0
+  isMatched: 0
+  particleColors:
+  - {r: 0.95686275, g: 0.40392157, b: 0.11764706, a: 1}
+  - {r: 0.7019608, g: 0.047058824, b: 0, a: 1}
+  - {r: 0.9764706, g: 0.95686275, b: 0.92156863, a: 1}
 --- !u!225 &7326222595970477302
 CanvasGroup:
   m_ObjectHideFlags: 0

@@ -1,4 +1,4 @@
-// AnchorTool.cs
+//AnchorTool.cs
 // Place this file inside any folder named "Editor" in your Unity project.
 // Usage: Select one or more UI GameObjects in the Hierarchy, then press Ctrl + A.
 // The anchors of each selected RectTransform will snap to its current position/size

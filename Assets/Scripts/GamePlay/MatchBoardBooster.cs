@@ -37,6 +37,14 @@ public class MatchBoardBooster : MonoBehaviour
         if (success)
         {
             BoosterManager.instance.UseUndo();
+
+            if (TutorialManager.instance != null)
+            {
+                TutorialManager.instance.CloseSoftTutorial();
+            }
+
+            MatchBoard.instance.isInputLocked = false;
+
             StartCooldown(0.4f);
         }
     }

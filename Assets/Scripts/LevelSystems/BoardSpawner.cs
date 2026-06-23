@@ -222,7 +222,7 @@ public class BoardSpawner : MonoBehaviour
         masterSequence.OnComplete(() =>
         {
             isSpawning = false;
-            
+
             if (GameManager.instance != null)
             {
                 GameManager.instance.StartGame();
@@ -236,6 +236,11 @@ public class BoardSpawner : MonoBehaviour
             if (BoosterManager.instance != null)
             {
                 BoosterManager.instance.PlayUnlockAnimationIfNeeded();
+            }
+
+            if (IdleHintManager.instance != null)
+            {
+                IdleHintManager.instance.ResetIdleTimer();
             }
         });
 

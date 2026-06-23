@@ -85,6 +85,11 @@ public class BoosterManager : MonoBehaviour
     {
         int currentLevel = SaveManager.instance.data.level + 1;
 
+        if (currentLevel >= 3 && SaveManager.instance.data.undoUnlocked == 0)
+        {
+            undoCount += 3;
+            SaveManager.instance.data.undoUnlocked = 1;
+        }
         if (currentLevel >= 5 && SaveManager.instance.data.shuffleUnlocked == 0)
         {
             shuffleCount += 3;
@@ -102,6 +107,16 @@ public class BoosterManager : MonoBehaviour
     {
         int currentLevel = SaveManager.instance.data.level + 1;
 
+        if (currentLevel == 3 && SaveManager.instance.data.undoAnimPlayed == 0)
+        {
+            SaveManager.instance.data.undoAnimPlayed = 1;
+            SaveManager.instance.SaveData();
+            PlayUnlockBounce(undoButtonRect, () =>
+            {
+                UpdateUI();
+                if (TutorialManager.instance != null) TutorialManager.instance.StartBoosterTutorial(undoButtonRect, "Undo");
+            });
+        }
         if (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 0)
         {
             SaveManager.instance.data.shuffleAnimPlayed = 1;
@@ -124,25 +139,6 @@ public class BoosterManager : MonoBehaviour
         }
     }
 
-    public void CheckAndUnlockUndoAfterFirstTile()
-    {
-        int currentLevel = SaveManager.instance.data.level + 1;
-
-        if (currentLevel == 3 && SaveManager.instance.data.undoUnlocked == 0)
-        {
-            undoCount += 3;
-            SaveManager.instance.data.undoUnlocked = 1;
-            SaveManager.instance.data.undoAnimPlayed = 1;
-            SaveBoosters();
-
-            PlayUnlockBounce(undoButtonRect, () =>
-            {
-                UpdateUI();
-                if (TutorialManager.instance != null) TutorialManager.instance.StartBoosterTutorial(undoButtonRect, "Undo");
-            });
-        }
-    }
-
     void PlayUnlockBounce(RectTransform rect, System.Action onUnlock)
     {
         if (rect == null) return;
@@ -159,10 +155,10 @@ public class BoosterManager : MonoBehaviour
         seq.Append(rect.DOScale(1f, 0.2f).SetEase(Ease.InBack));
         seq.Append(rect.DOPunchScale(Vector3.one * 0.15f, 0.3f, 6, 0.5f));
 
-         seq.AppendCallback(() =>
-        {
-            if (SoundManager.instance != null) SoundManager.instance.PlaySound(SoundName.UnlockBooster);
-        });
+        seq.AppendCallback(() =>
+       {
+           if (SoundManager.instance != null) SoundManager.instance.PlaySound(SoundName.UnlockBooster);
+       });
 
         seq.OnComplete(() =>
         {

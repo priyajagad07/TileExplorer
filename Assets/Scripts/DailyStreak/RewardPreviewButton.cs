@@ -6,9 +6,6 @@ public class RewardPreviewButton : MonoBehaviour
 
     public void ShowPreview()
     {
-        DailyStreakUI.instance.ShowRewardPreview(
-            day,
-            transform
-        );
+        DailyStreakUI.instance.ShowRewardPreview(day, transform);
     }
 }

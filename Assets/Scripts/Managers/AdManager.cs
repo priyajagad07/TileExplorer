@@ -1,96 +1,123 @@
 using UnityEngine;
-using UnityEngine.Advertisements;
+using GoogleMobileAds.Api;
 using System;
 
-public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
+public class AdManager : MonoBehaviour
 {
     public static AdManager instance;
 
-    [Header("Ad IDs")]
-    [SerializeField] private string androidGameId = "4859013"; 
-    [SerializeField] private string iOSGameId = "4859012";
-    [SerializeField] private bool testMode = true;
+    [Header("Google AdMob Test IDs")]
+#if UNITY_ANDROID
+    private string interstitialId = "ca-app-pub-3940256099942544/1033173712";
+    private string rewardedId = "ca-app-pub-3940256099942544/5224354917";
+#elif UNITY_IOS
+        private string interstitialId = "ca-app-pub-3940256099942544/4411468910";
+        private string rewardedId = "ca-app-pub-3940256099942544/1712485313";
+#else
+        private string interstitialId = "unexpected_platform";
+        private string rewardedId = "unexpected_platform";
+#endif  
 
-    [Header("Ad Unit Names")]
-    [SerializeField] private string rewardedAdUnitId = "Rewarded_Android";
-    [SerializeField] private string interstitialAdUnitId = "Interstitial_Android";
+    private InterstitialAd interstitialAd;
+    private RewardedAd rewardedAd;
 
-    private string gameId;
-    private Action onRewardedAdSuccess;
+    private Action pendingRewardCallback;
+    private bool rewardEarned = false;
+
+    private bool processAdClosed = false;
+
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (instance == null) { instance = this; DontDestroyOnLoad(gameObject); }
+        else { Destroy(gameObject); }
     }
 
     void Start()
     {
-        InitializeAds();
+        MobileAds.Initialize(initStatus =>
+        {
+            LoadInterstitialAd();
+            LoadRewardedAd();
+        });
     }
 
-    public void InitializeAds()
+    void Update()
     {
-        gameId = (Application.platform == RuntimePlatform.IPhonePlayer) ? iOSGameId : androidGameId;
-        
-        rewardedAdUnitId = (Application.platform == RuntimePlatform.IPhonePlayer) ? "Rewarded_iOS" : "Rewarded_Android";
-        interstitialAdUnitId = (Application.platform == RuntimePlatform.IPhonePlayer) ? "Interstitial_iOS" : "Interstitial_Android";
+        if (processAdClosed)
+        {
+            processAdClosed = false;
 
-        Advertisement.Initialize(gameId, testMode, this);
+            if (rewardEarned)
+            {
+                rewardEarned = false;
+                pendingRewardCallback?.Invoke();
+            }
+
+            LoadRewardedAd();
+        }
     }
 
-    public void OnInitializationComplete()
+    // ==========================================
+    // INTERSTITIAL ADS
+    // ==========================================
+    public void LoadInterstitialAd()
     {
-        Debug.Log("Unity Ads initialization complete.");
-        LoadRewardedAd();
+        if (interstitialAd != null) { interstitialAd.Destroy(); interstitialAd = null; }
+
+        var adRequest = new AdRequest();
+        InterstitialAd.Load(interstitialId, adRequest, (InterstitialAd ad, LoadAdError error) =>
+        {
+            if (error != null || ad == null) { return; }
+            interstitialAd = ad;
+        });
     }
 
-    public void OnInitializationFailed(UnityAdsInitializationError error, string message)
+    public void ShowInterstitialAd()
     {
-        Debug.LogError($"Unity Ads Initialization Failed: {error.ToString()} - {message}");
+        if (interstitialAd != null && interstitialAd.CanShowAd())
+        {
+            interstitialAd.Show();
+            LoadInterstitialAd();
+        }
     }
 
+    // ==========================================
+    // REWARDED ADS
+    // ==========================================
     public void LoadRewardedAd()
     {
-        Debug.Log("Loading Rewarded Ad...");
-        Advertisement.Load(rewardedAdUnitId, this);
-    }
+        if (rewardedAd != null) { rewardedAd.Destroy(); rewardedAd = null; }
 
-    public void ShowRewardedAd(Action onSuccess)
-    {
-        onRewardedAdSuccess = onSuccess;
-        Advertisement.Show(rewardedAdUnitId, this);
-    }
-
-    public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
-    {
-        if (adUnitId.Equals(rewardedAdUnitId) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
+        var adRequest = new AdRequest();
+        RewardedAd.Load(rewardedId, adRequest, (RewardedAd ad, LoadAdError error) =>
         {
-            Debug.Log("Player watched the whole ad! Giving reward...");
-            
-            if (onRewardedAdSuccess != null)
-            {
-                onRewardedAdSuccess.Invoke();
-                onRewardedAdSuccess = null;
-            }
-        }
-        
-        LoadRewardedAd(); 
+            if (error != null || ad == null) { return; }
+            rewardedAd = ad;
+
+            rewardedAd.OnAdFullScreenContentClosed += HandleAdClosed;
+        });
     }
 
-    public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
+    private void HandleAdClosed()
     {
-        Debug.LogError($"Error showing Ad Unit {adUnitId}: {error.ToString()} - {message}");
+        processAdClosed = true;
     }
 
-    public void OnUnityAdsShowStart(string adUnitId) { }
-    public void OnUnityAdsShowClick(string adUnitId) { }
-    public void OnUnityAdsAdLoaded(string adUnitId) { }
-    public void OnUnityAdsFailedToLoad(string adUnitId, UnityAdsLoadError error, string message) { }
+    public void ShowRewardedAd(Action onRewardEarned)
+    {
+        if (rewardedAd != null && rewardedAd.CanShowAd())
+        {
+            pendingRewardCallback = onRewardEarned;
+            rewardEarned = false;
+
+            rewardedAd.Show((Reward reward) =>
+            {
+                rewardEarned = true;
+            });
+        }
+        else
+        {
+            Debug.Log("Ad is not ready yet!");
+        }
+    }
 }

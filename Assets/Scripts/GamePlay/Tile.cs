@@ -14,6 +14,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public int layer;
     private Image[] tileImages;
     public bool isMatched = false;
+    [Header("Explosion Colors")]
+    public Color[] particleColors;
 
     void Awake()
     {

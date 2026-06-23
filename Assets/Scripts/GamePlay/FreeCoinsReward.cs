@@ -12,12 +12,12 @@ public class FreeCoinsReward : MonoBehaviour
 
     public void ClaimFreeCoins()
     {
+        watchButton.interactable = false;
+
         SoundManager.instance.PlaySound(SoundName.ButtonPop);
 
         AdManager.instance.ShowRewardedAd(() =>
         {
-            watchButton.interactable = false;
-
             SoundManager.instance.PlaySound(SoundName.Coins);
             
             if (rewardParticles != null)

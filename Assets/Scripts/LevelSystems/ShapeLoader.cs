@@ -11,23 +11,14 @@ public class ShapeLoader : MonoBehaviour
 
     void LoadShapes()
     {
-        database =
-            Resources.Load<ShapeDatabase>(
-                "ShapeDatabase"
-            );
+        database = Resources.Load<ShapeDatabase>("ShapeDatabase");
 
         if (database == null)
         {
-            Debug.LogError(
-                "ShapeDatabase not found!"
-            );
-
+            Debug.LogError("ShapeDatabase not found!");
             return;
         }
 
-        Debug.Log(
-            "Loaded Shapes: " +
-            database.shapes.Count
-        );
+        Debug.Log("Loaded Shapes: " + database.shapes.Count);
     }
 }

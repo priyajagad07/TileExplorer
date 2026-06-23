@@ -21,9 +21,19 @@ public class MatchBoard : MonoBehaviour
 
     public bool AddTile(GameObject tile)
     {
+        if (isInputLocked)
+            return false;
+
+        if (IdleHintManager.instance != null)
+        {
+            IdleHintManager.instance.StopHints();
+        }
+
         if (TutorialManager.instance != null)
         {
-            if (!TutorialManager.instance.IsTileClickAllowed(tile)) return false;
+            if (!TutorialManager.instance.IsTileClickAllowed(tile))
+                return false;
+
             TutorialManager.instance.CloseSoftTutorial();
         }
 
@@ -62,7 +72,6 @@ public class MatchBoard : MonoBehaviour
         matchTimer = DOVirtual.DelayedCall(0.18f, () =>
         {
             ProcessBoard();
-            if (BoosterManager.instance != null) BoosterManager.instance.CheckAndUnlockUndoAfterFirstTile();
         });
 
         return true;
@@ -75,9 +84,7 @@ public class MatchBoard : MonoBehaviour
         for (int i = 0; i < placedTiles.Count; i++)
         {
             if (placedTiles[i] == null) continue;
-
             Tile currentTile = placedTiles[i].GetComponent<Tile>();
-
             if (currentTile.isMatched) continue;
 
             int id = currentTile.tileId;

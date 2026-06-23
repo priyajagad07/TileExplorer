@@ -153,14 +153,12 @@ public class BoosterSystem : MonoBehaviour
             originalSiblingIndices.Add(child.GetSiblingIndex());
         }
 
-        // If there's 1 or 0 tiles, no need to shuffle
         if (activeTiles.Count <= 1)
         {
             MatchBoard.instance.isInputLocked = false;
             return;
         }
 
-        // 2. Shuffle the tiles list
         List<Tile> shuffledTiles = new List<Tile>(activeTiles);
         for (int i = 0; i < shuffledTiles.Count; i++)
         {
@@ -170,7 +168,6 @@ public class BoosterSystem : MonoBehaviour
             shuffledTiles[randomIndex] = temp;
         }
 
-        // 3. Map the newly shuffled tiles to the exact structural data of the original slots
         int completedAnimations = 0;
         int totalAnimations = activeTiles.Count;
 
@@ -180,19 +177,17 @@ public class BoosterSystem : MonoBehaviour
         for (int i = 0; i < shuffledTiles.Count; i++)
         {
             Tile tile = shuffledTiles[i];
-            tile.layer = originalLayers[i]; // Inherit the slot's logical layer
+            tile.layer = originalLayers[i]; 
             tileToTargetPos[tile] = originalPositions[i];
             tileToTargetSibling[tile] = originalSiblingIndices[i];
         }
 
-        // 4. Safely apply the visual rendering order before animation so tiles overlap correctly
         shuffledTiles.Sort((a, b) => tileToTargetSibling[a].CompareTo(tileToTargetSibling[b]));
         foreach (Tile t in shuffledTiles)
         {
             t.transform.SetSiblingIndex(tileToTargetSibling[t]);
         }
 
-        // 5. Animate them globally to their newly assigned positions
         foreach (Tile t in shuffledTiles)
         {
             RectTransform rect = t.GetComponent<RectTransform>();
@@ -204,7 +199,6 @@ public class BoosterSystem : MonoBehaviour
 
                 if (completedAnimations >= totalAnimations)
                 {
-                    // Update logical shadows/interactivity now that everything has settled
                     Tile.RefreshAllTileVisuals(tileParent);
                     MatchBoard.instance.isInputLocked = false;
                 }

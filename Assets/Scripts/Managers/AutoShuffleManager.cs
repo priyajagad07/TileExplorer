@@ -8,31 +8,35 @@ public class AutoShuffleManager : MonoBehaviour
     public static AutoShuffleManager instance;
 
     [Header("UI Elements")]
-    [SerializeField] private TMP_Text autoShuffleText; // The "No Matches! Shuffling..." popup text
+    [SerializeField] private CanvasGroup autoShufflePopupImage; 
+    [SerializeField] private TMP_Text autoShuffleText; 
     
     [Header("Settings")]
-    [SerializeField] private int maxTraySlots = 7; // Change this if your tray holds more/less than 7
+    [SerializeField] private int maxTraySlots = 7; 
 
     void Awake()
     {
         instance = this;
-        if (autoShuffleText != null)
+        
+        if (autoShufflePopupImage != null)
+        {
+            autoShufflePopupImage.gameObject.SetActive(false);
+            autoShufflePopupImage.alpha = 0f;
+        }
+        else if (autoShuffleText != null)
         {
             autoShuffleText.gameObject.SetActive(false);
         }
     }
 
-    // Call this method every time a tile is moved to the tray!
- public void CheckForDeadlock()
+    public void CheckForDeadlock()
     {
         if (MatchBoard.instance == null || BoardSpawner.instance == null) return;
 
         List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
 
-        // 1. Only check for a deadlock if they are exactly 1 slot away from Game Over
         if (placedTiles.Count == maxTraySlots - 1)
         {
-            // 2. Make a list of the tile IDs currently sitting in the tray
             HashSet<int> trayIds = new HashSet<int>();
             foreach (GameObject t in placedTiles)
             {
@@ -46,19 +50,16 @@ public class AutoShuffleManager : MonoBehaviour
             Transform tileParent = BoardSpawner.instance.GetTileParent();
             bool hasValidMove = false;
 
-            // 3. Scan the board to see if ANY unblocked tile matches the tray
             foreach (Transform child in tileParent)
             {
                 Tile tile = child.GetComponent<Tile>();
 
                 if (tile == null || tile.IsMoved()) continue;
 
-                // ---> THE FIX: Ask the tile directly if it is physically blocked! <---
                 bool isUnblocked = !tile.IsBlocked(); 
 
                 if (isUnblocked)
                 {
-                    // If an unblocked tile matches something in the tray, they have a move!
                     if (trayIds.Contains(tile.tileId))
                     {
                         hasValidMove = true;
@@ -67,7 +68,6 @@ public class AutoShuffleManager : MonoBehaviour
                 }
             }
 
-            // 4. If there is no valid move, the player is doomed. Save them!
             if (!hasValidMove)
             {
                 TriggerAutoShuffle();
@@ -79,24 +79,35 @@ public class AutoShuffleManager : MonoBehaviour
     {
         Debug.Log("Deadlock Detected! Saving player with Auto-Shuffle...");
 
-        // Lock input instantly so the player doesn't click and lose while the text is popping up
         MatchBoard.instance.isInputLocked = true;
 
-        if (autoShuffleText != null)
+        if (autoShufflePopupImage != null)
+        {
+            autoShufflePopupImage.gameObject.SetActive(true);
+            autoShufflePopupImage.alpha = 1f;
+            
+            autoShufflePopupImage.transform.DOKill();
+            autoShufflePopupImage.transform.localScale = Vector3.one;
+            autoShufflePopupImage.transform.DOPunchScale(Vector3.one * 0.15f, 0.35f, 5, 0.5f);
+
+            DOVirtual.DelayedCall(1.5f, () => 
+            {
+                autoShufflePopupImage.DOFade(0f, 0.4f).OnComplete(() => autoShufflePopupImage.gameObject.SetActive(false));
+            });
+        }
+        else if (autoShuffleText != null) 
         {
             autoShuffleText.gameObject.SetActive(true);
             autoShuffleText.transform.localScale = Vector3.zero;
             autoShuffleText.color = new Color(autoShuffleText.color.r, autoShuffleText.color.g, autoShuffleText.color.b, 1f);
 
-            // Pop the text onto the screen
             Sequence seq = DOTween.Sequence();
             seq.Append(autoShuffleText.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack));
-            seq.AppendInterval(1f); // Let them read it for 1 second
+            seq.AppendInterval(1f); 
             seq.Append(autoShuffleText.DOFade(0f, 0.3f));
             seq.OnComplete(() => autoShuffleText.gameObject.SetActive(false));
         }
 
-        // Wait half a second for the text animation, then trigger the global shuffle!
         DOVirtual.DelayedCall(0.5f, () =>
         {
             if (BoosterSystem.instance != null)
