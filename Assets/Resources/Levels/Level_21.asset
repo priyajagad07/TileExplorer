@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8b7eaee7db042939390bebf28bc37c, type: 3}
+  m_Name: Level_21
+  m_EditorClassIdentifier: Assembly-CSharp::LevelData
+  levelNumber: 0
+  rewardCoins: 100
+  difficulty: 2
+  layers:
+  - {fileID: 11400000, guid: b4da58153587b4dfdb4621293a611772, type: 2}
+  - {fileID: 11400000, guid: 943e1dc15a9894461adbee81a79993cc, type: 2}
+  - {fileID: 11400000, guid: 64efab901edc14b6b87c7347672d426b, type: 2}

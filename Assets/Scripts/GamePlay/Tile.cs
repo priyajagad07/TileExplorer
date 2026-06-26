@@ -23,6 +23,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (BoardSpawner.instance != null && BoardSpawner.instance.isSpawning) return;
         if (IdleHintManager.instance != null) IdleHintManager.instance.ResetIdleTimer();
         if (MatchBoard.instance.isInputLocked) return;
 
@@ -184,6 +185,4 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             tile.RefreshVisual();
         }
     }
-
-
 }

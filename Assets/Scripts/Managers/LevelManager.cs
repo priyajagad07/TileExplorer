@@ -78,6 +78,10 @@ public class LevelManager : MonoBehaviour
             data.layout = biggestLayout;
             data.rows = biggestLayout.Length;
             data.cols = biggestLayout[0].Length;
+            
+            data.stackStyle = handmadeLevel.stackStyle;
+            data.stackOffsetX = handmadeLevel.stackOffsetX;
+            data.stackOffsetY = handmadeLevel.stackOffsetY;
 
             BoardGenerator.instance.SetProceduralLevel(data);
             GameManager.instance.UpdateLevelText(index);

@@ -26,6 +26,10 @@ public class ProceduralLevelGenerator : MonoBehaviour
         data.layers = GetLayerCount(level);
         data.spacing = 130f;
 
+        data.stackStyle = StackStyle.Standard;
+        data.stackOffsetX = 30f;
+        data.stackOffsetY = 30f;
+
         List<ShapeData> availableShapes = new List<ShapeData>();
 
         int maxDifficulty = GetDifficulty(level);

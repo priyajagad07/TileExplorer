@@ -8,7 +8,7 @@ using System.Linq;
 public class BoardSpawner : MonoBehaviour
 {
     public static BoardSpawner instance;
-    private bool isSpawning = false;
+    public bool isSpawning = false;
     [SerializeField] private RectTransform tileParent;
 
     void Awake()
@@ -28,24 +28,38 @@ public class BoardSpawner : MonoBehaviour
             return;
 
         int index = 0;
+        float spacing = 130f; 
+        
+        float stackOffsetY = proceduralLevelData.stackOffsetY; 
+        float stackOffsetX = proceduralLevelData.stackOffsetX;
+        StackStyle style = proceduralLevelData.stackStyle;
 
-        float spacing = 130f;
-        float tileScale = 0.9f;
+        int maxCols = proceduralLevelData.layout[0].Length; 
+        int maxRows = proceduralLevelData.layout.Length;
+        int maxLayers = proceduralLevelData.layerLayouts.Count;
+        
+        // Auto-scale width calculation depends on the style
+        float totalShapeWidth = maxCols * spacing;
+        if (style == StackStyle.ZigZag) totalShapeWidth += (Mathf.Abs(stackOffsetX) * 2f);
+        else totalShapeWidth += Mathf.Abs((maxLayers - 1) * stackOffsetX);
+        
+        float totalShapeHeight = (maxRows * spacing) + Mathf.Abs((maxLayers - 1) * stackOffsetY);
+        
+        float availableWidth = tileParent.rect.width - 50f; 
+        float availableHeight = tileParent.rect.height - 50f; 
+        
+        float scaleX = availableWidth / totalShapeWidth;
+        float scaleY = availableHeight / totalShapeHeight;
+        
+        float tileScale = Mathf.Min(scaleX, scaleY);
+        if (tileScale > 1f) tileScale = 1f; 
 
-        for (int layer = 0; layer < proceduralLevelData.layerLayouts.Count; layer++)
+        tileParent.localScale = Vector3.one * tileScale;
+
+        int topLayerIndex = maxLayers - 1;
+
+        for (int layer = 0; layer < maxLayers; layer++)
         {
-            float layerOffsetY = layer * -55f;
-            float layerOffsetX = 0f;
-
-            if (layer % 2 == 1)
-            {
-                layerOffsetX = -40f;
-            }
-            else if (layer > 0)
-            {
-                layerOffsetX = 40f;
-            }
-
             string[] currentLayout = proceduralLevelData.layerLayouts[layer];
 
             int currentRows = currentLayout.Length;
@@ -57,20 +71,39 @@ public class BoardSpawner : MonoBehaviour
             float currentStartX = -currentWidth / 2f;
             float currentStartY = currentHeight / 2f;
 
-            for (int row = 0; row < currentLayout.Length; row++)
+            float layerOffsetX = 0f;
+            float layerOffsetY = 0f;
+            
+            int depthFromTop = topLayerIndex - layer; 
+
+            if (style == StackStyle.ZigZag)
+            {
+                if (depthFromTop == 0) layerOffsetX = 0f; 
+                else if (depthFromTop % 2 == 1) layerOffsetX = -stackOffsetX; 
+                else layerOffsetX = stackOffsetX; 
+                
+                layerOffsetY = depthFromTop * -stackOffsetY; 
+            }
+            else if (style == StackStyle.Cascade)
+            {
+                layerOffsetX = depthFromTop * stackOffsetX;
+                layerOffsetY = depthFromTop * -stackOffsetY; 
+            }
+            else
+            {
+                layerOffsetX = depthFromTop * -stackOffsetX;
+                layerOffsetY = depthFromTop * -stackOffsetY;
+            }
+
+            for (int row = 0; row < currentRows; row++)
             {
                 string rowData = currentLayout[row];
 
                 for (int col = 0; col < currentCols; col++)
                 {
-                    if (index >= tiles.Count)
-                        break;
-
-                    if (string.IsNullOrEmpty(rowData) || col >= rowData.Length)
-                        continue;
-
-                    if (rowData[col] != '1')
-                        continue;
+                    if (index >= tiles.Count) break;
+                    if (string.IsNullOrEmpty(rowData) || col >= rowData.Length) continue;
+                    if (rowData[col] != '1') continue;
 
                     GameObject obj = Instantiate(tiles[index], tileParent);
 
@@ -80,8 +113,10 @@ public class BoardSpawner : MonoBehaviour
                     tileScript.layer = layer;
 
                     RectTransform rect1 = obj.GetComponent<RectTransform>();
+                    
                     float x = currentStartX + col * spacing + layerOffsetX;
                     float y = currentStartY - row * spacing + layerOffsetY;
+                    
                     rect1.anchoredPosition = new Vector2(x, y);
 
                     obj.transform.SetSiblingIndex(tileParent.childCount);
@@ -93,6 +128,7 @@ public class BoardSpawner : MonoBehaviour
 
         StartCoroutine(RefreshTilesAfterSpawn());
     }
+
     IEnumerator RefreshTilesAfterSpawn()
     {
         yield return new WaitForSeconds(0.1f);

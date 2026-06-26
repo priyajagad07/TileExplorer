@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec8b7eaee7db042939390bebf28bc37c, type: 3}
   m_Name: Level_2
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
-  levelNumber: 0
+  levelNumber: 2
   rewardCoins: 100
-  difficulty: 2
+  difficulty: 1
+  stackStyle: 2
+  stackOffsetX: -35
+  stackOffsetY: -35
   layers:
-  - {fileID: 11400000, guid: b4da58153587b4dfdb4621293a611772, type: 2}
-  - {fileID: 11400000, guid: 943e1dc15a9894461adbee81a79993cc, type: 2}
-  - {fileID: 11400000, guid: 64efab901edc14b6b87c7347672d426b, type: 2}
+  - {fileID: 11400000, guid: 87a600b5ed441428f8b566b8871e79b6, type: 2}
+  - {fileID: 11400000, guid: 8a3531783acb5498b9385b2556598524, type: 2}
+  - {fileID: 11400000, guid: 198b935663511494fabb11828afbbb04, type: 2}

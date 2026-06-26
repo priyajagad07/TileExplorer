@@ -93,6 +93,14 @@ public class BoardGenerator : MonoBehaviour
             }
         }
 
-        return count - (count % 3);
+        //return count - (count % 3);
+
+        if (count % 3 != 0)
+        {
+            int missing = 3 - (count % 3);
+            Debug.LogError("🚨 SHAPE BROKEN! Total tiles is " + count + ". You MUST go into the Level Editor and add " + missing + " more tiles, or remove " + (count % 3) + " tiles so it divides evenly by 3!");
+        }
+
+        return count;
     }
 }

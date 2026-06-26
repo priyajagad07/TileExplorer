@@ -15,8 +15,7 @@ public class LevelDataEditor : Editor
             EditorStyles.boldLabel
         );
 
-        LevelData level =
-            (LevelData)target;
+        LevelData level = (LevelData)target;
 
         float cellSize = 22f;
 
@@ -29,59 +28,74 @@ public class LevelDataEditor : Editor
             new Color(1f, 0.5f, 1f)
         };
 
-        Rect previewRect =
-            GUILayoutUtility.GetRect(
-                400,
-                400
-            );
+        Rect previewRect = GUILayoutUtility.GetRect(400, 400);
 
-        for (int layer = 0;
-             layer < level.layers.Count;
-             layer++)
+        int maxLayers = level.layers.Count;
+        if (maxLayers == 0) return;
+        
+        int topLayerIndex = maxLayers - 1;
+
+        float previewScale = cellSize / 130f;
+        float previewOffsetX = level.stackOffsetX * previewScale;
+        float previewOffsetY = level.stackOffsetY * previewScale;
+
+        float centerX = previewRect.x + (previewRect.width / 2f);
+        float centerY = previewRect.y + (previewRect.height / 2f);
+
+        for (int layer = 0; layer < maxLayers; layer++)
         {
-            ShapeData shape =
-                level.layers[layer];
+            ShapeData shape = level.layers[layer];
 
-            if (shape == null)
+            if (shape == null || shape.layout == null || shape.layout.Length == 0)
                 continue;
 
-            string[] layout =
-                shape.layout;
+            string[] layout = shape.layout;
 
-            Color color =
-                layerColors[
-                    layer % layerColors.Length
-                ];
+            Color color = layerColors[layer % layerColors.Length];
 
-            for (int row = 0;
-                 row < layout.Length;
-                 row++)
+            int depthFromTop = topLayerIndex - layer;
+            float currentLayerOffsetX = 0f;
+            float currentLayerOffsetY = 0f;
+
+            // ---> NEW: Match the BoardSpawner math with Cascade <---
+            if (level.stackStyle == StackStyle.ZigZag)
             {
-                for (int col = 0;
-                     col < layout[row].Length;
-                     col++)
+                if (depthFromTop == 0) currentLayerOffsetX = 0f;
+                else if (depthFromTop % 2 == 1) currentLayerOffsetX = -previewOffsetX;
+                else currentLayerOffsetX = previewOffsetX;
+                
+                currentLayerOffsetY = depthFromTop * previewOffsetY; 
+            }
+            else if (level.stackStyle == StackStyle.Cascade)
+            {
+                currentLayerOffsetX = depthFromTop * previewOffsetX;
+                currentLayerOffsetY = depthFromTop * previewOffsetY;
+            }
+            else
+            {
+                currentLayerOffsetX = depthFromTop * -previewOffsetX;
+                currentLayerOffsetY = depthFromTop * previewOffsetY; 
+            }
+
+            float currentWidth = (layout[0].Length - 1) * cellSize;
+            float currentHeight = (layout.Length - 1) * cellSize;
+            
+            float currentStartX = centerX - (currentWidth / 2f);
+            float currentStartY = centerY - (currentHeight / 2f);
+
+            for (int row = 0; row < layout.Length; row++)
+            {
+                for (int col = 0; col < layout[row].Length; col++)
                 {
                     if (layout[row][col] == '1')
                     {
-                        float x =
-                            previewRect.x +
-                            (col * cellSize) +
-                            (layer * 6);
+                        float x = currentStartX + (col * cellSize) + currentLayerOffsetX;
+                        float y = currentStartY + (row * cellSize) + currentLayerOffsetY;
 
-                        float y =
-                            previewRect.y +
-                            (row * cellSize) -
-                            (layer * 6);
+                        float drawX = x - (cellSize / 2f);
+                        float drawY = y - (cellSize / 2f);
 
-                        EditorGUI.DrawRect(
-                            new Rect(
-                                x,
-                                y,
-                                cellSize - 2,
-                                cellSize - 2
-                            ),
-                            color
-                        );
+                        EditorGUI.DrawRect(new Rect(drawX, drawY, cellSize - 2, cellSize - 2), color);
                     }
                 }
             }

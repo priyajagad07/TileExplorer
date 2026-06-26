@@ -9,8 +9,12 @@ public class MatchBoardMatch : MonoBehaviour
     public static MatchBoardMatch instance;
     private int removedTiles = 0;
     private int activePopAnimation = 0;
+
+    [Header("Effects")]
     [SerializeField] private GameObject destroyParticle;
     [SerializeField] private Transform particleParent;
+    [SerializeField] private GameObject slotGlowPrefab;
+
     private int activeDestroyParticles = 0;
 
     void Awake()
@@ -25,7 +29,7 @@ public class MatchBoardMatch : MonoBehaviour
         foreach (GameObject tile in placedTiles)
         {
             Tile t = tile.GetComponent<Tile>();
-        
+
             if (t.tileId == tileID && !t.isMatched)
             {
                 matched.Add(tile);
@@ -56,29 +60,28 @@ public class MatchBoardMatch : MonoBehaviour
         }
     }
 
-    // ---> NEW HELPER: Forces the tile to the absolute top layer! <---
     void ForceTopLayer(GameObject tileObj, int sortOrder)
     {
         if (tileObj == null) return;
         Canvas canvas = tileObj.GetComponent<Canvas>();
         if (canvas == null) canvas = tileObj.AddComponent<Canvas>();
-        
+
         canvas.overrideSorting = true;
         canvas.sortingOrder = sortOrder;
     }
-
     void MergeAndDestroy(List<GameObject> matchedTiles)
     {
         if (matchedTiles.Count < 3) return;
 
         GameObject leftTile = matchedTiles[0];
-        GameObject middleTile = matchedTiles[1]; 
+        GameObject middleTile = matchedTiles[1];
         GameObject rightTile = matchedTiles[2];
 
-        // ---> THE LAYER FIX: Bring all 3 to the front, with Middle at the very top! <---
+        Transform explosionSlot = middleTile.transform.parent;
+
         ForceTopLayer(leftTile, 30000);
         ForceTopLayer(rightTile, 30000);
-        ForceTopLayer(middleTile, 30005); 
+        ForceTopLayer(middleTile, 30005);
 
         RectTransform rectLeft = leftTile.GetComponent<RectTransform>();
         RectTransform rectMid = middleTile.GetComponent<RectTransform>();
@@ -88,26 +91,24 @@ public class MatchBoardMatch : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
 
-        // Phase 1: The Middle Tile rises up and gets a little bigger
-        seq.Append(rectMid.DOAnchorPosY(rectMid.anchoredPosition.y + 35f, 0.2f).SetEase(Ease.OutQuad));
-        seq.Join(rectMid.DOScale(Vector3.one * 1.25f, 0.2f));
+        // Phase 1: Left and Right tiles get sucked into the Middle Tile FIRST
+        seq.Append(rectLeft.DOMove(rectMid.position, 0.15f).SetEase(Ease.InBack));
+        seq.Join(rectRight.DOMove(rectMid.position, 0.15f).SetEase(Ease.InBack));
+        seq.Join(rectLeft.DOScale(Vector3.zero, 0.15f).SetEase(Ease.InBack));
+        seq.Join(rectRight.DOScale(Vector3.zero, 0.15f).SetEase(Ease.InBack));
 
-        // Phase 2: The Left and Right tiles get violently sucked into the Middle Tile
-        seq.Append(rectLeft.DOMove(rectMid.position, 0.2f).SetEase(Ease.InBack));
-        seq.Join(rectRight.DOMove(rectMid.position, 0.2f).SetEase(Ease.InBack));
-        
-        // (They shrink while being sucked in)
-        seq.Join(rectLeft.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack));
-        seq.Join(rectRight.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack));
+        // Phase 2: Middle tile swells up and rises slightly after absorbing them
+        seq.Append(rectMid.DOAnchorPosY(rectMid.anchoredPosition.y + 25f, 0.12f).SetEase(Ease.OutQuad));
+        seq.Join(rectMid.DOScale(Vector3.one * 1.4f, 0.12f).SetEase(Ease.OutBack));
 
-        // Phase 3: The Final Pop! Middle tile swells and explodes!
-        seq.Append(rectMid.DOScale(Vector3.one * 1.6f, 0.1f).SetEase(Ease.OutBack));
-        seq.Append(rectMid.DOScale(Vector3.zero, 0.15f).SetEase(Ease.InBack));
-        seq.Join(rectMid.DORotate(new Vector3(0, 0, 180f), 0.15f, RotateMode.FastBeyond360).SetEase(Ease.Linear));
+        // Phase 3: The Pop!
+        seq.Append(rectMid.DOScale(Vector3.zero, 0.12f).SetEase(Ease.InBack));
+        seq.Join(rectMid.DORotate(new Vector3(0, 0, 180f), 0.12f, RotateMode.FastBeyond360).SetEase(Ease.Linear));
 
         seq.OnComplete(() =>
         {
             SpawnDestroyParticle(middleTile);
+            SpawnSlotGlow(explosionSlot);
 
             foreach (GameObject tile in matchedTiles)
             {
@@ -115,8 +116,15 @@ public class MatchBoardMatch : MonoBehaviour
                 Destroy(tile);
             }
 
-            MatchBoard.instance.RearrangeBoard();
-            activePopAnimation--;
+            DOVirtual.DelayedCall(0.2f, () =>
+            {
+                if (MatchBoard.instance != null)
+                {
+                    MatchBoard.instance.RearrangeBoard();
+                }
+
+                activePopAnimation--;
+            });
         });
     }
 
@@ -204,14 +212,14 @@ public class MatchBoardMatch : MonoBehaviour
             {
                 main.startColor = GetMultiColor(tileScript.particleColors[0], tileScript.particleColors[1]);
             }
-            else 
+            else
             {
                 main.startColor = GetMultiColor(tileScript.particleColors[0], tileScript.particleColors[1], tileScript.particleColors[2]);
             }
         }
         else
         {
-            main.startColor = Color.white; 
+            main.startColor = Color.white;
         }
 
         float particleDuration = ps.main.duration + ps.main.startLifetime.constantMax;
@@ -219,17 +227,40 @@ public class MatchBoardMatch : MonoBehaviour
         StartCoroutine(WaitForParticleFinish(particleDuration));
     }
 
+    void SpawnSlotGlow(Transform targetSlot)
+    {
+        if (slotGlowPrefab == null || targetSlot == null) return;
+
+        GameObject glow = Instantiate(slotGlowPrefab, targetSlot);
+        ForceTopLayer(glow, 30001);
+
+        RectTransform rect = glow.GetComponent<RectTransform>();
+        rect.anchoredPosition = Vector2.zero;
+        rect.localScale = Vector3.one * 0.5f;
+
+        CanvasGroup cg = glow.GetComponent<CanvasGroup>();
+        if (cg == null) cg = glow.AddComponent<CanvasGroup>();
+        cg.alpha = 1f;
+
+        Sequence seq = DOTween.Sequence();
+
+        seq.Append(rect.DOScale(Vector3.one * 1.6f, 0.2f).SetEase(Ease.OutCubic));
+        seq.Join(cg.DOFade(0f, 0.2f).SetEase(Ease.OutCubic));
+
+        seq.OnComplete(() => Destroy(glow));
+    }
+
     ParticleSystem.MinMaxGradient GetMultiColor(Color c1, Color c2)
     {
         Gradient gradient = new Gradient();
-        gradient.mode = GradientMode.Fixed; 
+        gradient.mode = GradientMode.Fixed;
         gradient.colorKeys = new GradientColorKey[] {
             new GradientColorKey(c1, 0.0f),
             new GradientColorKey(c2, 0.5f)
         };
-        
+
         ParticleSystem.MinMaxGradient minMax = new ParticleSystem.MinMaxGradient(gradient);
-        minMax.mode = ParticleSystemGradientMode.RandomColor; 
+        minMax.mode = ParticleSystemGradientMode.RandomColor;
         return minMax;
     }
 
@@ -242,7 +273,7 @@ public class MatchBoardMatch : MonoBehaviour
             new GradientColorKey(c2, 0.33f),
             new GradientColorKey(c3, 0.66f)
         };
-        
+
         ParticleSystem.MinMaxGradient minMax = new ParticleSystem.MinMaxGradient(gradient);
         minMax.mode = ParticleSystemGradientMode.RandomColor;
         return minMax;
