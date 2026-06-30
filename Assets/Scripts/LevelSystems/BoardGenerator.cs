@@ -21,13 +21,13 @@ public class BoardGenerator : MonoBehaviour
     }
 
     public void SetProceduralLevel(ProceduralLevelData data)
-    {   
-        if(data == null)
+    {
+        if (data == null)
         {
             Debug.LogError("Procedural data is null");
         }
 
-        if(data.layerLayouts == null || data.layerLayouts.Count == 0)
+        if (data.layerLayouts == null || data.layerLayouts.Count == 0)
         {
             Debug.LogError("Procedural level data is missing layer layouts - tiles cannot spawn");
             return;
@@ -35,6 +35,11 @@ public class BoardGenerator : MonoBehaviour
 
         proceduralData = data;
 
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.SetLevelDifficulty(proceduralData.difficulty);
+        }
+        
         MatchBoardMatch.instance.ResetBoardState();
 
         BoardSpawner.instance.ClearBoard();
@@ -46,33 +51,61 @@ public class BoardGenerator : MonoBehaviour
         List<GameObject> tilesToSpawn = new List<GameObject>();
 
         int totalTilesNeeded = GetTotalTilesNeeded();
-        Debug.Log("Total tiles Needed: " + totalTilesNeeded);
-        Debug.Log("Layer Count: " + proceduralData.layerLayouts.Count);
-
         int typeCount = totalTilesNeeded / 3;
 
-        //tile list (3 of each)
+        List<GameObject> deepPool = new List<GameObject>();
+        List<GameObject> mixedPool = new List<GameObject>();
+        List<GameObject> shallowPool = new List<GameObject>();
+
+        float trapProbability = 0f;
+
+        if (proceduralData.difficulty > 1)
+        {
+            trapProbability = (proceduralData.difficulty - 1) * 0.15f;
+        }
+
+        Debug.Log("Loaded Level Difficulty is: " + proceduralData.difficulty);
+        Debug.Log("Current Trap Probability is: " + trapProbability);
+
         for (int i = 0; i < typeCount; i++)
         {
             GameObject prefab = tilePrefabs[Random.Range(0, tilePrefabs.Length)];
 
-            for (int j = 0; j < 3; j++)
+            if (Random.value < trapProbability)
             {
-                tilesToSpawn.Add(prefab);
+                deepPool.Add(prefab);    
+                shallowPool.Add(prefab);   
+                shallowPool.Add(prefab);
+            }
+            else
+            {
+                mixedPool.Add(prefab);
+                mixedPool.Add(prefab);
+                mixedPool.Add(prefab);
             }
         }
 
-        //shuffle
-        for (int i = 0; i < tilesToSpawn.Count; i++)
-        {
-            GameObject temp = tilesToSpawn[i];
-            int randomIndex = Random.Range(i, tilesToSpawn.Count);
-            tilesToSpawn[i] = tilesToSpawn[randomIndex];
-            tilesToSpawn[randomIndex] = temp;
-        }
+        ShuffleList(deepPool);
+        ShuffleList(mixedPool);
+        ShuffleList(shallowPool);
+
+        tilesToSpawn.AddRange(deepPool);
+        tilesToSpawn.AddRange(mixedPool);
+        tilesToSpawn.AddRange(shallowPool);
 
         totalTilesInLevel = tilesToSpawn.Count;
         BoardSpawner.instance.SpawnTiles(tilesToSpawn, proceduralData);
+    }
+
+    void ShuffleList(List<GameObject> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            GameObject temp = list[i];
+            int randomIndex = Random.Range(i, list.Count);
+            list[i] = list[randomIndex];
+            list[randomIndex] = temp;
+        }
     }
 
     int GetTotalTilesNeeded()
@@ -92,8 +125,6 @@ public class BoardGenerator : MonoBehaviour
                 }
             }
         }
-
-        //return count - (count % 3);
 
         if (count % 3 != 0)
         {

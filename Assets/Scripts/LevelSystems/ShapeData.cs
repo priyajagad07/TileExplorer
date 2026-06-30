@@ -9,6 +9,4 @@ public class ShapeData : ScriptableObject
     public string shapeName;
 
     public string[] layout;
-
-    public int difficulty;
 }

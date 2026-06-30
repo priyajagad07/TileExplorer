@@ -15,5 +15,8 @@ MonoBehaviour:
   levelNumber: 0
   rewardCoins: 100
   difficulty: 1
+  stackStyle: 0
+  stackOffsetX: 30
+  stackOffsetY: 30
   layers:
   - {fileID: 11400000, guid: c3faa4e80fd8d4fe8b1f9702507fed16, type: 2}

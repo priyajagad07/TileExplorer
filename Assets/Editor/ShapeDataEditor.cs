@@ -24,11 +24,6 @@ public class ShapeDataEditor : Editor
             shape.shapeName
         );
 
-        EditorGUILayout.LabelField(
-            "Difficulty",
-            shape.difficulty.ToString()
-        );
-
         EditorGUILayout.Space();
 
         if (shape.layout != null)

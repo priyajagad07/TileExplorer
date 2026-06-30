@@ -12,7 +12,8 @@ public class ProceduralLevelData
     public string[] layout;
     public List<string[]> layerLayouts = new List<string[]>();
 
-    public StackStyle stackStyle = StackStyle.Standard;
+    public StackStyle stackStyle = StackStyle.Standard; 
     public float stackOffsetX = 30f;
     public float stackOffsetY = 30f;
+    public int difficulty = 1;
 }

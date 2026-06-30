@@ -86,7 +86,5 @@ public class UIAnimations : MonoBehaviour
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetUpdate(true);
         }
-
-
     }
 }

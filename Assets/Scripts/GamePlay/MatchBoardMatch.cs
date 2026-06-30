@@ -87,6 +87,8 @@ public class MatchBoardMatch : MonoBehaviour
         RectTransform rectMid = middleTile.GetComponent<RectTransform>();
         RectTransform rectRight = rightTile.GetComponent<RectTransform>();
 
+        Vector3 glowWorldPos = rectMid.position;
+
         rectLeft.DOKill(); rectMid.DOKill(); rectRight.DOKill();
 
         Sequence seq = DOTween.Sequence();
@@ -108,7 +110,11 @@ public class MatchBoardMatch : MonoBehaviour
         seq.OnComplete(() =>
         {
             SpawnDestroyParticle(middleTile);
-            SpawnSlotGlow(explosionSlot);
+            // SpawnSlotGlow(explosionSlot);
+            SpawnSlotGlow(glowWorldPos);
+
+            Debug.Log(explosionSlot.name);
+            Debug.Log(explosionSlot.position);
 
             foreach (GameObject tile in matchedTiles)
             {
@@ -179,6 +185,7 @@ public class MatchBoardMatch : MonoBehaviour
 
         if (activePopAnimation <= 0 && activeDestroyParticles <= 0)
         {
+            //MatchBoard.instance.isInputLocked = false;
             CheckLevelComplete();
         }
     }
@@ -227,25 +234,28 @@ public class MatchBoardMatch : MonoBehaviour
         StartCoroutine(WaitForParticleFinish(particleDuration));
     }
 
-    void SpawnSlotGlow(Transform targetSlot)
+    void SpawnSlotGlow(Vector3 worldPos)
     {
-        if (slotGlowPrefab == null || targetSlot == null) return;
+        if (slotGlowPrefab == null) return;
 
-        GameObject glow = Instantiate(slotGlowPrefab, targetSlot);
-        ForceTopLayer(glow, 30001);
+        GameObject glow = Instantiate(slotGlowPrefab, particleParent);
 
         RectTransform rect = glow.GetComponent<RectTransform>();
-        rect.anchoredPosition = Vector2.zero;
+
+        rect.position = worldPos;
         rect.localScale = Vector3.one * 0.5f;
 
+        ForceTopLayer(glow, 30001);
+
         CanvasGroup cg = glow.GetComponent<CanvasGroup>();
-        if (cg == null) cg = glow.AddComponent<CanvasGroup>();
+        if (cg == null)
+            cg = glow.AddComponent<CanvasGroup>();
+
         cg.alpha = 1f;
 
         Sequence seq = DOTween.Sequence();
-
         seq.Append(rect.DOScale(Vector3.one * 1.6f, 0.2f).SetEase(Ease.OutCubic));
-        seq.Join(cg.DOFade(0f, 0.2f).SetEase(Ease.OutCubic));
+        seq.Join(cg.DOFade(0f, 0.2f));
 
         seq.OnComplete(() => Destroy(glow));
     }

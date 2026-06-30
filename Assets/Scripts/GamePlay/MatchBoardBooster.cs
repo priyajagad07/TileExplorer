@@ -24,12 +24,20 @@ public class MatchBoardBooster : MonoBehaviour
         if (BoosterManager.instance.undoCount <= 0)
         {
             UIManager.Instance.ShowPopup(ScreenType.BuyUndoScreen);
+            StartCooldown(0.5f);
             return;
         }
 
         if (!BoosterSystem.instance.CanUndo())
         {
-            BoosterManager.instance.ShowNothingToUndo();
+            if (BoosterSystem.instance.justShuffled)
+            {
+                BoosterManager.instance.ShowCannotUndoShuffle();
+            }
+            else
+            {
+                BoosterManager.instance.ShowNothingToUndo();
+            }
             return;
         }
 
@@ -68,6 +76,7 @@ public class MatchBoardBooster : MonoBehaviour
         if (BoosterManager.instance.shuffleCount <= 0)
         {
             UIManager.Instance.ShowPopup(ScreenType.BuyShuffleScreen);
+            StartCooldown(0.5f);
             return;
         }
 
@@ -103,6 +112,7 @@ public class MatchBoardBooster : MonoBehaviour
         if (BoosterManager.instance.magicCount <= 0)
         {
             UIManager.Instance.ShowPopup(ScreenType.BuyMagicScreen);
+            StartCooldown(0.5f);
             return;
         }
 
@@ -115,7 +125,7 @@ public class MatchBoardBooster : MonoBehaviour
         BoosterManager.instance.UseMagic();
         BoosterSystem.instance.UseMagicBooster();
 
-        StartCooldown(0.5f);
+        StartCooldown(1f);
     }
 
     private void StartCooldown(float lockDuration)

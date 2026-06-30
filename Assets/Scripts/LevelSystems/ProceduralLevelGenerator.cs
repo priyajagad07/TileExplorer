@@ -32,14 +32,9 @@ public class ProceduralLevelGenerator : MonoBehaviour
 
         List<ShapeData> availableShapes = new List<ShapeData>();
 
-        int maxDifficulty = GetDifficulty(level);
-
         foreach (ShapeData shapeData in ShapeLoader.database.shapes)
         {
-            if (shapeData.difficulty <= maxDifficulty)
-            {
-                availableShapes.Add(shapeData);
-            }
+            availableShapes.Add(shapeData);
         }
 
         if (availableShapes.Count == 0)
@@ -109,23 +104,6 @@ public class ProceduralLevelGenerator : MonoBehaviour
 
         Debug.Log("Generating Level Index: " + level);
         return data;
-    }
-
-    int GetDifficulty(int level)
-    {
-        if (level < 3)
-            return 1;
-
-        if (level < 6)
-            return 2;
-
-        if (level < 10)
-            return 3;
-
-        if (level < 15)
-            return 4;
-
-        return 5;
     }
 
     int GetLayerCount(int level)

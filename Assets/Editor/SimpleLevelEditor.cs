@@ -7,7 +7,7 @@ public class SimpleLevelEditor : EditorWindow
     private string levelName = "Level_1";
     private int layerCount = 3;
 
-    // ---> NEW: Use the Enum instead of a boolean <---
+    private int levelDifficulty = 1;
     private StackStyle stackStyle = StackStyle.Standard;
     private float stackOffsetX = 30f;
     private float stackOffsetY = 30f;
@@ -38,6 +38,7 @@ public class SimpleLevelEditor : EditorWindow
         GUILayout.Label("Level Settings", EditorStyles.boldLabel);
 
         levelName = EditorGUILayout.TextField("Level Name", levelName);
+        levelDifficulty = EditorGUILayout.IntSlider("Level Difficulty", levelDifficulty, 1, 5);
         int newLayerCount = EditorGUILayout.IntSlider("Layers", layerCount, 1, 5);
 
         if (newLayerCount != layerCount)
@@ -76,8 +77,7 @@ public class SimpleLevelEditor : EditorWindow
         LevelData level = ScriptableObject.CreateInstance<LevelData>();
 
         level.layers = new List<ShapeData>(selectedShapes);
-        
-        // ---> NEW: Save the Enum <---
+        level.difficulty = levelDifficulty;
         level.stackStyle = stackStyle;
         level.stackOffsetX = stackOffsetX;
         level.stackOffsetY = stackOffsetY;

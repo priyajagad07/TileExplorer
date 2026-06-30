@@ -10,15 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0999abbe5f34545ce8fd30c34cd55e17, type: 3}
-  m_Name: Level10_Layer2
+  m_Name: 43b6246a-d2a4-4599-8f0c-3d2757835918
   m_EditorClassIdentifier: Assembly-CSharp::ShapeData
-  shapeName: Level10_Layer2
+  shapeName: 43b6246a-d2a4-4599-8f0c-3d2757835918
   layout:
-  - 00000111
-  - 00001110
-  - 00011110
-  - 00111100
-  - 01111000
-  - 00000111
-  - 00001110
-  - 00011100
+  - 111
+  - 111
+  - 111
+  difficulty: 1

@@ -28,31 +28,35 @@ public class BoardSpawner : MonoBehaviour
             return;
 
         int index = 0;
-        float spacing = 130f; 
-        
-        float stackOffsetY = proceduralLevelData.stackOffsetY; 
+        float spacing = 130f;
+
+        float stackOffsetY = proceduralLevelData.stackOffsetY;
         float stackOffsetX = proceduralLevelData.stackOffsetX;
         StackStyle style = proceduralLevelData.stackStyle;
 
-        int maxCols = proceduralLevelData.layout[0].Length; 
+        int maxCols = proceduralLevelData.layout[0].Length;
         int maxRows = proceduralLevelData.layout.Length;
         int maxLayers = proceduralLevelData.layerLayouts.Count;
-        
-        // Auto-scale width calculation depends on the style
+
         float totalShapeWidth = maxCols * spacing;
         if (style == StackStyle.ZigZag) totalShapeWidth += (Mathf.Abs(stackOffsetX) * 2f);
         else totalShapeWidth += Mathf.Abs((maxLayers - 1) * stackOffsetX);
-        
+
         float totalShapeHeight = (maxRows * spacing) + Mathf.Abs((maxLayers - 1) * stackOffsetY);
-        
-        float availableWidth = tileParent.rect.width - 50f; 
-        float availableHeight = tileParent.rect.height - 50f; 
-        
+
+        Canvas.ForceUpdateCanvases();
+
+        float rawWidth = tileParent.rect.width > 0 ? tileParent.rect.width : Screen.width;
+        float rawHeight = tileParent.rect.height > 0 ? tileParent.rect.height : Screen.height * 0.6f;
+
+        float availableWidth = rawWidth - 50f;
+        float availableHeight = rawHeight - 50f;
+
         float scaleX = availableWidth / totalShapeWidth;
         float scaleY = availableHeight / totalShapeHeight;
-        
+
         float tileScale = Mathf.Min(scaleX, scaleY);
-        if (tileScale > 1f) tileScale = 1f; 
+        if (tileScale > 1f) tileScale = 1f;
 
         tileParent.localScale = Vector3.one * tileScale;
 
@@ -73,21 +77,21 @@ public class BoardSpawner : MonoBehaviour
 
             float layerOffsetX = 0f;
             float layerOffsetY = 0f;
-            
-            int depthFromTop = topLayerIndex - layer; 
+
+            int depthFromTop = topLayerIndex - layer;
 
             if (style == StackStyle.ZigZag)
             {
-                if (depthFromTop == 0) layerOffsetX = 0f; 
-                else if (depthFromTop % 2 == 1) layerOffsetX = -stackOffsetX; 
-                else layerOffsetX = stackOffsetX; 
-                
-                layerOffsetY = depthFromTop * -stackOffsetY; 
+                if (depthFromTop == 0) layerOffsetX = 0f;
+                else if (depthFromTop % 2 == 1) layerOffsetX = -stackOffsetX;
+                else layerOffsetX = stackOffsetX;
+
+                layerOffsetY = depthFromTop * -stackOffsetY;
             }
             else if (style == StackStyle.Cascade)
             {
                 layerOffsetX = depthFromTop * stackOffsetX;
-                layerOffsetY = depthFromTop * -stackOffsetY; 
+                layerOffsetY = depthFromTop * -stackOffsetY;
             }
             else
             {
@@ -113,10 +117,10 @@ public class BoardSpawner : MonoBehaviour
                     tileScript.layer = layer;
 
                     RectTransform rect1 = obj.GetComponent<RectTransform>();
-                    
+
                     float x = currentStartX + col * spacing + layerOffsetX;
                     float y = currentStartY - row * spacing + layerOffsetY;
-                    
+
                     rect1.anchoredPosition = new Vector2(x, y);
 
                     obj.transform.SetSiblingIndex(tileParent.childCount);
@@ -126,21 +130,34 @@ public class BoardSpawner : MonoBehaviour
             }
         }
 
-        StartCoroutine(RefreshTilesAfterSpawn());
-    }
-
-    IEnumerator RefreshTilesAfterSpawn()
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        Tile[] allTiles =
-            tileParent.GetComponentsInChildren<Tile>();
-
-        foreach (Tile tile in allTiles)
+        if (tileParent.childCount > 0)
         {
-            tile.RefreshVisual();
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+
+            for (int i = 0; i < tileParent.childCount; i++)
+            {
+                RectTransform rect = tileParent.GetChild(i).GetComponent<RectTransform>();
+                Vector2 pos = rect.anchoredPosition;
+
+                if (pos.x < minX) minX = pos.x;
+                if (pos.x > maxX) maxX = pos.x;
+                if (pos.y < minY) minY = pos.y;
+                if (pos.y > maxY) maxY = pos.y;
+            }
+            Vector2 boundingBoxCenter = new Vector2((minX + maxX) / 2f, (minY + maxY) / 2f);
+
+            for (int i = 0; i < tileParent.childCount; i++)
+            {
+                RectTransform rect = tileParent.GetChild(i).GetComponent<RectTransform>();
+                rect.anchoredPosition -= boundingBoxCenter;
+            }
         }
     }
+
+
 
     public void PlaySpawnAnimation(bool playSound = true)
     {
@@ -205,10 +222,8 @@ public class BoardSpawner : MonoBehaviour
                         .SetEase(Ease.OutCubic)
                 );
 
-                // Drop animation
                 tileSeq.Join(rect.DOAnchorPos(finalPos, dropDuration).SetEase(Ease.OutBack));
 
-                // Glow animation
                 if (layer == highestLayer)
                 {
                     if (!glowSoundInserted)
@@ -258,6 +273,8 @@ public class BoardSpawner : MonoBehaviour
         masterSequence.OnComplete(() =>
         {
             isSpawning = false;
+
+            Tile.RefreshAllTileVisuals(tileParent);
 
             if (GameManager.instance != null)
             {

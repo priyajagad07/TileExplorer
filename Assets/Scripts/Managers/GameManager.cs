@@ -24,19 +24,30 @@ public class GameManager : MonoBehaviour
     private UIAnimations birdAnimation;
 
     public bool isGameInProgress = false;
+    private int currentLevelDifficulty = 1;
 
     public bool returnToHomeAfterMap = false;
+
+    [Header("Hard Level Intro")]
+    public GameObject hardLevelPanel;
+    public TextMeshProUGUI hardlevelText;
 
     void Awake()
     {
         instance = this;
     }
 
+    public void SetLevelDifficulty(int difficulty)
+    {
+        currentLevelDifficulty = difficulty;
+    }
+
     public void StartGame()
     {
         isGameInProgress = true;
+        ApplyDifficultyUI(currentLevelDifficulty);
     }
-
+    
     public void GameOver()
     {
         isGameInProgress = false;
@@ -292,5 +303,30 @@ public class GameManager : MonoBehaviour
 
         leftConfetti.Play();
         rightConfetti.Play();
+    }
+
+    public void ApplyDifficultyUI(int difficulty)
+    {
+        if (difficulty < 5) return;
+
+        hardlevelText.text = "HARD LEVEL 🔥";
+
+        hardLevelPanel.SetActive(true);
+        CanvasGroup cg = hardLevelPanel.GetComponent<CanvasGroup>();
+        if (cg == null) cg = hardLevelPanel.AddComponent<CanvasGroup>();
+
+        cg.alpha = 0f;
+        hardlevelText.transform.localScale = Vector3.one;
+        Sequence introSeq = DOTween.Sequence();
+
+        introSeq.Append(cg.DOFade(1f, 0.3f));
+        introSeq.Join(hardlevelText.transform.DOPunchScale(Vector3.one * 0.2f, 0.5f, 6, 1));
+        introSeq.AppendInterval(1.2f);
+        introSeq.Append(cg.DOFade(0f, 0.3f));
+
+        introSeq.OnComplete(() =>
+        {
+            hardLevelPanel.SetActive(false);
+        });
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.XR;
 
 public class LevelManager : MonoBehaviour
 {
@@ -82,6 +83,7 @@ public class LevelManager : MonoBehaviour
             data.stackStyle = handmadeLevel.stackStyle;
             data.stackOffsetX = handmadeLevel.stackOffsetX;
             data.stackOffsetY = handmadeLevel.stackOffsetY;
+            data.difficulty = handmadeLevel.difficulty;
 
             BoardGenerator.instance.SetProceduralLevel(data);
             GameManager.instance.UpdateLevelText(index);

@@ -37,6 +37,13 @@ public class BoosterManager : MonoBehaviour
     [SerializeField] private GameObject lockedBoosterMessage;
     [SerializeField] private TextMeshProUGUI lockedBoosterText;
 
+    [SerializeField] private GameObject cannotUndoShuffleMessage;
+
+    public void ShowCannotUndoShuffle()
+    {
+        ShowMessage(cannotUndoShuffleMessage);
+    }
+
     void Awake()
     {
         instance = this;

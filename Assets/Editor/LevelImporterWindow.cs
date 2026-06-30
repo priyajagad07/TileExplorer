@@ -90,7 +90,6 @@ public class LevelImporterWindow : EditorWindow
 
                 currentShape = ScriptableObject.CreateInstance<ShapeData>();
                 currentShape.shapeName = line.Replace("LAYER", "").Trim();
-                currentShape.difficulty = 1; // Default difficulty
                 currentLayout = new List<string>();
             }
             else if (line.Contains("0") || line.Contains("1"))

@@ -11,8 +11,6 @@ public class SimpleShapeEditor : EditorWindow
 
     private string shapeName = "NewShape";
 
-    private int difficulty = 1;
-
     [MenuItem("Tools/Simple Shape Editor")]
     public static void ShowWindow()
     {
@@ -41,13 +39,6 @@ public class SimpleShapeEditor : EditorWindow
         shapeName = EditorGUILayout.TextField(
             "Shape Name",
             shapeName
-        );
-
-        difficulty = EditorGUILayout.IntSlider(
-            "Difficulty",
-            difficulty,
-            1,
-            5
         );
 
         int newRows = EditorGUILayout.IntSlider(
@@ -148,9 +139,6 @@ public class SimpleShapeEditor : EditorWindow
         shape.layout =
             layout.ToArray();
 
-        shape.difficulty =
-            difficulty;
-
         string folder =
             "Assets/Resources/Shapes";
 
@@ -196,7 +184,5 @@ public class SimpleShapeEditor : EditorWindow
         CreateGrid();
 
         shapeName = "NewShape";
-
-        difficulty = 1;
     }
 }

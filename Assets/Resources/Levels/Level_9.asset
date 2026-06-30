@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelNumber: 9
   rewardCoins: 100
-  difficulty: 1
+  difficulty: 4
   stackStyle: 1
-  stackOffsetX: 30
-  stackOffsetY: 30
+  stackOffsetX: 10
+  stackOffsetY: 20
   layers:
   - {fileID: 11400000, guid: a184ee7488b6549208f2fa593e122766, type: 2}
   - {fileID: 11400000, guid: 3c4a1899a8af34ade8d6f41d9e65ca15, type: 2}

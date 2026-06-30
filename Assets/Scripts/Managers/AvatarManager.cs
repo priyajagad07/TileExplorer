@@ -31,7 +31,6 @@ public class AvatarManager : MonoBehaviour
         selectedAvatar = index;
         avatarPreview.sprite = avatars[index].iconImage.sprite;
 
-        // ---> NEW: Turn off all frames, then turn on the selected one <---
         for (int i = 0; i < avatarFrames.Length; i++)
         {
             if (avatarFrames[i] != null)

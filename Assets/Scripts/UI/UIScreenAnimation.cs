@@ -4,15 +4,10 @@ using UnityEngine;
 public class UIScreenAnimation : MonoBehaviour
 {
     public CanvasGroup canvasGroup;
-
     public AnimationType animationType;
-
     public Transform target;
-
     public float duration = 0.35f;
-
     private Vector3 originalPosition;
-    
 
     void Awake()
     {
@@ -30,7 +25,7 @@ public class UIScreenAnimation : MonoBehaviour
         originalPosition = target.localPosition;
     }
 
-    public void Show()
+    public void Show(System.Action onComplete = null)
     {
         DOTween.Kill(target);
         DOTween.Kill(canvasGroup);
@@ -53,7 +48,11 @@ public class UIScreenAnimation : MonoBehaviour
                 target
                     .DOScale(1, duration)
                     .SetEase(Ease.OutBack)
-                    .SetUpdate(true);
+                    .SetUpdate(true)
+                     .OnComplete(() =>
+                    {
+                        onComplete?.Invoke();
+                    });
 
                 break;
 
@@ -72,7 +71,11 @@ public class UIScreenAnimation : MonoBehaviour
                 target
                     .DOLocalMove(originalPosition, duration)
                     .SetEase(Ease.OutCubic)
-                    .SetUpdate(true);
+                    .SetUpdate(true)
+                     .OnComplete(() =>
+                    {
+                        onComplete?.Invoke();
+                    });
 
                 break;
 
@@ -91,7 +94,11 @@ public class UIScreenAnimation : MonoBehaviour
                 target
                     .DOLocalMove(originalPosition, duration)
                     .SetEase(Ease.OutCubic)
-                    .SetUpdate(true);
+                    .SetUpdate(true)
+                     .OnComplete(() =>
+                    {
+                        onComplete?.Invoke();
+                    });
 
                 break;
 
@@ -101,7 +108,11 @@ public class UIScreenAnimation : MonoBehaviour
                 canvasGroup
                     .DOFade(1, duration)
                     .SetEase(Ease.Linear)
-                    .SetUpdate(true);
+                    .SetUpdate(true)
+                     .OnComplete(() =>
+                    {
+                        onComplete?.Invoke();
+                    });
 
                 break;
 
@@ -119,14 +130,18 @@ public class UIScreenAnimation : MonoBehaviour
                 target
                     .DOScale(1, duration)
                     .SetEase(Ease.OutBack)
-                    .SetUpdate(true);
+                    .SetUpdate(true)
+                     .OnComplete(() =>
+                    {
+                        onComplete?.Invoke();
+                    });
 
                 break;
 
             default:
 
                 canvasGroup.alpha = 1;
-
+                onComplete?.Invoke();
                 break;
         }
     }
@@ -153,14 +168,11 @@ public class UIScreenAnimation : MonoBehaviour
                     {
                         onComplete?.Invoke();
                     });
-
                 break;
 
             default:
-
                 canvasGroup.alpha = 0;
                 onComplete?.Invoke();
-
                 break;
         }
     }

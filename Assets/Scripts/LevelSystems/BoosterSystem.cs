@@ -8,6 +8,7 @@ public class BoosterSystem : MonoBehaviour
 {
     public static BoosterSystem instance;
     private Stack<UndoData> undoStack = new Stack<UndoData>();
+    public bool justShuffled = false;
 
     void Awake()
     {
@@ -23,6 +24,8 @@ public class BoosterSystem : MonoBehaviour
             rect.anchoredPosition,
             tile.transform.GetSiblingIndex()
         );
+
+        justShuffled = false;
 
         undoStack.Push(data);
     }
@@ -131,10 +134,10 @@ public class BoosterSystem : MonoBehaviour
         MatchBoard.instance.isInputLocked = true;
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.HeavyImpact);
 
-        // SAFETY LOCK: Clear the undo history so they don't break the new board state
         ClearUndoStack();
 
-        // 1. Gather all active tiles and record their exact original slots on the board
+        justShuffled = true;
+
         List<Tile> activeTiles = new List<Tile>();
         List<Vector2> originalPositions = new List<Vector2>();
         List<int> originalLayers = new List<int>();
@@ -386,6 +389,4 @@ public class BoosterSystem : MonoBehaviour
             tile.MoveToBoard();
         });
     }
-
-    
 }
