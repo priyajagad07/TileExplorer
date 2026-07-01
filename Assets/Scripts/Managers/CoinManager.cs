@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 public class CoinManager : MonoBehaviour
 {
@@ -21,9 +22,11 @@ public class CoinManager : MonoBehaviour
 
     public void AddCoins(int amount)
     {
+        int startCoins = coins;
         coins += amount;
         SaveCoins();
-        UpdateCoinUI();
+        
+        AnimateCoinUI(startCoins, coins); 
     }
 
     public bool SpendCoins(int amount)
@@ -31,9 +34,11 @@ public class CoinManager : MonoBehaviour
         if (coins < amount)
             return false;
 
+        int startCoins = coins;
         coins -= amount;
         SaveCoins();
-        UpdateCoinUI();
+        
+        AnimateCoinUI(startCoins, coins); 
 
         return true;
     }
@@ -50,6 +55,17 @@ public class CoinManager : MonoBehaviour
         {
             text.text = coins.ToString();
         }
+    }
+
+    void AnimateCoinUI(int startAmount, int targetAmount)
+    {
+        DOTween.To(() => startAmount, x => 
+        {
+            foreach (TextMeshProUGUI text in coinText)
+            {
+                text.text = x.ToString();
+            }
+        }, targetAmount, 0.5f).SetEase(Ease.OutQuad);
     }
 
     void LoadCoins()

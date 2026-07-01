@@ -41,6 +41,14 @@ public class TutorialManager : MonoBehaviour
         instance = this;
     }
 
+    void Update()
+    {
+        if (isSoftTutorialActive && Input.GetMouseButtonDown(0))
+        {
+            CloseSoftTutorial();
+        }
+    }
+
     private void SetUIFocus(GameObject target, bool isFocused, int sortOrder = 30000)
     {
         if (target == null) return;
@@ -72,7 +80,10 @@ public class TutorialManager : MonoBehaviour
             tutorialStep = 0;
 
             tutorialOverlay.gameObject.SetActive(true);
+
             tutorialOverlay.blocksRaycasts = true;
+            Image overlayImg = tutorialOverlay.GetComponent<Image>();
+            if (overlayImg != null) overlayImg.raycastTarget = true;
 
             tutorialOverlay.alpha = 0f;
             pointer.gameObject.SetActive(false);
@@ -204,6 +215,8 @@ public class TutorialManager : MonoBehaviour
         SetUIFocus(pointer.gameObject, false);
 
         tutorialOverlay.blocksRaycasts = false;
+        Image overlayImg = tutorialOverlay.GetComponent<Image>();
+        if (overlayImg != null) overlayImg.raycastTarget = false;
 
         if (tutorialPopupImage != null)
         {
@@ -241,7 +254,10 @@ public class TutorialManager : MonoBehaviour
         activeBooster = boosterRect.gameObject;
 
         tutorialOverlay.gameObject.SetActive(true);
+
         tutorialOverlay.blocksRaycasts = false;
+        Image overlayImg = tutorialOverlay.GetComponent<Image>();
+        if (overlayImg != null) overlayImg.raycastTarget = false;
 
         tutorialOverlay.alpha = 0f;
         tutorialOverlay.DOKill();
@@ -255,7 +271,7 @@ public class TutorialManager : MonoBehaviour
             string msg = "";
             switch (boosterName)
             {
-               case "Undo": msg = "New Booster Unlocked! \n Tap here to undo a mistake."; break;
+                case "Undo": msg = "New Booster Unlocked! \n Tap here to undo a mistake."; break;
                 case "Shuffle": msg = "New Booster Unlocked! \n Tap here to shuffle the board."; break;
                 case "Magic": msg = "New Booster Unlocked! \n Tap here to auto-match 3 tiles."; break;
                 default: msg = "New Booster Unlocked!"; break;
@@ -295,6 +311,8 @@ public class TutorialManager : MonoBehaviour
         isSoftTutorialActive = false;
 
         tutorialOverlay.blocksRaycasts = false;
+        Image overlayImg = tutorialOverlay.GetComponent<Image>();
+        if (overlayImg != null) overlayImg.raycastTarget = false;
 
         if (!SaveManager.instance.data.softTutorialsSeen.Contains(currentSoftTutorialKey))
         {

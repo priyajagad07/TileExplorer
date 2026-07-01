@@ -157,8 +157,6 @@ public class BoardSpawner : MonoBehaviour
         }
     }
 
-
-
     public void PlaySpawnAnimation(bool playSound = true)
     {
         if (isSpawning) return;
@@ -207,6 +205,8 @@ public class BoardSpawner : MonoBehaviour
                 Tile tile = layerTiles[i];
                 RectTransform rect = tile.GetComponent<RectTransform>();
 
+                rect.DOKill(true);
+
                 Vector2 finalPos = rect.anchoredPosition;
 
                 rect.localScale = Vector3.one * 0.9f;
@@ -217,7 +217,7 @@ public class BoardSpawner : MonoBehaviour
 
                 rect.localRotation = Quaternion.Euler(0, 0, startRotation);
 
-                tileSeq.Join(
+                tileSeq.Append(
                     rect.DORotate(Vector3.zero, dropDuration)
                         .SetEase(Ease.OutCubic)
                 );

@@ -26,9 +26,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (BoardSpawner.instance != null && BoardSpawner.instance.isSpawning) return;
         if (IdleHintManager.instance != null) IdleHintManager.instance.ResetIdleTimer();
         if (MatchBoard.instance.isInputLocked) return;
-
-        if (isMoved)
-            return;
+        if (isMoved) return;
 
         if (IsBlocked())
         {

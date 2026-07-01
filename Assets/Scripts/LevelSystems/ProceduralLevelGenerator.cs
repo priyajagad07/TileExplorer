@@ -22,13 +22,15 @@ public class ProceduralLevelGenerator : MonoBehaviour
         }
 
         ProceduralLevelData data = new ProceduralLevelData();
-        //difficulty
+
+        data.difficulty = CalculateDifficulty(level);
+
         data.layers = GetLayerCount(level);
         data.spacing = 130f;
 
         data.stackStyle = StackStyle.Standard;
-        data.stackOffsetX = 30f;
-        data.stackOffsetY = 30f;
+        data.stackOffsetX = 15f;
+        data.stackOffsetY = 15f;
 
         List<ShapeData> availableShapes = new List<ShapeData>();
 
@@ -114,9 +116,19 @@ public class ProceduralLevelGenerator : MonoBehaviour
         if (level < 10)
             return 3;
 
-        if (level < 30)
+        if (level < 20)
             return 4;
 
         return 5;
+    }
+
+    int CalculateDifficulty(int level)
+    {
+        if (level > 0 && level % 5 == 0) 
+        {
+            return 5;
+        }
+  
+        return Random.Range(1, 5);
     }
 }
