@@ -67,6 +67,8 @@ public class BoosterSystem : MonoBehaviour
             UndoBounce(data.tile.transform);
 
             Tile tileScript = data.tile.GetComponent<Tile>();
+            
+            tileScript.AnimateToSpawnSize(); 
             tileScript.SetMoved(false);
 
             Tile.RefreshAllTileVisuals(data.originalParent);

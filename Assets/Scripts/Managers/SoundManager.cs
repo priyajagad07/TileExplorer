@@ -19,6 +19,17 @@ public class SoundManager : MonoBehaviour
     private bool isVoiceMuted = false;
     private bool isVibrationMuted = false;
     private bool isNotificationMuted = false;
+
+    // --- UPDATED: Smart Identical Pitch Tracking (No Timer!) ---
+    [Header("Dynamic Pitch Settings")]
+    [SerializeField] private float maxPitch = 1.6f;
+    [SerializeField] private float pitchStep = 0.3f;
+
+    private float currentTilePitch = 1.0f;
+    private int lastClickedTileID = -1;
+    private int sameTileClickCount = 0;
+    // -------------------------------------------
+
     public bool IsMusicMuted() => isMusicMuted;
     public bool IsSfxMuted() => isSfxMuted;
     public bool IsVolumeMuted() => isVoiceMuted;
@@ -75,10 +86,46 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    // --- THE NEW SMART CLICK METHOD ---
+    public void PlayTileClick(int tileID)
+    {
+        if (!soundDict.ContainsKey(SoundName.TileClick) || isSfxMuted) return;
+
+        // CHANGED: Now we ONLY check if it's the exact same tile type! No timer needed.
+        if (tileID == lastClickedTileID)
+        {
+            sameTileClickCount++;
+            currentTilePitch = 1.0f + (sameTileClickCount * pitchStep);
+            currentTilePitch = Mathf.Min(currentTilePitch, maxPitch); 
+        }
+        else
+        {
+            // Reset if they clicked a different tile
+            ResetPitchTracker();
+            lastClickedTileID = tileID; 
+        }
+
+        sfxSource.pitch = currentTilePitch;
+        
+        Debug.Log($"🎵 Clicked Tile ID: {tileID} | Same Tile Chain: {sameTileClickCount} | Pitch: {currentTilePitch}");
+
+        sfxSource.PlayOneShot(soundDict[SoundName.TileClick], sfxVolume);
+    }
+
+    // Call this when a match of 3 happens!
+    public void ResetPitchTracker()
+    {
+        currentTilePitch = 1.0f;
+        sameTileClickCount = 0;
+        lastClickedTileID = -1;
+    }
+    // -----------------------------------
+
     public void PlaySound(SoundName name)
     {
         if (soundDict.ContainsKey(name) && !isSfxMuted)
         {
+            sfxSource.pitch = 1.0f; // Force normal pitch for all other sounds
             sfxSource.PlayOneShot(soundDict[name], sfxVolume);
         }
     }

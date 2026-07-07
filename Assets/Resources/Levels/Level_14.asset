@@ -16,7 +16,7 @@ MonoBehaviour:
   rewardCoins: 100
   difficulty: 3
   stackStyle: 1
-  stackOffsetX: 15
+  stackOffsetX: 0
   stackOffsetY: 15
   layers:
   - {fileID: 11400000, guid: e6590624d04e343499eaa05125c7e9ec, type: 2}

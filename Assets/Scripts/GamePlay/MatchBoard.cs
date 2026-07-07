@@ -31,9 +31,6 @@ public class MatchBoard : MonoBehaviour
 
         if (TutorialManager.instance != null)
         {
-            if (!TutorialManager.instance.IsTileClickAllowed(tile))
-                return false;
-
             TutorialManager.instance.CloseSoftTutorial();
         }
 

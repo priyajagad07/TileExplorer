@@ -106,7 +106,8 @@ public class IdleHintManager : MonoBehaviour
 
             if (tile == null ||
                 tile.IsMoved() ||
-                tile.IsBlocked())
+                tile.IsBlocked() ||
+                tile.isJellyLocked)
                 continue;
 
             unblockedTiles.Add(tile);

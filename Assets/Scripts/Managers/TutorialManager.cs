@@ -159,6 +159,8 @@ public class TutorialManager : MonoBehaviour
 
         currentTargetTile.transform.DOKill();
         currentTargetTile.transform.DOScale(1.15f, 0.4f).SetLoops(-1, LoopType.Yoyo);
+
+        Debug.Log("ShowNextStep : " + tutorialStep);
     }
 
     private GameObject FindValidTile()
@@ -180,7 +182,11 @@ public class TutorialManager : MonoBehaviour
 
         if (clickedTile == currentTargetTile)
         {
+            Debug.Log("Tutorial Step Before = " + tutorialStep);
+
             tutorialStep++;
+
+            Debug.Log("Tutorial Step After = " + tutorialStep);
 
             if (tutorialStep < stepMessages.Length)
             {
@@ -243,6 +249,8 @@ public class TutorialManager : MonoBehaviour
         {
             SetUIFocus(MatchBoard.instance.gameObject, false);
         }
+
+        Debug.Log("Tutorial Ended");
     }
 
     public void StartBoosterTutorial(RectTransform boosterRect, string boosterName)

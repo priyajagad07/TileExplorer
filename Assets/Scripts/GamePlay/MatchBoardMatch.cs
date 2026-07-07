@@ -38,6 +38,8 @@ public class MatchBoardMatch : MonoBehaviour
 
         if (matched.Count >= 3)
         {
+            if (SoundManager.instance != null) SoundManager.instance.ResetPitchTracker();
+
             SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
             removedTiles += 3;
 

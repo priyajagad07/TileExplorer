@@ -28,7 +28,8 @@ public class BoardSpawner : MonoBehaviour
             return;
 
         int index = 0;
-        float spacing = 130f;
+        float spacingX = 145f;
+        float spacingY = 144f;
 
         float stackOffsetY = proceduralLevelData.stackOffsetY;
         float stackOffsetX = proceduralLevelData.stackOffsetX;
@@ -38,19 +39,19 @@ public class BoardSpawner : MonoBehaviour
         int maxRows = proceduralLevelData.layout.Length;
         int maxLayers = proceduralLevelData.layerLayouts.Count;
 
-        float totalShapeWidth = maxCols * spacing;
+        float totalShapeWidth = maxCols * spacingX;
         if (style == StackStyle.ZigZag) totalShapeWidth += (Mathf.Abs(stackOffsetX) * 2f);
         else totalShapeWidth += Mathf.Abs((maxLayers - 1) * stackOffsetX);
 
-        float totalShapeHeight = (maxRows * spacing) + Mathf.Abs((maxLayers - 1) * stackOffsetY);
+        float totalShapeHeight = (maxRows * spacingY) + Mathf.Abs((maxLayers - 1) * stackOffsetY);
 
         Canvas.ForceUpdateCanvases();
 
         float rawWidth = tileParent.rect.width > 0 ? tileParent.rect.width : Screen.width;
         float rawHeight = tileParent.rect.height > 0 ? tileParent.rect.height : Screen.height * 0.6f;
 
-        float availableWidth = rawWidth - 50f;
-        float availableHeight = rawHeight - 50f;
+        float availableWidth = rawWidth - 100f;
+        float availableHeight = rawHeight - 100f;
 
         float scaleX = availableWidth / totalShapeWidth;
         float scaleY = availableHeight / totalShapeHeight;
@@ -69,8 +70,8 @@ public class BoardSpawner : MonoBehaviour
             int currentRows = currentLayout.Length;
             int currentCols = currentLayout[0].Length;
 
-            float currentWidth = (currentCols - 1) * spacing;
-            float currentHeight = (currentRows - 1) * spacing;
+            float currentWidth = (currentCols - 1) * spacingX;
+            float currentHeight = (currentRows - 1) * spacingY;
 
             float currentStartX = -currentWidth / 2f;
             float currentStartY = currentHeight / 2f;
@@ -118,8 +119,8 @@ public class BoardSpawner : MonoBehaviour
 
                     RectTransform rect1 = obj.GetComponent<RectTransform>();
 
-                    float x = currentStartX + col * spacing + layerOffsetX;
-                    float y = currentStartY - row * spacing + layerOffsetY;
+                    float x = currentStartX + col * spacingX + layerOffsetX;
+                    float y = currentStartY - row * spacingY + layerOffsetY;
 
                     rect1.anchoredPosition = new Vector2(x, y);
 
@@ -155,6 +156,41 @@ public class BoardSpawner : MonoBehaviour
                 rect.anchoredPosition -= boundingBoxCenter;
             }
         }
+
+        int currentLevelIndex = 0;
+        if (SaveManager.instance != null && SaveManager.instance.data != null)
+        {
+            currentLevelIndex = SaveManager.instance.data.level;
+        }
+
+        if (currentLevelIndex >= 5)
+        {
+            if (tileParent.childCount >= 3)
+            {
+                int amountOfJellies = Random.Range(2, 4);
+
+                Tile[] allSpawnedTiles = tileParent.GetComponentsInChildren<Tile>();
+
+                List<Tile> availableTilesForJelly = new List<Tile>(allSpawnedTiles);
+
+                for (int j = 0; j < amountOfJellies; j++)
+                {
+                    if (availableTilesForJelly.Count == 0) break;
+
+                    int randomIndex = Random.Range(0, availableTilesForJelly.Count);
+                    Tile randomTile = availableTilesForJelly[randomIndex];
+
+                    int randomClicks = Random.Range(5, 11);
+                    randomTile.MakeJelly(randomClicks);
+                    availableTilesForJelly.RemoveAt(randomIndex);
+                }
+            }
+        }
+
+        foreach (Tile tile in tileParent.GetComponentsInChildren<Tile>())
+        {
+            tile.CacheSpawnSize();
+        }
     }
 
     public void PlaySpawnAnimation(bool playSound = true)
@@ -170,7 +206,7 @@ public class BoardSpawner : MonoBehaviour
         float dropDuration = 0.2f;
         float delayBetweenTiles = 0.015f;
         float pauseBetweenLayers = 0.015f;
-        float dropHeight = 2500f;
+        float dropHeight = 3500f;
 
         bool glowSoundInserted = false;
 

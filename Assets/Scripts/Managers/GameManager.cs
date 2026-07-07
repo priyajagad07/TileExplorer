@@ -309,7 +309,7 @@ public class GameManager : MonoBehaviour
     {
         if (difficulty < 5) return;
 
-        hardlevelText.text = "HARD LEVEL 🔥";
+        hardlevelText.text = "HARD LEVEL";
 
         hardLevelPanel.SetActive(true);
         CanvasGroup cg = hardLevelPanel.GetComponent<CanvasGroup>();
