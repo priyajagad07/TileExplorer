@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: UnitedStates
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: UnitedStates
-  startLevel: 41
-  endLevel: 70
+  startLevel: 81
+  endLevel: 140
   backgrounds:
   - {fileID: 6522214001781614436, guid: c75d96e1f5b2944dfb9b5075d84ac611, type: 3}
   - {fileID: 8352207676642407152, guid: a18cb6361731443b7b112a6456250ff6, type: 3}

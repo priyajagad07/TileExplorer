@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ItalyData
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: Italy
-  startLevel: 71
-  endLevel: 110
+  startLevel: 141
+  endLevel: 220
   backgrounds:
   - {fileID: -6113576447126754275, guid: 8ad7bda90523e4afd93312b69ea83500, type: 3}
   - {fileID: 1797328812940283345, guid: 0abd8ae03b0624427b9dc20d07c29b83, type: 3}

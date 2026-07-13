@@ -24,7 +24,14 @@ public partial class DailyStreakUI : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         keepGoingButton.localScale = Vector3.zero;
         rewardPopup.SetActive(false);
     }

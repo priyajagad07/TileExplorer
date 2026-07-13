@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PolandData
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: Poland
-  startLevel: 201
-  endLevel: 300
+  startLevel: 401
+  endLevel: 600
   backgrounds:
   - {fileID: 4008016966793657660, guid: 9f10c262d16ec4d988f8af571e82a59d, type: 3}
   - {fileID: -2814264918725199439, guid: a9078439e258740f9833ab66e4877ff8, type: 3}

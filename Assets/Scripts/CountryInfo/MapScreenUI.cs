@@ -17,7 +17,14 @@ public class MapScreenUI : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         unlockZoomImage.gameObject.SetActive(false);
     }
 
@@ -97,7 +104,7 @@ public class MapScreenUI : MonoBehaviour
         unlockZoomGroup.alpha = 1f;
         unlockZoomImage.rectTransform.localScale = Vector3.one;
     }
-    
+
     public void ShowLockedMessage()
     {
         lockedMessagePopup.SetActive(true);

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: France
   startLevel: 1
-  endLevel: 6
+  endLevel: 12
   backgrounds:
   - {fileID: -1579264983832029839, guid: 3eb3f0ab5b8a74e6d995b24bcc648318, type: 3}
   - {fileID: -7332940881521879221, guid: 48b7c4421f05e4a54b67f7c5d56447b0, type: 3}

@@ -13,7 +13,14 @@ public class BoardSpawner : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnDestroy()
@@ -47,8 +54,27 @@ public class BoardSpawner : MonoBehaviour
 
         Canvas.ForceUpdateCanvases();
 
-        float rawWidth = tileParent.rect.width > 0 ? tileParent.rect.width : Screen.width;
-        float rawHeight = tileParent.rect.height > 0 ? tileParent.rect.height : Screen.height * 0.6f;
+        // float rawWidth = tileParent.rect.width > 0 ? tileParent.rect.width : Screen.width;
+        // float rawHeight = tileParent.rect.height > 0 ? tileParent.rect.height : Screen.height * 0.6f;
+
+        // ---> THE FIX: Calculate using the Canvas Scaler, NOT screen pixels! <---
+       // ---> THE ULTIMATE FIX: Ask the Scaler, not the Rect! <---
+        float fallbackWidth = 1080f;
+        float fallbackHeight = 1920f * 0.6f;
+
+        // Grab the CanvasScaler to know the exact target resolution of your game
+        UnityEngine.UI.CanvasScaler scaler = tileParent.GetComponentInParent<UnityEngine.UI.CanvasScaler>();
+        if (scaler != null)
+        {
+            fallbackWidth = scaler.referenceResolution.x;
+            fallbackHeight = scaler.referenceResolution.y * 0.6f;
+        }
+
+        // If the screen is hidden (width < 10), it uses the guaranteed fallback resolution
+        float rawWidth = tileParent.rect.width > 10f ? tileParent.rect.width : fallbackWidth;
+        float rawHeight = tileParent.rect.height > 10f ? tileParent.rect.height : fallbackHeight;
+        
+        // ---------------------------------------------------------
 
         float availableWidth = rawWidth - 100f;
         float availableHeight = rawHeight - 100f;
@@ -110,9 +136,13 @@ public class BoardSpawner : MonoBehaviour
                     if (string.IsNullOrEmpty(rowData) || col >= rowData.Length) continue;
                     if (rowData[col] != '1') continue;
 
-                    GameObject obj = Instantiate(tiles[index], tileParent);
+                    //GameObject obj = Instantiate(tiles[index], tileParent);
+
+                    GameObject obj = ObjectPoolManager.Instance.Spawn(tiles[index], tileParent);
 
                     Tile tileScript = obj.GetComponent<Tile>();
+                    tileScript.ResetTileState();
+
                     tileScript.row = row;
                     tileScript.col = col;
                     tileScript.layer = layer;
@@ -138,9 +168,12 @@ public class BoardSpawner : MonoBehaviour
             float minY = float.MaxValue;
             float maxY = float.MinValue;
 
-            for (int i = 0; i < tileParent.childCount; i++)
+            // FIX: Only calculate the bounding box for ACTIVE tiles!
+            foreach (Transform child in tileParent)
             {
-                RectTransform rect = tileParent.GetChild(i).GetComponent<RectTransform>();
+                if (!child.gameObject.activeSelf) continue; // Ignore pooled tiles
+
+                RectTransform rect = child.GetComponent<RectTransform>();
                 Vector2 pos = rect.anchoredPosition;
 
                 if (pos.x < minX) minX = pos.x;
@@ -148,12 +181,19 @@ public class BoardSpawner : MonoBehaviour
                 if (pos.y < minY) minY = pos.y;
                 if (pos.y > maxY) maxY = pos.y;
             }
+            
             Vector2 boundingBoxCenter = new Vector2((minX + maxX) / 2f, (minY + maxY) / 2f);
 
-            for (int i = 0; i < tileParent.childCount; i++)
+            // FIX: Only apply the offset to ACTIVE tiles!
+            foreach (Transform child in tileParent)
             {
-                RectTransform rect = tileParent.GetChild(i).GetComponent<RectTransform>();
-                rect.anchoredPosition -= boundingBoxCenter;
+                if (!child.gameObject.activeSelf) continue; // Ignore pooled tiles
+
+                RectTransform rect = child.GetComponent<RectTransform>();
+                
+                // Extra safety: force the Z axis to 0 so UI doesn't get weird clipping
+                Vector2 newPos = rect.anchoredPosition - boundingBoxCenter;
+                rect.anchoredPosition3D = new Vector3(newPos.x, newPos.y, 0f); 
             }
         }
 
@@ -165,12 +205,12 @@ public class BoardSpawner : MonoBehaviour
 
         if (currentLevelIndex >= 5)
         {
-            if (tileParent.childCount >= 3)
+            // FIX: Make sure Jellies only apply to ACTIVE tiles
+            Tile[] allSpawnedTiles = tileParent.GetComponentsInChildren<Tile>(false); // 'false' ignores inactive objects
+
+            if (allSpawnedTiles.Length >= 3)
             {
                 int amountOfJellies = Random.Range(2, 4);
-
-                Tile[] allSpawnedTiles = tileParent.GetComponentsInChildren<Tile>();
-
                 List<Tile> availableTilesForJelly = new List<Tile>(allSpawnedTiles);
 
                 for (int j = 0; j < amountOfJellies; j++)
@@ -187,7 +227,8 @@ public class BoardSpawner : MonoBehaviour
             }
         }
 
-        foreach (Tile tile in tileParent.GetComponentsInChildren<Tile>())
+        // FIX: Only cache the spawn size of ACTIVE tiles
+        foreach (Tile tile in tileParent.GetComponentsInChildren<Tile>(false))
         {
             tile.CacheSpawnSize();
         }
@@ -357,8 +398,9 @@ public class BoardSpawner : MonoBehaviour
 
         foreach (GameObject child in children)
         {
-            child.transform.SetParent(null);
-            Destroy(child);
+            //child.transform.SetParent(null);
+            //Destroy(child);
+            ObjectPoolManager.Instance.Despawn(child);
         }
     }
 

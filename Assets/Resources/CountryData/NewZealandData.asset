@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: NewZealandData
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: NewZealand
-  startLevel: 151
-  endLevel: 200
+  startLevel: 301
+  endLevel: 400
   backgrounds:
   - {fileID: -5926442338173747971, guid: b6453401a90a544ac91328f74874ffc0, type: 3}
   - {fileID: -5603132071634839591, guid: 177683bfe92ba493a923cd334a28f97d, type: 3}

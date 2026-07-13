@@ -23,13 +23,16 @@ public class HomeProgressUI : MonoBehaviour
         }
     }
 
-    public void UpdateProgressUI()
+   public void UpdateProgressUI()
     {
         // 1. Get the current player level
         int currentLevel = SaveManager.instance.data.level + 1;
 
-        // 2. Fetch the current country data
-        CountryData currentCountry = CountryManager.Instance.GetCountryForLevel(currentLevel);
+        // ---> THE FIX: Calculate the virtual level to support the infinite loop <---
+        int virtualLevel = CountryManager.Instance.GetVirtualLevel(currentLevel);
+
+        // 2. Fetch the current country data using the virtual level
+        CountryData currentCountry = CountryManager.Instance.GetCountryForLevel(virtualLevel);
 
         if (currentCountry == null)
         {
@@ -37,31 +40,30 @@ public class HomeProgressUI : MonoBehaviour
             return;
         }
 
-        // 3. Determine the total number of destinations
+        // 3. Determine the total number of destinations and levels
         int totalDestinations = currentCountry.destinations.Length;
-
-        // 4. Calculate exactly which destination the player is currently on
         int countryLevels = currentCountry.endLevel - currentCountry.startLevel + 1;
         float levelsPerDestination = (float)countryLevels / totalDestinations;
-        int levelInsideCountry = currentLevel - currentCountry.startLevel;
+        
+        // ---> THE FIX: Use virtualLevel to see how many levels the player has beaten in THIS country <---
+        int levelInsideCountry = virtualLevel - currentCountry.startLevel;
 
+        // 4. Calculate exactly which destination the player is currently on (for the text)
         int currentIndex = Mathf.FloorToInt(levelInsideCountry / levelsPerDestination);
-
-        // Clamp it to prevent index out of bounds errors
         currentIndex = Mathf.Clamp(currentIndex, 0, totalDestinations - 1);
-
-        // 5. Convert to a 1-based number for the user interface
         int displayValue = currentIndex + 1;
 
-        // 6. Update the Slider (Now starting at 1)
+        // 5. Update the Slider (NOW INCREASES LEVEL-BY-LEVEL)
         if (progressSlider != null)
         {
-            progressSlider.minValue = 1;
-            progressSlider.maxValue = totalDestinations;
-            progressSlider.value = displayValue;
+            progressSlider.minValue = 0;
+            progressSlider.maxValue = countryLevels;
+            
+            // The slider will fill up a tiny bit after every single level
+            progressSlider.value = levelInsideCountry; 
         }
 
-        // 7. Update the Text inside the circle
+        // 6. Update the Text inside the circle (Still shows destination 1, 2, 3...)
         if (progressText != null)
         {
             progressText.text = displayValue.ToString();

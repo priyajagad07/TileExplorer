@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: SwedenData
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: Sweden
-  startLevel: 21
-  endLevel: 40
+  startLevel: 41
+  endLevel: 80
   backgrounds:
   - {fileID: 3950825841425331367, guid: e5b75b9cf36c54919af469b68bae83f5, type: 3}
   - {fileID: -4054322043456685153, guid: ffbb2f72b103e40b296c72ed1a9b3fc5, type: 3}

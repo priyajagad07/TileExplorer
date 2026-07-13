@@ -15,8 +15,15 @@ public class AutoShuffleManager : MonoBehaviour
     [SerializeField] private int maxTraySlots = 7; 
 
     void Awake()
-    {
-        instance = this;
+    { if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
         
         if (autoShufflePopupImage != null)
         {
@@ -52,6 +59,7 @@ public class AutoShuffleManager : MonoBehaviour
 
             foreach (Transform child in tileParent)
             {
+                if (!child.gameObject.activeSelf) continue;
                 Tile tile = child.GetComponent<Tile>();
 
                 if (tile == null || tile.IsMoved()) continue;

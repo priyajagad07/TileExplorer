@@ -7,7 +7,14 @@ public class ProceduralLevelGenerator : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public ProceduralLevelData GenerateLevel(int level)

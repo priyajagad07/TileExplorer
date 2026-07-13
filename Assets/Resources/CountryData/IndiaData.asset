@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: IndiaData
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: India
-  startLevel: 111
-  endLevel: 150
+  startLevel: 221
+  endLevel: 300
   backgrounds:
   - {fileID: 8331461073583684744, guid: c39c11bca91d3442abd7558d76f79091, type: 3}
   - {fileID: -8708973283550955558, guid: 66894beb683ad441fb73512e5f09bd96, type: 3}

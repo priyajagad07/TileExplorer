@@ -14,7 +14,14 @@ public class MatchBoard : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         movement = GetComponent<MatchBoardMovement>();
         matchSystem = GetComponent<MatchBoardMatch>();
     }
@@ -128,8 +135,15 @@ public class MatchBoard : MonoBehaviour
 
         if (placedTiles.Count >= slots.Count && !isAnimating)
         {
-            Debug.Log("Game Over");
-            GameManager.instance.GameOver();
+            Debug.Log("Game Over condition met. Waiting for animations to finish...");
+
+            DOVirtual.DelayedCall(0.20f, () =>
+            {
+                if (placedTiles.Count >= slots.Count)
+                {
+                    GameManager.instance.GameOver();
+                }
+            });
         }
     }
     public void RearrangeBoard()
@@ -157,7 +171,7 @@ public class MatchBoard : MonoBehaviour
             if (tile != null)
             {
                 tile.transform.DOKill();
-                Destroy(tile);
+                ObjectPoolManager.Instance.Despawn(tile);
             }
         }
 
@@ -170,7 +184,8 @@ public class MatchBoard : MonoBehaviour
                 if (child != null)
                 {
                     child.DOKill();
-                    Destroy(child.gameObject);
+                    // Make sure this is Despawn, NOT Destroy!
+                    ObjectPoolManager.Instance.Despawn(child.gameObject);
                 }
             }
         }

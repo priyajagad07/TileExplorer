@@ -12,7 +12,14 @@ public class SaveManager : MonoBehaviour
     {
         if (instance == null)
         {
-            instance = this;
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
             DontDestroyOnLoad(gameObject);
             saveFilePath = Application.persistentDataPath + "/savegame.json";
             LoadData();
@@ -41,5 +48,7 @@ public class SaveManager : MonoBehaviour
             data = new GameData();
             SaveData();
         }
+
+        //data.level = 598;
     }
 }

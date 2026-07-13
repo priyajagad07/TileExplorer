@@ -118,7 +118,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             jellyText.color = Color.white;
             jellyText.fontStyle = FontStyle.Bold;
 
-            // Add a crisp outline to make the white text pop on the jelly
             Outline outline = textObj.AddComponent<Outline>();
             outline.effectColor = new Color(0, 0, 0, 0.5f);
             outline.effectDistance = new Vector2(3, -3);
@@ -168,9 +167,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             jellyText.text = jellyHealth.ToString();
         }
 
-        // THE FIX 3: Removed the Blocked Sound here so it doesn't interrupt your normal Tile Click sound!
-
-        // Give the jelly a subtle little bounce to show it ticked down
         if (activeJellyOverlay != null)
         {
             activeJellyOverlay.transform.DOKill(true);
@@ -237,6 +233,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         foreach (Transform child in parent)
         {
             if (child == transform) continue;
+
+            if (!child.gameObject.activeSelf) continue;
+
             Tile other = child.GetComponent<Tile>();
             if (other == null || other.IsMoved() || other.layer <= this.layer) continue;
 
@@ -267,6 +266,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public void MoveToBoard()
     {
         if (isMoved) return;
+        if (MatchBoard.instance.GetPlacedTiles().Count >= MatchBoard.instance.slots.Count)
+        {
+            PlayBlockedFeedback();
+            return;
+        }
 
         AnimateToBoardSize();
         PlayClickAnimation();
@@ -280,8 +284,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             RefreshVisual();
             RefreshAllTiles();
 
-            // THE FIX: Added !t.IsBlocked() so buried jellies are totally safe!
-            Tile[] allTiles = transform.parent.GetComponentsInChildren<Tile>();
+            Tile[] allTiles = transform.parent.GetComponentsInChildren<Tile>(false);
             foreach (Tile t in allTiles)
             {
                 if (t.isJellyLocked && !t.IsMoved() && !t.IsBlocked())
@@ -349,5 +352,55 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         Tile[] allTiles = parent.GetComponentsInChildren<Tile>();
         foreach (Tile tile in allTiles) tile.RefreshVisual();
+    }
+
+    public void ResetTileState()
+    {
+        isMoved = false;
+        isMatched = false;
+        isJellyLocked = false;
+        jellyHealth = 0;
+
+        transform.DOKill(true);
+
+        UnityEngine.UI.GraphicRaycaster raycaster = GetComponent<UnityEngine.UI.GraphicRaycaster>();
+        if (raycaster != null)
+        {
+            Destroy(raycaster);
+        }
+
+        Canvas canvas = GetComponent<Canvas>();
+        if (canvas != null)
+        {
+            Destroy(canvas);
+        }
+        // -----------------------------------------------
+
+        RectTransform rectComponent = GetComponent<RectTransform>();
+        rectComponent.localScale = originalScale;
+        rectComponent.localRotation = Quaternion.identity;
+
+        if (spawnSize != Vector2.zero)
+        {
+            rectComponent.sizeDelta = spawnSize;
+        }
+        if (tileImage != null && imageSpawnSize != Vector2.zero)
+        {
+            tileImage.sizeDelta = imageSpawnSize;
+        }
+
+        if (activeJellyOverlay != null)
+        {
+            Destroy(activeJellyOverlay.gameObject);
+            activeJellyOverlay = null;
+        }
+
+        if (jellyText != null)
+        {
+            Destroy(jellyText.gameObject);
+            jellyText = null;
+        }
+
+        RefreshVisual();
     }
 }

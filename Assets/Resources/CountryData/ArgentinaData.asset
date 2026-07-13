@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ArgentinaData
   m_EditorClassIdentifier: Assembly-CSharp::CountryData
   countryName: Argentina
-  startLevel: 7
-  endLevel: 20
+  startLevel: 13
+  endLevel: 40
   backgrounds:
   - {fileID: -3325792785554865142, guid: d2e7491d605aa4a1d82979796623e356, type: 3}
   - {fileID: -1002932777974010920, guid: 2cdfb3a7c1c824c7184d1aa5adc32ebb, type: 3}

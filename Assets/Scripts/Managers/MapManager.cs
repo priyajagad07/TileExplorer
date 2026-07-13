@@ -13,7 +13,14 @@ public class MapManager : MonoBehaviour
     public List<CountryUIPanel> countryPanels;
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void Start()
@@ -29,10 +36,13 @@ public class MapManager : MonoBehaviour
         UpdateAllCountries(currentLevel);
     }
 
-    private void UpdateAllCountries(int currentLevel)
+   private void UpdateAllCountries(int currentLevel)
     {
         CountryDatabase database = CountryManager.Instance.GetDatabase();
         if (database == null) return;
+
+        // ---> FIX: Virtualize the level so the map doesn't break at 301 <---
+        int virtualLevel = CountryManager.Instance.GetVirtualLevel(currentLevel);
 
         foreach (CountryData country in database.countries)
         {
@@ -40,7 +50,7 @@ public class MapManager : MonoBehaviour
 
             if (matchingPanel == null) continue;
 
-            UpdateCountryCards(matchingPanel, country, currentLevel);
+            UpdateCountryCards(matchingPanel, country, virtualLevel); // Pass virtualLevel here!
         }
     }
 

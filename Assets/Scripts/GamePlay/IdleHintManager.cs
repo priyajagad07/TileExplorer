@@ -18,7 +18,14 @@ public class IdleHintManager : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -101,6 +108,7 @@ public class IdleHintManager : MonoBehaviour
         {
             if (child == null)
                 continue;
+            if (!child.gameObject.activeSelf) continue;
 
             Tile tile = child.GetComponent<Tile>();
 

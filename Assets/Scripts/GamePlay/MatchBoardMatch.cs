@@ -19,7 +19,14 @@ public class MatchBoardMatch : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void CheckMatch(List<GameObject> placedTiles, int tileID)
@@ -118,10 +125,16 @@ public class MatchBoardMatch : MonoBehaviour
             Debug.Log(explosionSlot.name);
             Debug.Log(explosionSlot.position);
 
+            // foreach (GameObject tile in matchedTiles)
+            // {
+            //     MatchBoard.instance.RemoveTile(tile);
+            //     Destroy(tile);
+            // }
+
             foreach (GameObject tile in matchedTiles)
             {
                 MatchBoard.instance.RemoveTile(tile);
-                Destroy(tile);
+                ObjectPoolManager.Instance.Despawn(tile);
             }
 
             DOVirtual.DelayedCall(0.2f, () =>
@@ -167,6 +180,7 @@ public class MatchBoardMatch : MonoBehaviour
         foreach (Transform child in tileParent)
         {
             if (child == null) continue;
+            if (!child.gameObject.activeSelf) continue;
             Tile tile = child.GetComponent<Tile>();
             if (tile == null) continue;
             if (!tile.IsMoved()) boardTiles++;
@@ -196,7 +210,8 @@ public class MatchBoardMatch : MonoBehaviour
     {
         if (tile == null) return;
         SpawnDestroyParticle(tile);
-        Destroy(tile);
+        //Destroy(tile);
+        ObjectPoolManager.Instance.Despawn(tile);
     }
 
     void SpawnDestroyParticle(GameObject tileObj)

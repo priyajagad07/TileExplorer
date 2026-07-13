@@ -34,7 +34,15 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        DOTween.SetTweensCapacity(1000, 300);
     }
 
     public void SetLevelDifficulty(int difficulty)
@@ -206,6 +214,9 @@ public class GameManager : MonoBehaviour
             BoosterManager.instance.CheckUnlockRewards();
             BoosterManager.instance.UpdateUI();
         }
+
+        HomeProgressUI progressUI = FindAnyObjectByType<HomeProgressUI>();
+        if (progressUI != null) progressUI.UpdateProgressUI();
     }
 
     private void CompleteLevelReward(int coinAmount)

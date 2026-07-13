@@ -12,7 +12,14 @@ public class BoosterSystem : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+         if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void RecordMove(GameObject tile)

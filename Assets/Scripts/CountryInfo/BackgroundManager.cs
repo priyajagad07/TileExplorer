@@ -34,7 +34,7 @@ public class BackgroundManager : MonoBehaviour
         }
     }
 
-    private int lastUpdatedLevel = -1;  
+    private int lastUpdatedLevel = -1;
 
     public void UpdateBackgrounds(CountryData country, int playerLevel)
     {
@@ -48,7 +48,7 @@ public class BackgroundManager : MonoBehaviour
         }
 
         currentCountry = country;
-        lastUpdatedLevel = playerLevel; 
+        lastUpdatedLevel = playerLevel;
 
         Sprite bg = GetBackgroundForLevel(country, playerLevel);
 
@@ -103,9 +103,11 @@ public class BackgroundManager : MonoBehaviour
         if (country.backgrounds == null || country.backgrounds.Length == 0) return null;
 
         int countryLevels = country.endLevel - country.startLevel + 1;
-
         float levelsPerDestination = (float)countryLevels / country.backgrounds.Length;
-        int levelInsideCountry = playerLevel - country.startLevel;
+
+        // ---> FIX: Use virtual level <---
+        int virtualLevel = CountryManager.Instance.GetVirtualLevel(playerLevel);
+        int levelInsideCountry = virtualLevel - country.startLevel;
 
         int bgIndex = Mathf.FloorToInt(levelInsideCountry / levelsPerDestination);
         bgIndex = Mathf.Clamp(bgIndex, 0, country.backgrounds.Length - 1);
@@ -116,6 +118,11 @@ public class BackgroundManager : MonoBehaviour
     public bool IsNextDestinationUnlock()
     {
         int currentLevel = SaveManager.instance.data.level + 1;
+
+        // ---> FIX: Virtualize both levels <---
+        int vCurrent = CountryManager.Instance.GetVirtualLevel(currentLevel);
+        int vNext = CountryManager.Instance.GetVirtualLevel(currentLevel + 1);
+
         CountryData country = GetCurrentCountry();
         if (country == null) return false;
 
@@ -125,8 +132,9 @@ public class BackgroundManager : MonoBehaviour
         int countryLevels = country.endLevel - country.startLevel + 1;
         float levelsPerDestination = (float)countryLevels / country.backgrounds.Length;
 
-        int currentIndex = Mathf.FloorToInt((currentLevel - country.startLevel) / levelsPerDestination);
-        int nextIndex = Mathf.FloorToInt((currentLevel + 1 - country.startLevel) / levelsPerDestination);
+        // ---> FIX: Use vCurrent and vNext here <---
+        int currentIndex = Mathf.FloorToInt((vCurrent - country.startLevel) / levelsPerDestination);
+        int nextIndex = Mathf.FloorToInt((vNext - country.startLevel) / levelsPerDestination);
 
         return nextIndex > currentIndex;
     }
@@ -134,6 +142,10 @@ public class BackgroundManager : MonoBehaviour
     public int GetNextDestinationIndex()
     {
         int currentLevel = SaveManager.instance.data.level + 1;
+
+        // ---> FIX: Virtualize the next level <---
+        int vNext = CountryManager.Instance.GetVirtualLevel(currentLevel + 1);
+
         CountryData currentCountry = GetCurrentCountry();
         if (currentCountry == null) return 0;
 
@@ -143,7 +155,8 @@ public class BackgroundManager : MonoBehaviour
         int countryLevels = currentCountry.endLevel - currentCountry.startLevel + 1;
         float levelsPerDestination = (float)countryLevels / currentCountry.backgrounds.Length;
 
-        int nextIndex = Mathf.FloorToInt((currentLevel + 1 - currentCountry.startLevel) / levelsPerDestination);
+        // ---> FIX: Use vNext here <---
+        int nextIndex = Mathf.FloorToInt((vNext - currentCountry.startLevel) / levelsPerDestination);
 
         return Mathf.Clamp(nextIndex, 0, currentCountry.backgrounds.Length - 1);
     }

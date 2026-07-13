@@ -11,7 +11,14 @@ public class BoardGenerator : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnDestroy()
@@ -39,7 +46,7 @@ public class BoardGenerator : MonoBehaviour
         {
             GameManager.instance.SetLevelDifficulty(proceduralData.difficulty);
         }
-        
+
         MatchBoardMatch.instance.ResetBoardState();
 
         BoardSpawner.instance.ClearBoard();
@@ -73,8 +80,8 @@ public class BoardGenerator : MonoBehaviour
 
             if (Random.value < trapProbability)
             {
-                deepPool.Add(prefab);    
-                shallowPool.Add(prefab);   
+                deepPool.Add(prefab);
+                shallowPool.Add(prefab);
                 shallowPool.Add(prefab);
             }
             else

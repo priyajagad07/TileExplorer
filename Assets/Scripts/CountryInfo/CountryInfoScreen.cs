@@ -22,7 +22,14 @@ public class CountryInfoScreen : MonoBehaviour
     
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void ShowDestination(DestinationData destination, bool isFromUnlock = false)

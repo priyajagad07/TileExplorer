@@ -37,7 +37,14 @@ public class ComboManager : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+       if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
 
         if (comboUIContainer != null)
         {
