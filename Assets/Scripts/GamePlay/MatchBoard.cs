@@ -11,6 +11,7 @@ public class MatchBoard : MonoBehaviour
     private MatchBoardMatch matchSystem;
     public bool isInputLocked = false;
     private Tween matchTimer;
+    private Tween gameOverTimer;
 
     void Awake()
     {
@@ -128,24 +129,53 @@ public class MatchBoard : MonoBehaviour
     void CheckGameOver()
     {
         bool isAnimating = false;
+
         foreach (GameObject t in placedTiles)
         {
-            if (t != null && t.GetComponent<Tile>().isMatched) isAnimating = true;
+            if (t != null &&
+                t.GetComponent<Tile>().isMatched)
+            {
+                isAnimating = true;
+                break;
+            }
         }
 
-        if (placedTiles.Count >= slots.Count && !isAnimating)
+        if (placedTiles.Count >= slots.Count &&
+            !isAnimating)
         {
-            Debug.Log("Game Over condition met. Waiting for animations to finish...");
+            Debug.Log(
+                "Game Over condition met. Waiting for final check..."
+            );
 
-            DOVirtual.DelayedCall(0.20f, () =>
-            {
-                if (placedTiles.Count >= slots.Count)
+            gameOverTimer?.Kill();
+
+            gameOverTimer =
+                DOVirtual.DelayedCall(0.20f, () =>
                 {
-                    GameManager.instance.GameOver();
-                }
-            });
+                    CleanBoard();
+
+                    bool stillAnimating = false;
+
+                    foreach (GameObject t in placedTiles)
+                    {
+                        if (t != null &&
+                            t.GetComponent<Tile>().isMatched)
+                        {
+                            stillAnimating = true;
+                            break;
+                        }
+                    }
+
+                    if (placedTiles.Count >= slots.Count &&
+                        !stillAnimating &&
+                        GameManager.instance.isGameInProgress)
+                    {
+                        GameManager.instance.GameOver();
+                    }
+                });
         }
     }
+
     public void RearrangeBoard()
     {
         for (int i = 0; i < placedTiles.Count; i++)
@@ -164,31 +194,34 @@ public class MatchBoard : MonoBehaviour
 
     public void ResetBoard()
     {
-        if (matchTimer != null) matchTimer.Kill();
+        // Cancel delayed board processing from the previous attempt.
+        matchTimer?.Kill();
+        matchTimer = null;
 
-        foreach (GameObject tile in placedTiles)
-        {
-            if (tile != null)
-            {
-                tile.transform.DOKill();
-                ObjectPoolManager.Instance.Despawn(tile);
-            }
-        }
+        gameOverTimer?.Kill();
+        gameOverTimer = null;
+
+        // Copy the list before despawning.
+        List<GameObject> tilesToRemove =
+            new List<GameObject>(placedTiles);
 
         placedTiles.Clear();
 
-        foreach (Transform slot in slots)
+        foreach (GameObject tile in tilesToRemove)
         {
-            foreach (Transform child in slot)
-            {
-                if (child != null)
-                {
-                    child.DOKill();
-                    // Make sure this is Despawn, NOT Destroy!
-                    ObjectPoolManager.Instance.Despawn(child.gameObject);
-                }
-            }
+            if (tile == null)
+                continue;
+
+            tile.transform.DOKill();
+
+            ObjectPoolManager.Instance.Despawn(tile);
         }
+
+        isInputLocked = false;
+
+        Debug.Log(
+            $"MATCH BOARD RESET: Removed {tilesToRemove.Count} tiles."
+        );
     }
 
     public List<GameObject> GetPlacedTiles()

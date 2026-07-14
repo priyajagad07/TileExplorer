@@ -27,7 +27,7 @@ public class LevelManager : MonoBehaviour
 
     void Awake()
     {
-         if (instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -38,7 +38,7 @@ public class LevelManager : MonoBehaviour
     }
 
     void Start()
-    { 
+    {
         currentLevelIndex = SaveManager.instance.data.level;
         levelDatabase = Resources.Load<LevelDatabase>("LevelDatabase");
 
@@ -79,14 +79,28 @@ public class LevelManager : MonoBehaviour
 
             foreach (ShapeData shape in handmadeLevel.layers)
             {
-                data.layerLayouts.Add(shape.layout);
+                if (shape == null || shape.layout == null)
+                    continue;
+
+                string[] layoutCopy =
+                    (string[])shape.layout.Clone();
+
+                data.layerLayouts.Add(layoutCopy);
+            }
+
+            if (data.layerLayouts.Count == 0)
+            {
+                Debug.LogError(
+                    $"Level {index} has no valid layouts."
+                );
+                return;
             }
 
             string[] biggestLayout = data.layerLayouts[0];
             data.layout = biggestLayout;
             data.rows = biggestLayout.Length;
             data.cols = biggestLayout[0].Length;
-            
+
             data.stackStyle = handmadeLevel.stackStyle;
             data.stackOffsetX = handmadeLevel.stackOffsetX;
             data.stackOffsetY = handmadeLevel.stackOffsetY;
@@ -132,7 +146,7 @@ public class LevelManager : MonoBehaviour
         if (playParticle && nextLevelParticles != null)
         {
             nextLevelParticles.Play();
-            yield return new WaitForSeconds(nextLevelParticleDuration);
+            yield return new WaitForSecondsRealtime(nextLevelParticleDuration);
         }
 
         currentLevelIndex++;

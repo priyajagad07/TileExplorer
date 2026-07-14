@@ -15,13 +15,10 @@ public class MatchBoardMovement : MonoBehaviour
         RectTransform rect = tile.GetComponent<RectTransform>();
 
         rect.DOKill();
-
-        // Check our memory: Is this the very first time this tile is entering the tray?
         bool isFirstTimeArrival = !knownTrayTiles.Contains(tile);
 
         if (isFirstTimeArrival)
         {
-            // Add it to memory so it NEVER fluffs again
             knownTrayTiles.Add(tile);
         }
 
@@ -53,5 +50,10 @@ public class MatchBoardMovement : MonoBehaviour
                 rect.DOScale(Vector3.one * 0.9f, 0.1f);
             }
         });
+    }
+
+    public void ResetMovementState()
+    {
+        knownTrayTiles.Clear();
     }
 }

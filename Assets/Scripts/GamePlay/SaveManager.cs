@@ -12,16 +12,15 @@ public class SaveManager : MonoBehaviour
     {
         if (instance == null)
         {
-            if (instance == null)
-            {
-                instance = this;
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            instance = this;
             DontDestroyOnLoad(gameObject);
-            saveFilePath = Application.persistentDataPath + "/savegame.json";
+
+            saveFilePath =
+                Path.Combine(
+                    Application.persistentDataPath,
+                    "savegame.json"
+                );
+
             LoadData();
         }
         else
@@ -29,7 +28,6 @@ public class SaveManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     public void SaveData()
     {
         string json = JsonUtility.ToJson(data, true);

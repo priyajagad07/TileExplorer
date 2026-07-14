@@ -125,11 +125,15 @@ public class UIManager : MonoBehaviour
 
     public void GoBack()
     {
-        scrollRect.verticalNormalizedPosition = 1;
+        if (scrollRect != null)
+        {
+            scrollRect.verticalNormalizedPosition = 1;
+        }
 
         if (screenHistory.Count > 0)
         {
-            ScreenType previous = screenHistory.Pop();
+            ScreenType previous =
+                screenHistory.Pop();
 
             if (previous == ScreenType.GamePlay)
             {

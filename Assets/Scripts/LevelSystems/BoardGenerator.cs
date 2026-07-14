@@ -58,6 +58,14 @@ public class BoardGenerator : MonoBehaviour
         List<GameObject> tilesToSpawn = new List<GameObject>();
 
         int totalTilesNeeded = GetTotalTilesNeeded();
+
+        if (totalTilesNeeded % 3 != 0)
+        {
+            Debug.LogError(
+                $"Invalid level: {totalTilesNeeded} tiles is not divisible by 3."
+            );
+            return;
+        }
         int typeCount = totalTilesNeeded / 3;
 
         List<GameObject> deepPool = new List<GameObject>();
@@ -102,6 +110,11 @@ public class BoardGenerator : MonoBehaviour
 
         totalTilesInLevel = tilesToSpawn.Count;
         BoardSpawner.instance.SpawnTiles(tilesToSpawn, proceduralData);
+
+        Debug.Log(
+    $"GENERATOR: Expected {totalTilesNeeded} tiles. " +
+    $"Sending {tilesToSpawn.Count} tiles to BoardSpawner."
+);
     }
 
     void ShuffleList(List<GameObject> list)

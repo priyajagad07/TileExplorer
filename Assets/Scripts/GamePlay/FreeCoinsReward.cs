@@ -12,30 +12,70 @@ public class FreeCoinsReward : MonoBehaviour
 
     public void ClaimFreeCoins()
     {
-        watchButton.interactable = false;
+        if (!watchButton.interactable)
+            return;
 
-        SoundManager.instance.PlaySound(SoundName.ButtonPop);
+        SoundManager.instance.PlaySound(
+            SoundName.ButtonPop
+        );
 
-        AdManager.instance.ShowRewardedAd(() =>
-        {
-            SoundManager.instance.PlaySound(SoundName.Coins);
-            
-            if (rewardParticles != null)
-            {   
-                rewardParticles.Play();
-            }
-
-            DOVirtual.DelayedCall(
-                rewardDelay,
+        bool adStarted =
+            AdManager.instance.ShowRewardedAd(
+                // SUCCESS
                 () =>
                 {
-                    SoundManager.instance.PlaySound(SoundName.CoinReach);
-                    CoinManager.instance.AddCoins(rewardAmount);
-                    UIManager.Instance.HidePopup(ScreenType.FreeCoinsScreen);
+                    SoundManager.instance.PlaySound(
+                        SoundName.Coins
+                    );
 
+                    if (rewardParticles != null)
+                    {
+                        rewardParticles.Play();
+                    }
+
+                    DOVirtual.DelayedCall(
+                        rewardDelay,
+                        () =>
+                        {
+                            SoundManager.instance.PlaySound(
+                                SoundName.CoinReach
+                            );
+
+                            CoinManager.instance.AddCoins(
+                                rewardAmount
+                            );
+
+                            UIManager.Instance.HidePopup(
+                                ScreenType.FreeCoinsScreen
+                            );
+
+                            watchButton.interactable = true;
+                        }
+                    );
+                },
+
+                // FAILED / CLOSED WITHOUT REWARD
+                () =>
+                {
                     watchButton.interactable = true;
+
+                    Debug.Log(
+                        "Free coins ad was not completed."
+                    );
                 }
             );
-        });
+
+        if (adStarted)
+        {
+            watchButton.interactable = false;
+        }
+        else
+        {
+            watchButton.interactable = true;
+
+            Debug.Log(
+                "Rewarded ad is not ready."
+            );
+        }
     }
 }

@@ -24,8 +24,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public GameObject jellyOverlayPrefab;
     private CanvasGroup activeJellyOverlay;
     public GameObject jellySplashPrefab;
-
-    // NEW: Reference to the dynamic text
     private Text jellyText;
 
     private Vector3 originalScale;
@@ -356,12 +354,16 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void ResetTileState()
     {
-        isMoved = false;
+        transform.DOKill();
+
         isMatched = false;
+
+        transform.localScale = Vector3.one;
+        transform.localRotation = Quaternion.identity;
+
+        isMoved = false;
         isJellyLocked = false;
         jellyHealth = 0;
-
-        transform.DOKill(true);
 
         UnityEngine.UI.GraphicRaycaster raycaster = GetComponent<UnityEngine.UI.GraphicRaycaster>();
         if (raycaster != null)

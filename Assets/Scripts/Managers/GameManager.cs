@@ -55,9 +55,12 @@ public class GameManager : MonoBehaviour
         isGameInProgress = true;
         ApplyDifficultyUI(currentLevelDifficulty);
     }
-    
+
     public void GameOver()
     {
+        if (!isGameInProgress)
+            return;
+
         isGameInProgress = false;
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Warning);
         SoundManager.instance.PlaySound(SoundName.GameOver);
@@ -180,17 +183,27 @@ public class GameManager : MonoBehaviour
 
     public void ReplayGame()
     {
-        ResetLevelState();
+        Debug.Log("========== REPLAY GAME ==========");
+
         Time.timeScale = 1f;
 
+        // Stop previous gameplay state first.
+        isGameInProgress = false;
+
+        ResetLevelState();
+
+        // Clear match-board-specific state.
         MatchBoardMatch.instance.ResetBoardState();
         BoosterSystem.instance.ClearUndoStack();
         MatchBoard.instance.ResetBoard();
-        BoardSpawner.instance.ClearBoard();
+
+        // DO NOT call BoardSpawner.ClearBoard() here.
+        // LoadLevel -> SetProceduralLevel already does it.
 
         int currentLevel = SaveManager.instance.data.level;
 
         LevelManager.instance.LoadLevel(currentLevel);
+
         UIManager.Instance.HidePopup(ScreenType.GameOver);
         UIManager.Instance.HidePopup(ScreenType.ContinueGame);
         UIManager.Instance.Show(ScreenType.GamePlay);
@@ -202,6 +215,8 @@ public class GameManager : MonoBehaviour
                 BoardSpawner.instance.PlaySpawnAnimation();
             }
         });
+
+        Debug.Log("========== REPLAY COMPLETE ==========");
     }
 
     public void UpdateLevelText(int levelIndex)
@@ -253,36 +268,77 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ClaimReward()
+    public void ClaimDoubleReward()
     {
-        if (rewardClaimed) return;
+        if (rewardClaimed)
+            return;
 
-        rewardClaimed = true;
-        claimButton.interactable = false;
+        SoundManager.instance.PlaySound(
+            SoundName.ButtonPop
+        );
 
-        SoundManager.instance.PlaySound(SoundName.ButtonPop);
-
-        AdManager.instance.ShowRewardedAd(() =>
-        {
-            DOVirtual.DelayedCall(0.2f, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.Coins);
-
-                if (LevelManager.instance.nextLevelParticles != null)
+        bool adStarted =
+            AdManager.instance.ShowRewardedAd(
+                // SUCCESS
+                () =>
                 {
-                    LevelManager.instance.nextLevelParticles.Play();
-                }
-                SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
+                    rewardClaimed = true;
+                    claimButton.interactable = false;
 
-                DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(200));
-            });
-        });
+                    DOVirtual.DelayedCall(0.2f, () =>
+                    {
+                        SoundManager.instance.PlaySound(
+                            SoundName.Coins
+                        );
+
+                        if (LevelManager.instance.nextLevelParticles != null)
+                        {
+                            LevelManager.instance
+                                .nextLevelParticles.Play();
+                        }
+
+                        SoundManager.instance.PlayHaptic(
+                            MOST_HapticFeedback
+                                .HapticTypes.Success
+                        );
+
+                        DOVirtual.DelayedCall(
+                            1.1f,
+                            () => CompleteLevelReward(200)
+                        );
+                    });
+                },
+
+                // FAILED / CLOSED WITHOUT REWARD
+                () =>
+                {
+                    claimButton.interactable = true;
+
+                    Debug.Log(
+                        "Double reward ad was not completed."
+                    );
+                }
+            );
+
+        if (adStarted)
+        {
+            claimButton.interactable = false;
+        }
+        else
+        {
+            claimButton.interactable = true;
+
+            Debug.Log(
+                "Rewarded ad is not ready."
+            );
+        }
     }
     public void ClaimWinCoins()
     {
         if (rewardClaimed) return;
 
         rewardClaimed = true;
+        //claimButton.interactable = false;
 
         SoundManager.instance.PlaySound(SoundName.Coins);
 
@@ -339,5 +395,17 @@ public class GameManager : MonoBehaviour
         {
             hardLevelPanel.SetActive(false);
         });
+    }
+
+    public void ResumeGameAfterRevive()
+    {
+        isGameInProgress = true;
+
+        if (MatchBoard.instance != null)
+        {
+            MatchBoard.instance.isInputLocked = false;
+        }
+
+        Debug.Log("GAME RESUMED AFTER REVIVE");
     }
 }

@@ -41,7 +41,6 @@ public class MapManager : MonoBehaviour
         CountryDatabase database = CountryManager.Instance.GetDatabase();
         if (database == null) return;
 
-        // ---> FIX: Virtualize the level so the map doesn't break at 301 <---
         int virtualLevel = CountryManager.Instance.GetVirtualLevel(currentLevel);
 
         foreach (CountryData country in database.countries)

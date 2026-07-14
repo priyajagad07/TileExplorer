@@ -105,7 +105,6 @@ public class BackgroundManager : MonoBehaviour
         int countryLevels = country.endLevel - country.startLevel + 1;
         float levelsPerDestination = (float)countryLevels / country.backgrounds.Length;
 
-        // ---> FIX: Use virtual level <---
         int virtualLevel = CountryManager.Instance.GetVirtualLevel(playerLevel);
         int levelInsideCountry = virtualLevel - country.startLevel;
 
@@ -119,7 +118,6 @@ public class BackgroundManager : MonoBehaviour
     {
         int currentLevel = SaveManager.instance.data.level + 1;
 
-        // ---> FIX: Virtualize both levels <---
         int vCurrent = CountryManager.Instance.GetVirtualLevel(currentLevel);
         int vNext = CountryManager.Instance.GetVirtualLevel(currentLevel + 1);
 
@@ -132,7 +130,6 @@ public class BackgroundManager : MonoBehaviour
         int countryLevels = country.endLevel - country.startLevel + 1;
         float levelsPerDestination = (float)countryLevels / country.backgrounds.Length;
 
-        // ---> FIX: Use vCurrent and vNext here <---
         int currentIndex = Mathf.FloorToInt((vCurrent - country.startLevel) / levelsPerDestination);
         int nextIndex = Mathf.FloorToInt((vNext - country.startLevel) / levelsPerDestination);
 
@@ -143,7 +140,6 @@ public class BackgroundManager : MonoBehaviour
     {
         int currentLevel = SaveManager.instance.data.level + 1;
 
-        // ---> FIX: Virtualize the next level <---
         int vNext = CountryManager.Instance.GetVirtualLevel(currentLevel + 1);
 
         CountryData currentCountry = GetCurrentCountry();
@@ -155,7 +151,6 @@ public class BackgroundManager : MonoBehaviour
         int countryLevels = currentCountry.endLevel - currentCountry.startLevel + 1;
         float levelsPerDestination = (float)countryLevels / currentCountry.backgrounds.Length;
 
-        // ---> FIX: Use vNext here <---
         int nextIndex = Mathf.FloorToInt((vNext - currentCountry.startLevel) / levelsPerDestination);
 
         return Mathf.Clamp(nextIndex, 0, currentCountry.backgrounds.Length - 1);

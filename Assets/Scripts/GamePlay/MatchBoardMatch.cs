@@ -7,7 +7,7 @@ using Solo.MOST_IN_ONE;
 public class MatchBoardMatch : MonoBehaviour
 {
     public static MatchBoardMatch instance;
-    private int removedTiles = 0;
+    //private int removedTiles = 0;
     private int activePopAnimation = 0;
 
     [Header("Effects")]
@@ -48,7 +48,7 @@ public class MatchBoardMatch : MonoBehaviour
             if (SoundManager.instance != null) SoundManager.instance.ResetPitchTracker();
 
             SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
-            removedTiles += 3;
+            //removedTiles += 3;
 
             List<GameObject> tilesToMerge = new List<GameObject>();
             for (int i = 0; i < 3; i++)
@@ -119,17 +119,10 @@ public class MatchBoardMatch : MonoBehaviour
         seq.OnComplete(() =>
         {
             SpawnDestroyParticle(middleTile);
-            // SpawnSlotGlow(explosionSlot);
             SpawnSlotGlow(glowWorldPos);
 
             Debug.Log(explosionSlot.name);
             Debug.Log(explosionSlot.position);
-
-            // foreach (GameObject tile in matchedTiles)
-            // {
-            //     MatchBoard.instance.RemoveTile(tile);
-            //     Destroy(tile);
-            // }
 
             foreach (GameObject tile in matchedTiles)
             {
@@ -145,6 +138,8 @@ public class MatchBoardMatch : MonoBehaviour
                 }
 
                 activePopAnimation--;
+
+                TryCheckLevelComplete();
             });
         });
     }
@@ -157,16 +152,16 @@ public class MatchBoardMatch : MonoBehaviour
     public void ResetBoardState()
     {
         StopAllCoroutines();
-        removedTiles = 0;
+        //removedTiles = 0;
         activePopAnimation = 0;
         activeDestroyParticles = 0;
         CancelInvoke(nameof(Rearrange));
     }
 
-    public void AddRemovedTile()
-    {
-        removedTiles++;
-    }
+    // public void AddRemovedTile()
+    // {
+    //     //removedTiles++;
+    // }
 
     public void CheckLevelComplete()
     {
@@ -197,20 +192,16 @@ public class MatchBoardMatch : MonoBehaviour
     IEnumerator WaitForParticleFinish(float duration)
     {
         yield return new WaitForSeconds(duration);
+
         activeDestroyParticles--;
 
-        if (activePopAnimation <= 0 && activeDestroyParticles <= 0)
-        {
-            //MatchBoard.instance.isInputLocked = false;
-            CheckLevelComplete();
-        }
+        TryCheckLevelComplete();
     }
 
     public void PlayDestroyEffect(GameObject tile)
     {
         if (tile == null) return;
         SpawnDestroyParticle(tile);
-        //Destroy(tile);
         ObjectPoolManager.Instance.Despawn(tile);
     }
 
@@ -304,5 +295,14 @@ public class MatchBoardMatch : MonoBehaviour
         ParticleSystem.MinMaxGradient minMax = new ParticleSystem.MinMaxGradient(gradient);
         minMax.mode = ParticleSystemGradientMode.RandomColor;
         return minMax;
+    }
+
+    private void TryCheckLevelComplete()
+    {
+        if (activePopAnimation <= 0 &&
+            activeDestroyParticles <= 0)
+        {
+            CheckLevelComplete();
+        }
     }
 }

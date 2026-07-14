@@ -22,9 +22,11 @@ public class AdManager : MonoBehaviour
     private RewardedAd rewardedAd;
 
     private Action pendingRewardCallback;
-    private bool rewardEarned = false;
+    private Action pendingFailureCallback;
 
+    private bool rewardEarned = false;
     private bool processAdClosed = false;
+
 
     void Awake()
     {
@@ -43,42 +45,85 @@ public class AdManager : MonoBehaviour
 
     void Update()
     {
-        if (processAdClosed)
+        if (!processAdClosed)
+            return;
+
+        processAdClosed = false;
+
+        Action rewardCallback = pendingRewardCallback;
+        Action failureCallback = pendingFailureCallback;
+
+        pendingRewardCallback = null;
+        pendingFailureCallback = null;
+
+        if (rewardEarned)
         {
-            processAdClosed = false;
-
-            if (rewardEarned)
-            {
-                rewardEarned = false;
-                pendingRewardCallback?.Invoke();
-            }
-
-            LoadRewardedAd();
+            rewardEarned = false;
+            rewardCallback?.Invoke();
         }
-    }
+        else
+        {
+            // Player closed the ad without earning the reward.
+            failureCallback?.Invoke();
+        }
 
+        LoadRewardedAd();
+    }
     // ==========================================
     // INTERSTITIAL ADS
     // ==========================================
     public void LoadInterstitialAd()
     {
-        if (interstitialAd != null) { interstitialAd.Destroy(); interstitialAd = null; }
+        if (interstitialAd != null)
+        {
+            interstitialAd.Destroy();
+            interstitialAd = null;
+        }
 
         var adRequest = new AdRequest();
-        InterstitialAd.Load(interstitialId, adRequest, (InterstitialAd ad, LoadAdError error) =>
-        {
-            if (error != null || ad == null) { return; }
-            interstitialAd = ad;
-        });
+
+        InterstitialAd.Load(interstitialId, adRequest,
+            (InterstitialAd ad, LoadAdError error) =>
+            {
+                if (error != null || ad == null)
+                {
+                    Debug.LogWarning("Interstitial failed to load: " + error);
+                    return;
+                }
+
+                interstitialAd = ad;
+
+                interstitialAd.OnAdFullScreenContentClosed += () =>
+                {
+                    interstitialAd?.Destroy();
+                    interstitialAd = null;
+                    LoadInterstitialAd();
+                };
+
+                interstitialAd.OnAdFullScreenContentFailed += error =>
+                {
+                    Debug.LogWarning(
+                        "Interstitial failed to show: " + error
+                    );
+
+                    interstitialAd?.Destroy();
+                    interstitialAd = null;
+                    LoadInterstitialAd();
+                };
+            });
     }
 
-    public void ShowInterstitialAd()
+    public bool ShowInterstitialAd()
     {
-        if (interstitialAd != null && interstitialAd.CanShowAd())
+        if (interstitialAd != null &&
+            interstitialAd.CanShowAd())
         {
             interstitialAd.Show();
-            LoadInterstitialAd();
+            return true;
         }
+
+        LoadInterstitialAd();
+        return false;
     }
 
     // ==========================================
@@ -86,38 +131,84 @@ public class AdManager : MonoBehaviour
     // ==========================================
     public void LoadRewardedAd()
     {
-        if (rewardedAd != null) { rewardedAd.Destroy(); rewardedAd = null; }
+        if (rewardedAd != null)
+        {
+            rewardedAd.Destroy();
+            rewardedAd = null;
+        }
 
         var adRequest = new AdRequest();
-        RewardedAd.Load(rewardedId, adRequest, (RewardedAd ad, LoadAdError error) =>
-        {
-            if (error != null || ad == null) { return; }
-            rewardedAd = ad;
 
-            rewardedAd.OnAdFullScreenContentClosed += HandleAdClosed;
-        });
+        RewardedAd.Load(rewardedId, adRequest,
+            (RewardedAd ad, LoadAdError error) =>
+            {
+                if (error != null || ad == null)
+                {
+                    Debug.LogWarning(
+                        "Rewarded ad failed to load: " + error
+                    );
+                    return;
+                }
+
+                rewardedAd = ad;
+
+                rewardedAd.OnAdFullScreenContentClosed +=
+                    HandleRewardedAdClosed;
+
+                rewardedAd.OnAdFullScreenContentFailed +=
+                    HandleRewardedAdFailed;
+            });
     }
 
-    private void HandleAdClosed()
+    private void HandleRewardedAdClosed()
     {
         processAdClosed = true;
     }
 
-    public void ShowRewardedAd(Action onRewardEarned)
+    private void HandleRewardedAdFailed(AdError error)
     {
-        if (rewardedAd != null && rewardedAd.CanShowAd())
+        Debug.LogWarning(
+            "Rewarded ad failed to show: " + error
+        );
+
+        rewardEarned = false;
+
+        Action failureCallback = pendingFailureCallback;
+
+        pendingRewardCallback = null;
+        pendingFailureCallback = null;
+
+        failureCallback?.Invoke();
+
+        rewardedAd?.Destroy();
+        rewardedAd = null;
+
+        LoadRewardedAd();
+    }
+
+    public bool ShowRewardedAd(
+    Action onRewardEarned,
+    Action onAdFailedOrClosed = null)
+    {
+        if (rewardedAd != null &&
+            rewardedAd.CanShowAd())
         {
             pendingRewardCallback = onRewardEarned;
+            pendingFailureCallback = onAdFailedOrClosed;
             rewardEarned = false;
 
-            rewardedAd.Show((Reward reward) =>
+            rewardedAd.Show(reward =>
             {
                 rewardEarned = true;
             });
+
+            return true;
         }
-        else
-        {
-            Debug.Log("Ad is not ready yet!");
-        }
+
+        Debug.Log("Rewarded ad is not ready.");
+
+        LoadRewardedAd();
+
+        return false;
     }
 }
