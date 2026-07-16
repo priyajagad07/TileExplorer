@@ -6,13 +6,11 @@ using DG.Tweening;
 public class CoinManager : MonoBehaviour
 {
     public static CoinManager instance;
-
-    [SerializeField] private List<TextMeshProUGUI> coinText;
     private int coins;
 
     void Awake()
     {
-       if (instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -32,8 +30,8 @@ public class CoinManager : MonoBehaviour
         int startCoins = coins;
         coins += amount;
         SaveCoins();
-        
-        AnimateCoinUI(startCoins, coins); 
+
+        //AnimateCoinUI(startCoins, coins); 
     }
 
     public bool SpendCoins(int amount)
@@ -44,8 +42,8 @@ public class CoinManager : MonoBehaviour
         int startCoins = coins;
         coins -= amount;
         SaveCoins();
-        
-        AnimateCoinUI(startCoins, coins); 
+
+        //AnimateCoinUI(startCoins, coins); 
 
         return true;
     }
@@ -54,31 +52,34 @@ public class CoinManager : MonoBehaviour
     {
         SaveManager.instance.data.coins = coins;
         SaveManager.instance.SaveData();
+
+        CoinsUI.RefreshAll();
+        ProfileUI.Instance?.Refresh();
     }
 
-    void UpdateCoinUI()
-    {
-        foreach (TextMeshProUGUI text in coinText)
-        {
-            text.text = coins.ToString();
-        }
-    }
+    // void UpdateCoinUI()
+    // {
+    //     foreach (TextMeshProUGUI text in coinText)
+    //     {
+    //         text.text = coins.ToString();
+    //     }
+    // }
 
-    void AnimateCoinUI(int startAmount, int targetAmount)
-    {
-        DOTween.To(() => startAmount, x => 
-        {
-            foreach (TextMeshProUGUI text in coinText)
-            {
-                text.text = x.ToString();
-            }
-        }, targetAmount, 0.5f).SetEase(Ease.OutQuad);
-    }
+    // void AnimateCoinUI(int startAmount, int targetAmount)
+    // {
+    //     DOTween.To(() => startAmount, x => 
+    //     {
+    //         foreach (TextMeshProUGUI text in coinText)
+    //         {
+    //             text.text = x.ToString();
+    //         }
+    //     }, targetAmount, 0.5f).SetEase(Ease.OutQuad);
+    // }
 
     void LoadCoins()
     {
         coins = SaveManager.instance.data.coins;
-        UpdateCoinUI();
+        //UpdateCoinUI();
     }
 
     public int GetCoins()

@@ -10,6 +10,7 @@ public class BoardSpawner : MonoBehaviour
     public static BoardSpawner instance;
     public bool isSpawning = false;
     [SerializeField] private RectTransform tileParent;
+    private Sequence spawnSequence;
 
     void Awake()
     {
@@ -253,13 +254,30 @@ public class BoardSpawner : MonoBehaviour
 
     public void PlaySpawnAnimation(bool playSound = true)
     {
-        if (isSpawning) return;
-        isSpawning = true;
+        if (isSpawning)
+            return;
 
-        Tile[] allTiles = tileParent.GetComponentsInChildren<Tile>();
+        spawnSequence?.Kill(false);
+        spawnSequence = null;
+
+        Tile[] allTiles =
+            tileParent.GetComponentsInChildren<Tile>(false);
+
+        if (allTiles.Length == 0)
+        {
+            Debug.LogWarning(
+                "BoardSpawner: No active tiles found for spawn animation."
+            );
+
+            isSpawning = false;
+            return;
+        }
+
+        isSpawning = true;
         int highestLayer = GetHighestLayer(allTiles);
 
-        Sequence masterSequence = DOTween.Sequence();
+        spawnSequence = DOTween.Sequence();
+        Sequence masterSequence = spawnSequence;
         float currentTime = 0f;
         float dropDuration = 0.2f;
         float delayBetweenTiles = 0.015f;
@@ -366,6 +384,7 @@ public class BoardSpawner : MonoBehaviour
 
         masterSequence.OnComplete(() =>
         {
+            spawnSequence = null;
             isSpawning = false;
 
             Tile.RefreshAllTileVisuals(tileParent);
@@ -406,10 +425,12 @@ public class BoardSpawner : MonoBehaviour
 
     public void ClearBoard()
     {
+        spawnSequence?.Kill(false);
+        spawnSequence = null;
+
         isSpawning = false;
 
-        List<GameObject> children =
-            new List<GameObject>();
+        List<GameObject> children = new List<GameObject>();
 
         foreach (Transform child in tileParent)
         {

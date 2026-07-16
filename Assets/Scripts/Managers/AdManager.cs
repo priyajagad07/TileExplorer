@@ -50,25 +50,30 @@ public class AdManager : MonoBehaviour
 
         processAdClosed = false;
 
-        Action rewardCallback = pendingRewardCallback;
-        Action failureCallback = pendingFailureCallback;
+        bool didEarnReward = rewardEarned;
 
-        pendingRewardCallback = null;
-        pendingFailureCallback = null;
+        Action rewardCallback =
+            pendingRewardCallback;
 
-        if (rewardEarned)
+        Action failureCallback =
+            pendingFailureCallback;
+
+        // Clear the request before invoking external code.
+        // The callback may start another ad or change scenes.
+        ClearRewardedRequestState();
+
+        if (didEarnReward)
         {
-            rewardEarned = false;
             rewardCallback?.Invoke();
         }
         else
         {
-            // Player closed the ad without earning the reward.
             failureCallback?.Invoke();
         }
 
         LoadRewardedAd();
     }
+
     // ==========================================
     // INTERSTITIAL ADS
     // ==========================================
@@ -165,23 +170,24 @@ public class AdManager : MonoBehaviour
         processAdClosed = true;
     }
 
-    private void HandleRewardedAdFailed(AdError error)
+    private void HandleRewardedAdFailed(
+    AdError error
+)
     {
         Debug.LogWarning(
             "Rewarded ad failed to show: " + error
         );
 
-        rewardEarned = false;
+        Action failureCallback =
+            pendingFailureCallback;
 
-        Action failureCallback = pendingFailureCallback;
-
-        pendingRewardCallback = null;
-        pendingFailureCallback = null;
-
-        failureCallback?.Invoke();
+        ClearRewardedRequestState();
 
         rewardedAd?.Destroy();
         rewardedAd = null;
+
+        // Invoke after internal state is clean.
+        failureCallback?.Invoke();
 
         LoadRewardedAd();
     }
@@ -191,11 +197,13 @@ public class AdManager : MonoBehaviour
     Action onAdFailedOrClosed = null)
     {
         if (rewardedAd != null &&
-            rewardedAd.CanShowAd())
+    rewardedAd.CanShowAd())
         {
+            // Clear any stale state from a previous rewarded ad.
+            ClearRewardedRequestState();
+
             pendingRewardCallback = onRewardEarned;
             pendingFailureCallback = onAdFailedOrClosed;
-            rewardEarned = false;
 
             rewardedAd.Show(reward =>
             {
@@ -210,5 +218,13 @@ public class AdManager : MonoBehaviour
         LoadRewardedAd();
 
         return false;
+    }
+
+    private void ClearRewardedRequestState()
+    {
+        pendingRewardCallback = null;
+        pendingFailureCallback = null;
+        rewardEarned = false;
+        processAdClosed = false;
     }
 }

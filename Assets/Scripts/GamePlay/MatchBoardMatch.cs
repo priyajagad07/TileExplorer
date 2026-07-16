@@ -9,6 +9,12 @@ public class MatchBoardMatch : MonoBehaviour
     public static MatchBoardMatch instance;
     //private int removedTiles = 0;
     private int activePopAnimation = 0;
+    private int boardStateVersion = 0;
+    private readonly List<Tween> activeDelayedCalls = new List<Tween>();
+    private readonly List<Sequence> activeMatchSequences = new List<Sequence>();
+    private readonly List<Sequence> activeGlowSequences = new List<Sequence>();
+    private readonly List<GameObject> activeGlowObjects = new List<GameObject>();
+    private readonly List<GameObject> activeParticleObjects = new List<GameObject>();
 
     [Header("Effects")]
     [SerializeField] private GameObject destroyParticle;
@@ -29,13 +35,19 @@ public class MatchBoardMatch : MonoBehaviour
         }
     }
 
-    public void CheckMatch(List<GameObject> placedTiles, int tileID)
+    public bool CheckMatch(List<GameObject> placedTiles, int tileID)
     {
         List<GameObject> matched = new List<GameObject>();
 
         foreach (GameObject tile in placedTiles)
         {
+            if (tile == null)
+                continue;
+
             Tile t = tile.GetComponent<Tile>();
+
+            if (t == null)
+                continue;
 
             if (t.tileId == tileID && !t.isMatched)
             {
@@ -45,28 +57,59 @@ public class MatchBoardMatch : MonoBehaviour
 
         if (matched.Count >= 3)
         {
-            if (SoundManager.instance != null) SoundManager.instance.ResetPitchTracker();
-
-            SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
-            //removedTiles += 3;
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.ResetPitchTracker();
+                SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact
+                );
+            }
 
             List<GameObject> tilesToMerge = new List<GameObject>();
+
             for (int i = 0; i < 3; i++)
             {
-                matched[i].GetComponent<Tile>().isMatched = true;
-                tilesToMerge.Add(matched[i]);
+                GameObject tileObj = matched[i];
+
+                if (tileObj == null)
+                    return false;
+
+                Tile tileScript = tileObj.GetComponent<Tile>();
+                if (tileScript == null)
+                    return false;
+
+                tilesToMerge.Add(tileObj);
+            }
+
+            foreach (GameObject tileObj in tilesToMerge)
+            {
+                Tile tileScript = tileObj.GetComponent<Tile>();
+                tileScript.isMatched = true;
             }
 
             activePopAnimation++;
-            MergeAndDestroy(tilesToMerge);
 
-            SoundManager.instance.PlaySound(SoundName.ThreeTilesMatch);
+            bool matchStarted =
+                MergeAndDestroy(tilesToMerge);
+
+            if (!matchStarted)
+            {
+                return false;
+            }
+
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.PlaySound(
+                    SoundName.ThreeTilesMatch
+                );
+            }
 
             if (ComboManager.instance != null)
             {
                 ComboManager.instance.RegisterMatch();
             }
+            return true;
         }
+        return false;
     }
 
     void ForceTopLayer(GameObject tileObj, int sortOrder)
@@ -78,29 +121,62 @@ public class MatchBoardMatch : MonoBehaviour
         canvas.overrideSorting = true;
         canvas.sortingOrder = sortOrder;
     }
-    void MergeAndDestroy(List<GameObject> matchedTiles)
+
+    private void ResetTopLayer(GameObject tileObj)
     {
-        if (matchedTiles.Count < 3) return;
+        if (tileObj == null)
+            return;
+
+        Canvas canvas = tileObj.GetComponent<Canvas>();
+
+        if (canvas != null)
+        {
+            canvas.overrideSorting = false;
+            canvas.sortingOrder = 0;
+        }
+    }
+    bool MergeAndDestroy(List<GameObject> matchedTiles)
+    {
+        if (matchedTiles == null ||
+            matchedTiles.Count < 3)
+        {
+            return false;
+        }
+
+        int capturedVersion = boardStateVersion;
 
         GameObject leftTile = matchedTiles[0];
         GameObject middleTile = matchedTiles[1];
         GameObject rightTile = matchedTiles[2];
 
-        Transform explosionSlot = middleTile.transform.parent;
-
-        ForceTopLayer(leftTile, 30000);
-        ForceTopLayer(rightTile, 30000);
-        ForceTopLayer(middleTile, 30005);
+        if (leftTile == null || middleTile == null || rightTile == null)
+        {
+            CancelMatchedTiles(matchedTiles);
+            return false;
+        }
 
         RectTransform rectLeft = leftTile.GetComponent<RectTransform>();
         RectTransform rectMid = middleTile.GetComponent<RectTransform>();
         RectTransform rectRight = rightTile.GetComponent<RectTransform>();
 
+        if (rectLeft == null || rectMid == null || rectRight == null)
+        {
+            CancelMatchedTiles(matchedTiles);
+            return false;
+        }
+
+        ForceTopLayer(leftTile, 30000);
+        ForceTopLayer(rightTile, 30000);
+        ForceTopLayer(middleTile, 30005);
+
         Vector3 glowWorldPos = rectMid.position;
 
-        rectLeft.DOKill(); rectMid.DOKill(); rectRight.DOKill();
+        rectLeft.DOKill();
+        rectMid.DOKill();
+        rectRight.DOKill();
 
         Sequence seq = DOTween.Sequence();
+        activeMatchSequences.Add(seq);
 
         // Phase 1: Left and Right tiles get sucked into the Middle Tile FIRST
         seq.Append(rectLeft.DOMove(rectMid.position, 0.15f).SetEase(Ease.InBack));
@@ -118,30 +194,48 @@ public class MatchBoardMatch : MonoBehaviour
 
         seq.OnComplete(() =>
         {
+            activeMatchSequences.Remove(seq);
+
+            // The board was reset while this animation was running.
+            if (capturedVersion != boardStateVersion)
+                return;
+
             SpawnDestroyParticle(middleTile);
             SpawnSlotGlow(glowWorldPos);
 
-            Debug.Log(explosionSlot.name);
-            Debug.Log(explosionSlot.position);
-
             foreach (GameObject tile in matchedTiles)
             {
+                if (tile == null)
+                    continue;
+
                 MatchBoard.instance.RemoveTile(tile);
+                MatchBoard.instance.ForgetTrayTile(tile);
+                ResetTopLayer(tile);
                 ObjectPoolManager.Instance.Despawn(tile);
             }
 
-            DOVirtual.DelayedCall(0.2f, () =>
+            Tween delayedCall = null;
+
+            delayedCall = DOVirtual.DelayedCall(0.2f, () =>
             {
+                activeDelayedCalls.Remove(delayedCall);
+
+                if (capturedVersion != boardStateVersion)
+                    return;
+
                 if (MatchBoard.instance != null)
                 {
                     MatchBoard.instance.RearrangeBoard();
                 }
 
-                activePopAnimation--;
-
+                activePopAnimation = Mathf.Max(0, activePopAnimation - 1);
                 TryCheckLevelComplete();
             });
+
+            activeDelayedCalls.Add(delayedCall);
         });
+
+        return true;
     }
 
     void Rearrange()
@@ -151,72 +245,200 @@ public class MatchBoardMatch : MonoBehaviour
 
     public void ResetBoardState()
     {
+        boardStateVersion++;
+
+        foreach (Sequence seq in activeMatchSequences)
+        {
+            if (seq != null && seq.IsActive())
+            {
+                seq.Kill(false);
+            }
+        }
+
+        activeMatchSequences.Clear();
+
+        foreach (Tween delayedCall in activeDelayedCalls)
+        {
+            if (delayedCall != null && delayedCall.IsActive())
+            {
+                delayedCall.Kill(false);
+            }
+        }
+
+        activeDelayedCalls.Clear();
+
+        foreach (Sequence glowSequence in activeGlowSequences)
+        {
+            if (glowSequence != null && glowSequence.IsActive())
+            {
+                glowSequence.Kill(false);
+            }
+        }
+
+        activeGlowSequences.Clear();
+
+        foreach (GameObject glow in activeGlowObjects)
+        {
+            if (glow != null)
+            {
+                Destroy(glow);
+            }
+        }
+
+        activeGlowObjects.Clear();
+
+        foreach (GameObject particle in activeParticleObjects)
+        {
+            if (particle != null)
+            {
+                Destroy(particle);
+            }
+        }
+
+        activeParticleObjects.Clear();
+
         StopAllCoroutines();
-        //removedTiles = 0;
+
         activePopAnimation = 0;
         activeDestroyParticles = 0;
+
         CancelInvoke(nameof(Rearrange));
     }
 
-    // public void AddRemovedTile()
-    // {
-    //     //removedTiles++;
-    // }
-
     public void CheckLevelComplete()
     {
+        if (MatchBoard.instance == null || BoardSpawner.instance == null)
+        {
+            return;
+        }
+
         MatchBoard.instance.CleanBoard();
 
-        if (BoardSpawner.instance == null) return;
-
         Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        if (tileParent == null)
+        {
+            Debug.LogWarning("MatchBoardMatch: Tile parent is null.");
+            return;
+        }
+
         int boardTiles = 0;
 
         foreach (Transform child in tileParent)
         {
-            if (child == null) continue;
-            if (!child.gameObject.activeSelf) continue;
+            if (child == null)
+                continue;
+
+            if (!child.gameObject.activeSelf)
+                continue;
+
             Tile tile = child.GetComponent<Tile>();
-            if (tile == null) continue;
-            if (!tile.IsMoved()) boardTiles++;
+
+            if (tile == null)
+                continue;
+
+            if (!tile.IsMoved())
+                boardTiles++;
         }
 
         int matchTiles = MatchBoard.instance.GetTileCount();
 
         if (boardTiles <= 0 && matchTiles <= 0)
         {
-            GameManager.instance.LevelComplete();
+            if (GameManager.instance != null && GameManager.instance.isGameInProgress)
+            {
+                GameManager.instance.LevelComplete();
+            }
         }
     }
 
-    IEnumerator WaitForParticleFinish(float duration)
+    private void CancelMatchedTiles(List<GameObject> matchedTiles)
     {
-        yield return new WaitForSeconds(duration);
+        foreach (GameObject tileObj in matchedTiles)
+        {
+            if (tileObj == null)
+                continue;
 
-        activeDestroyParticles--;
+            Tile tile = tileObj.GetComponent<Tile>();
 
+            if (tile != null)
+            {
+                tile.isMatched = false;
+            }
+
+            ResetTopLayer(tileObj);
+        }
+
+        activePopAnimation = Mathf.Max(0, activePopAnimation - 1);
+    }
+
+    IEnumerator WaitForParticleFinish(float duration, int capturedVersion, GameObject particle)
+    {
+        yield return new WaitForSecondsRealtime(duration);
+
+        activeParticleObjects.Remove(particle);
+
+        if (capturedVersion != boardStateVersion)
+            yield break;
+
+        activeDestroyParticles = Mathf.Max(0, activeDestroyParticles - 1);
         TryCheckLevelComplete();
     }
 
     public void PlayDestroyEffect(GameObject tile)
     {
-        if (tile == null) return;
+        if (tile == null)
+            return;
+
         SpawnDestroyParticle(tile);
+        if (MatchBoard.instance != null)
+        {
+            MatchBoard.instance.ForgetTrayTile(tile);
+        }
+
+        ResetTopLayer(tile);
         ObjectPoolManager.Instance.Despawn(tile);
     }
 
     void SpawnDestroyParticle(GameObject tileObj)
     {
-        if (tileObj == null) return;
+        if (tileObj == null)
+            return;
 
-        Vector3 position = tileObj.GetComponent<RectTransform>().position;
+        if (destroyParticle == null)
+        {
+            Debug.LogWarning("MatchBoardMatch: Destroy Particle prefab is not assigned.");
+            return;
+        }
+
+        RectTransform tileRect = tileObj.GetComponent<RectTransform>();
+
+        if (tileRect == null)
+        {
+            Debug.LogWarning($"MatchBoardMatch: {tileObj.name} has no RectTransform.");
+            return;
+        }
+
+        Vector3 position = tileRect.position;
+
         GameObject particle = Instantiate(destroyParticle, position, Quaternion.identity, particleParent);
-        activeDestroyParticles++;
+        activeParticleObjects.Add(particle);
 
         ParticleSystem ps = particle.GetComponent<ParticleSystem>();
-        var main = ps.main;
-        Tile tileScript = tileObj.GetComponent<Tile>();
 
+        if (ps == null)
+        {
+            Debug.LogWarning("MatchBoardMatch: Destroy Particle prefab has no ParticleSystem.");
+
+            activeParticleObjects.Remove(particle);
+            Destroy(particle);
+            return;
+        }
+        activeDestroyParticles++;
+
+        var main = ps.main;
+
+        Tile tileScript = tileObj.GetComponent<Tile>();
         if (tileScript != null && tileScript.particleColors != null && tileScript.particleColors.Length > 0)
         {
             if (tileScript.particleColors.Length == 1)
@@ -239,16 +461,31 @@ public class MatchBoardMatch : MonoBehaviour
 
         float particleDuration = ps.main.duration + ps.main.startLifetime.constantMax;
         Destroy(particle, particleDuration);
-        StartCoroutine(WaitForParticleFinish(particleDuration));
+        int capturedVersion = boardStateVersion;
+
+        StartCoroutine(WaitForParticleFinish(particleDuration, capturedVersion, particle));
     }
 
     void SpawnSlotGlow(Vector3 worldPos)
     {
-        if (slotGlowPrefab == null) return;
+        if (slotGlowPrefab == null)
+            return;
 
-        GameObject glow = Instantiate(slotGlowPrefab, particleParent);
+        int capturedVersion = boardStateVersion;
+
+        GameObject glow = Instantiate(slotGlowPrefab, particleParent
+        );
+
+        activeGlowObjects.Add(glow);
 
         RectTransform rect = glow.GetComponent<RectTransform>();
+
+        if (rect == null)
+        {
+            activeGlowObjects.Remove(glow);
+            Destroy(glow);
+            return;
+        }
 
         rect.position = worldPos;
         rect.localScale = Vector3.one * 0.5f;
@@ -256,16 +493,38 @@ public class MatchBoardMatch : MonoBehaviour
         ForceTopLayer(glow, 30001);
 
         CanvasGroup cg = glow.GetComponent<CanvasGroup>();
+
         if (cg == null)
+        {
             cg = glow.AddComponent<CanvasGroup>();
+        }
 
         cg.alpha = 1f;
-
         Sequence seq = DOTween.Sequence();
+        activeGlowSequences.Add(seq);
+
         seq.Append(rect.DOScale(Vector3.one * 1.6f, 0.2f).SetEase(Ease.OutCubic));
         seq.Join(cg.DOFade(0f, 0.2f));
 
-        seq.OnComplete(() => Destroy(glow));
+        seq.OnComplete(() =>
+        {
+            activeGlowSequences.Remove(seq);
+            activeGlowObjects.Remove(glow);
+
+            if (capturedVersion != boardStateVersion)
+            {
+                if (glow != null)
+                {
+                    Destroy(glow);
+                }
+                return;
+            }
+
+            if (glow != null)
+            {
+                Destroy(glow);
+            }
+        });
     }
 
     ParticleSystem.MinMaxGradient GetMultiColor(Color c1, Color c2)

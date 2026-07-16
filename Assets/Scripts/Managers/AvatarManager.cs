@@ -5,86 +5,107 @@ using Solo.MOST_IN_ONE;
 
 public class AvatarManager : MonoBehaviour
 {
-    public static AvatarManager instance;
-    [SerializeField] private AvatarSlot[] avatars;
+    public static AvatarManager Instance;
+
+    [Header("Avatar Slots")]
+    [SerializeField] private AvatarSlot[] avatarSlots;
+
+    [Header("Frames")]
+    [SerializeField] private Sprite normalFrame;
+    [SerializeField] private Sprite selectedFrame;
+
+    [Header("Preview")]
     [SerializeField] private Image avatarPreview;
-    [SerializeField] private Image avatarHomeScreen;
-    [SerializeField] private GameObject[] avatarFrames; 
-    
-    [SerializeField] private TMP_InputField nameInput;
 
-    private int selectedAvatar = 0;
+    [Header("Profile")]
+    [SerializeField] private TMP_InputField playerNameInput;
 
-    void Awake()
+    private int selectedAvatar;
+    private bool hasUnsavedChanges;
+
+    private void Awake()
     {
-         if (instance == null)
-        {
-            instance = this;
-        }
+        if (Instance == null)
+            Instance = this;
         else
-        {
             Destroy(gameObject);
-        }
     }
 
-    void Start()
+    private void Start()
     {
-        LoadAvatar();
+        LoadProfile();
     }
-
     public void SelectAvatar(int index)
     {
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.LightImpact);
+        hasUnsavedChanges = true;
         selectedAvatar = index;
-        avatarPreview.sprite = avatars[index].iconImage.sprite;
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.LightImpact);
+        UpdateSelectionUI(index);
+    }
 
-        for (int i = 0; i < avatarFrames.Length; i++)
+    private void UpdateSelectionUI(int index)
+    {
+        for (int i = 0; i < avatarSlots.Length; i++)
         {
-            if (avatarFrames[i] != null)
-            {
-                avatarFrames[i].SetActive(false);
-            }
+            bool selected = i == index;
+
+            avatarSlots[i].frame.sprite =
+                selected ? selectedFrame : normalFrame;
+
+            avatarSlots[i].tick.SetActive(selected);
         }
 
-        if (avatarFrames[index] != null)
-        {
-            avatarFrames[index].SetActive(true);
-        }
+        avatarPreview.sprite = avatarSlots[index].avatarImage.sprite;
     }
 
     public void ConfirmAvatar()
     {
-        string playerName = nameInput.text.Trim();
+        hasUnsavedChanges = false;
+
+        string playerName = playerNameInput.text.Trim();
 
         if (string.IsNullOrEmpty(playerName))
-        {
             playerName = "Player" + Random.Range(1000, 9999);
-        }
 
         SaveManager.instance.data.avatarIndex = selectedAvatar;
         SaveManager.instance.data.playerName = playerName;
+
         SaveManager.instance.SaveData();
 
-        avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
-        nameInput.text = playerName;
+        RefreshUI();
+
+        ProfileUI.Instance?.Refresh();
     }
 
-    void LoadAvatar()
+    public void RefreshUI()
     {
-        selectedAvatar = SaveManager.instance.data.avatarIndex;
-        SelectAvatar(selectedAvatar);
+        int avatar = SaveManager.instance.data.avatarIndex;
+        //avatarHome.sprite = avatarSlots[avatar].avatarImage.sprite;
+        playerNameInput.text = SaveManager.instance.data.playerName;
+        selectedAvatar = avatar;
+        UpdateSelectionUI(avatar);
+    }
 
-        avatarHomeScreen.sprite = avatars[selectedAvatar].iconImage.sprite;
-
-        string playerName = SaveManager.instance.data.playerName;
-
-        if (string.IsNullOrEmpty(playerName))
+    private void LoadProfile()
+    {
+        if (string.IsNullOrEmpty(SaveManager.instance.data.playerName))
         {
-            playerName = "Player" + Random.Range(1000, 9999);
-            SaveManager.instance.data.playerName = playerName;
+            SaveManager.instance.data.playerName =
+                "Player" + Random.Range(1000, 9999);
+
             SaveManager.instance.SaveData();
         }
 
-        nameInput.text = playerName;
+        selectedAvatar = SaveManager.instance.data.avatarIndex;
+
+        RefreshUI();
+    }
+
+    public Sprite GetAvatarSprite(int index)
+    {
+        if (index < 0 || index >= avatarSlots.Length)
+            return null;
+
+        return avatarSlots[index].avatarImage.sprite;
     }
 }

@@ -33,6 +33,7 @@ public class TutorialManager : MonoBehaviour
     private GameObject activeBooster;
     private int tutorialStep = 0;
     private string currentSoftTutorialKey = "";
+    private Vector3 currentTargetOriginalScale;
 
     private const int TOTAL_STEPS = 3;
 
@@ -123,8 +124,8 @@ public class TutorialManager : MonoBehaviour
     {
         if (tutorialText == null || tutorialPopupImage == null || step >= stepMessages.Length) return;
 
-        tutorialText.text = stepMessages[step].Replace("/n", "\n");
-
+        //tutorialText.text = stepMessages[step].Replace("/n", "\n");
+        tutorialText.text = stepMessages[step];
         tutorialPopupImage.transform.DOKill();
         tutorialPopupImage.transform.localScale = Vector3.one;
         tutorialPopupImage.transform.DOPunchScale(Vector3.one * 0.15f, 0.35f, 5, 0.5f);
@@ -165,21 +166,48 @@ public class TutorialManager : MonoBehaviour
         SetUIFocus(pointer.gameObject, true, 30001);
 
         currentTargetTile.transform.DOKill();
-        currentTargetTile.transform.DOScale(1.15f, 0.4f).SetLoops(-1, LoopType.Yoyo);
+
+        currentTargetOriginalScale =
+            currentTargetTile.transform.localScale;
+
+        currentTargetTile.transform
+            .DOScale(
+                currentTargetOriginalScale * 1.15f,
+                0.4f
+            )
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);
 
         Debug.Log("ShowNextStep : " + tutorialStep);
     }
 
     private GameObject FindValidTile()
     {
-        Tile[] allTiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
+        Tile[] allTiles =
+            FindObjectsByType<Tile>(
+                FindObjectsSortMode.None
+            );
+
         foreach (Tile tile in allTiles)
         {
-            if (!MatchBoard.instance.GetPlacedTiles().Contains(tile.gameObject))
-            {
-                return tile.gameObject;
-            }
+            if (tile == null)
+                continue;
+
+            if (!tile.gameObject.activeInHierarchy)
+                continue;
+
+            if (tile.IsMoved())
+                continue;
+
+            if (tile.isJellyLocked)
+                continue;
+
+            if (tile.IsBlocked())
+                continue;
+
+            return tile.gameObject;
         }
+
         return null;
     }
 
@@ -207,7 +235,7 @@ public class TutorialManager : MonoBehaviour
             if (currentTargetTile != null)
             {
                 currentTargetTile.transform.DOKill();
-                currentTargetTile.transform.localScale = Vector3.one;
+                currentTargetTile.transform.localScale = currentTargetOriginalScale;
                 SetUIFocus(currentTargetTile, false);
             }
 

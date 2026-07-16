@@ -33,13 +33,31 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private RectTransform tileImage;
     private Vector2 imageSpawnSize;
     private readonly Vector2 boardImageSize = new Vector2(105, 105);
+    private Sequence jellyUnlockSequence;
+    private GameObject activeJellySplash;
 
     void Awake()
     {
         rect = GetComponent<RectTransform>();
-        tileImage = transform.GetChild(0).GetComponent<RectTransform>();
-        tileImages = GetComponentsInChildren<Image>();
-        originalScale = Vector3.one * 0.9f;
+
+        if (transform.childCount > 0)
+        {
+            tileImage =
+                transform.GetChild(0)
+                    .GetComponent<RectTransform>();
+        }
+        else
+        {
+            Debug.LogError(
+                $"Tile {gameObject.name} has no child image."
+            );
+        }
+
+        tileImages =
+            GetComponentsInChildren<Image>();
+
+        originalScale =
+            Vector3.one * 0.9f;
     }
 
     public void CacheSpawnSize()
@@ -131,7 +149,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         if (BoardSpawner.instance != null && BoardSpawner.instance.isSpawning) return;
-        if (MatchBoard.instance.isInputLocked) return;
+        if (MatchBoard.instance == null)
+            return;
+
+        if (MatchBoard.instance.isInputLocked)
+            return;
+
         if (isMoved) return;
 
         if (TutorialManager.instance != null && !TutorialManager.instance.IsTileClickAllowed(this.gameObject))
@@ -156,9 +179,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void TakeJellyDamage()
     {
-        if (!isJellyLocked) return;
+        if (!isJellyLocked || jellyHealth <= 0)
+            return;
 
-        jellyHealth--;
+        jellyHealth =
+            Mathf.Max(0, jellyHealth - 1);
 
         if (jellyText != null)
         {
@@ -190,7 +215,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             activeJellyOverlay.DOKill(true);
             activeJellyOverlay.transform.DOKill(true);
 
+            jellyUnlockSequence?.Kill(false);
+
             Sequence premiumPop = DOTween.Sequence();
+            jellyUnlockSequence = premiumPop;
             premiumPop.Append(activeJellyOverlay.transform.DOScale(Vector3.one * 0.7f, 0.1f).SetEase(Ease.InOutQuad));
             premiumPop.Join(activeJellyOverlay.transform.DOPunchRotation(new Vector3(0, 0, 15f), 0.15f, 1));
             premiumPop.Append(activeJellyOverlay.transform.DOScale(new Vector3(1f, 1f, 1f), 0.15f).SetEase(Ease.OutBack));
@@ -199,33 +227,74 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             {
                 if (jellySplashPrefab != null)
                 {
-                    Instantiate(jellySplashPrefab, transform.position, Quaternion.identity, transform.parent);
+                    if (activeJellySplash != null)
+                    {
+                        Destroy(activeJellySplash);
+                    }
+
+                    activeJellySplash = Instantiate(
+                        jellySplashPrefab,
+                        transform.position,
+                        Quaternion.identity,
+                        transform.parent
+                    );
                 }
             });
 
             premiumPop.Append(activeJellyOverlay.transform.DOScale(Vector3.zero, 0.15f).SetEase(Ease.InBack));
             premiumPop.Join(activeJellyOverlay.DOFade(0f, 0.1f).SetDelay(0.05f));
 
+            CanvasGroup overlayToDestroy = activeJellyOverlay;
+
             premiumPop.OnComplete(() =>
             {
-                Destroy(activeJellyOverlay.gameObject);
+                jellyUnlockSequence = null;
+                if (overlayToDestroy != null)
+                {
+                    Destroy(overlayToDestroy.gameObject);
+                }
+
+                if (activeJellyOverlay == overlayToDestroy)
+                {
+                    activeJellyOverlay = null;
+                    jellyText = null;
+                }
             });
         }
         else
         {
             if (jellySplashPrefab != null)
             {
-                Instantiate(jellySplashPrefab, transform.position, Quaternion.identity, transform.parent);
+                if (activeJellySplash != null)
+                {
+                    Destroy(activeJellySplash);
+                }
+
+                activeJellySplash = Instantiate(
+                    jellySplashPrefab,
+                    transform.position,
+                    Quaternion.identity,
+                    transform.parent
+                );
             }
         }
     }
 
     public bool IsBlocked()
     {
-        if (isMoved) return false;
+        if (isMoved)
+            return false;
 
         Transform parent = transform.parent;
-        RectTransform myRect = GetComponent<RectTransform>();
+
+        if (parent == null)
+            return false;
+
+        RectTransform myRect = rect;
+
+        if (myRect == null)
+            return false;
+
         Rect myLocalRect = GetLocalRect(myRect);
 
         foreach (Transform child in parent)
@@ -238,6 +307,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             if (other == null || other.IsMoved() || other.layer <= this.layer) continue;
 
             RectTransform otherRect = other.GetComponent<RectTransform>();
+
+            if (otherRect == null)
+                continue;
+
             Rect otherLocalRect = GetLocalRect(otherRect);
 
             if (myLocalRect.Overlaps(otherLocalRect)) return true;
@@ -263,11 +336,38 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void MoveToBoard()
     {
-        if (isMoved) return;
-        if (MatchBoard.instance.GetPlacedTiles().Count >= MatchBoard.instance.slots.Count)
+        if (isMoved)
+            return;
+
+        if (MatchBoard.instance == null)
+            return;
+        // Jelly itself can never enter the MatchBoard.
+        if (isJellyLocked)
+        {
+            PlayJellySquishFeedback();
+            return;
+        }
+
+        if (MatchBoard.instance.GetPlacedTiles().Count >=
+            MatchBoard.instance.slots.Count)
         {
             PlayBlockedFeedback();
             return;
+        }
+
+        // Save the main board parent BEFORE the tile starts moving.
+        Transform boardParent = transform.parent;
+
+        // Record the exact board state BEFORE
+        // any size or scale animation begins.
+        UndoData pendingUndoData = null;
+
+        if (BoosterSystem.instance != null)
+        {
+            pendingUndoData =
+                BoosterSystem.instance.CreateUndoData(
+                    gameObject
+                );
         }
 
         AnimateToBoardSize();
@@ -277,46 +377,107 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         if (added)
         {
+            if (BoosterSystem.instance != null &&
+                pendingUndoData != null)
+            {
+                BoosterSystem.instance.CommitUndoData(
+                    pendingUndoData
+                );
+            }
+
             isMoved = true;
 
             RefreshVisual();
-            RefreshAllTiles();
 
-            Tile[] allTiles = transform.parent.GetComponentsInChildren<Tile>(false);
+            // Refresh tiles from the original main board.
+            Tile.RefreshAllTileVisuals(boardParent);
+
+            // Every successful tile entering the MatchBoard
+            // damages currently active Jelly tiles by 1.
+            Tile[] allTiles =
+                boardParent.GetComponentsInChildren<Tile>(false);
+
             foreach (Tile t in allTiles)
             {
-                if (t.isJellyLocked && !t.IsMoved() && !t.IsBlocked())
+                if (t == null)
+                    continue;
+
+                if (t.isJellyLocked &&
+                    !t.IsMoved() &&
+                    !t.IsBlocked())
                 {
                     t.TakeJellyDamage();
                 }
             }
 
-            SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.LightImpact);
-            SoundManager.instance.PlayTileClick(this.tileId);
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.PlayHaptic(
+                    MOST_HapticFeedback.HapticTypes.LightImpact
+                );
+
+                SoundManager.instance.PlayTileClick(
+                    this.tileId
+                );
+            }
+        }
+        else
+        {
+            // AddTile failed, so restore the tile.
+            transform.DOKill();
+
+            if (rect != null)
+            {
+                rect.DOKill();
+            }
+
+            transform.localScale = originalScale;
+
+            AnimateToSpawnSize();
         }
     }
 
     void PlayJellySquishFeedback()
     {
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.SoftImpact);
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayHaptic(
+                MOST_HapticFeedback.HapticTypes.SoftImpact
+            );
+        }
 
         transform.DOKill(true);
         transform.localScale = originalScale;
 
         Sequence jellySquish = DOTween.Sequence();
-        jellySquish.Append(transform.DOScale(new Vector3(originalScale.x * 1.15f, originalScale.y * 0.85f, originalScale.z), 0.15f).SetEase(Ease.OutQuad));
-        jellySquish.Append(transform.DOScale(originalScale, 0.4f).SetEase(Ease.OutElastic));
 
-        SoundManager.instance.PlaySound(SoundName.TileBlocked);
+        jellySquish.Append(
+            transform.DOScale(
+                new Vector3(
+                    originalScale.x * 1.15f,
+                    originalScale.y * 0.85f,
+                    originalScale.z
+                ),
+                0.15f
+            ).SetEase(Ease.OutQuad)
+        );
+
+        jellySquish.Append(
+            transform.DOScale(
+                originalScale,
+                0.4f
+            ).SetEase(Ease.OutElastic)
+        );
+
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlaySound(
+                SoundName.TileBlocked
+            );
+        }
     }
 
     public bool IsMoved() { return isMoved; }
-
-    void RefreshAllTiles()
-    {
-        Tile[] allTiles = transform.parent.GetComponentsInChildren<Tile>();
-        foreach (Tile tile in allTiles) tile.RefreshVisual();
-    }
 
     void PlayClickAnimation()
     {
@@ -338,58 +499,138 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     void PlayBlockedFeedback()
     {
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.LightImpact);
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayHaptic(
+                MOST_HapticFeedback.HapticTypes.LightImpact
+            );
+        }
+
         transform.DOKill(true);
         transform.localScale = originalScale;
-        transform.DOPunchScale(Vector3.one * 0.05f, 0.2f, 5, 0.5f);
-        transform.DOPunchPosition(Vector3.right * 8f, 0.2f, 8, 0.5f);
-        SoundManager.instance.PlaySound(SoundName.TileBlocked);
+
+        transform.DOPunchScale(
+            Vector3.one * 0.05f,
+            0.2f,
+            5,
+            0.5f
+        );
+
+        transform.DOPunchPosition(
+            Vector3.right * 8f,
+            0.2f,
+            8,
+            0.5f
+        );
+
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlaySound(
+                SoundName.TileBlocked
+            );
+        }
     }
 
     public static void RefreshAllTileVisuals(Transform parent)
     {
-        Tile[] allTiles = parent.GetComponentsInChildren<Tile>();
-        foreach (Tile tile in allTiles) tile.RefreshVisual();
-    }
+        if (parent == null)
+            return;
 
+        Tile[] allTiles =
+            parent.GetComponentsInChildren<Tile>(false);
+
+        foreach (Tile tile in allTiles)
+        {
+            if (tile != null)
+            {
+                tile.RefreshVisual();
+            }
+        }
+    }
     public void ResetTileState()
     {
+        if (activeJellySplash != null)
+        {
+            Destroy(activeJellySplash);
+            activeJellySplash = null;
+        }
+
+        jellyUnlockSequence?.Kill(false);
+        jellyUnlockSequence = null;
+        // -----------------------------------------------
+        // 1. KILL ALL OLD TWEENS
+        // -----------------------------------------------
+
         transform.DOKill();
 
+        if (rect != null)
+        {
+            rect.DOKill();
+        }
+
+        if (tileImage != null)
+        {
+            tileImage.DOKill();
+        }
+
+        if (tileImages != null)
+        {
+            foreach (Image img in tileImages)
+            {
+                if (img != null)
+                {
+                    img.DOKill();
+                }
+            }
+        }
+
+        if (activeJellyOverlay != null)
+        {
+            activeJellyOverlay.DOKill();
+            activeJellyOverlay.transform.DOKill();
+        }
+
+        // -----------------------------------------------
+        // 2. RESET GAMEPLAY STATE
+        // -----------------------------------------------
+
         isMatched = false;
-
-        transform.localScale = Vector3.one;
-        transform.localRotation = Quaternion.identity;
-
         isMoved = false;
+
         isJellyLocked = false;
         jellyHealth = 0;
 
-        UnityEngine.UI.GraphicRaycaster raycaster = GetComponent<UnityEngine.UI.GraphicRaycaster>();
-        if (raycaster != null)
-        {
-            Destroy(raycaster);
-        }
-
-        Canvas canvas = GetComponent<Canvas>();
-        if (canvas != null)
-        {
-            Destroy(canvas);
-        }
+        // -----------------------------------------------
+        // 3. RESET TRANSFORM
         // -----------------------------------------------
 
-        RectTransform rectComponent = GetComponent<RectTransform>();
-        rectComponent.localScale = originalScale;
-        rectComponent.localRotation = Quaternion.identity;
+        transform.localScale = originalScale;
+        transform.localRotation = Quaternion.identity;
 
-        if (spawnSize != Vector2.zero)
+        // -----------------------------------------------
+        // 4. RESTORE ORIGINAL BOARD SIZE
+        // -----------------------------------------------
+
+        if (rect != null)
         {
-            rectComponent.sizeDelta = spawnSize;
+            rect.localScale = originalScale;
+            rect.localRotation = Quaternion.identity;
+
+            if (spawnSize != Vector2.zero)
+            {
+                rect.sizeDelta = spawnSize;
+            }
         }
-        if (tileImage != null && imageSpawnSize != Vector2.zero)
+
+        if (tileImage != null &&
+            imageSpawnSize != Vector2.zero)
         {
             tileImage.sizeDelta = imageSpawnSize;
         }
+
+        // -----------------------------------------------
+        // 5. REMOVE OLD JELLY OBJECTS
+        // -----------------------------------------------
 
         if (activeJellyOverlay != null)
         {
@@ -397,12 +638,78 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             activeJellyOverlay = null;
         }
 
-        if (jellyText != null)
+        // jellyText is normally a child of the overlay,
+        // so do not destroy it again separately.
+        jellyText = null;
+
+        // -----------------------------------------------
+        // 6. RESET TEMPORARY TUTORIAL / SORTING COMPONENTS
+        // -----------------------------------------------
+
+        GraphicRaycaster raycaster =
+            GetComponent<GraphicRaycaster>();
+
+        if (raycaster != null)
         {
-            Destroy(jellyText.gameObject);
-            jellyText = null;
+            Destroy(raycaster);
         }
 
-        RefreshVisual();
+        Canvas canvas = GetComponent<Canvas>();
+
+        if (canvas != null)
+        {
+            canvas.overrideSorting = false;
+            canvas.sortingOrder = 0;
+
+            Destroy(canvas);
+        }
+
+        // -----------------------------------------------
+        // 7. RESTORE VISUAL STATE
+        // -----------------------------------------------
+
+        if (tileImages != null)
+        {
+            foreach (Image img in tileImages)
+            {
+                if (img != null)
+                {
+                    img.color = Color.white;
+                }
+            }
+        }
+    }
+    public Vector2 GetCurrentSize()
+    {
+        return rect.sizeDelta;
+    }
+
+    public Vector2 GetCurrentImageSize()
+    {
+        if (tileImage != null)
+            return tileImage.sizeDelta;
+
+        return Vector2.zero;
+    }
+
+    public void RestoreExactBoardSize(
+        Vector3 savedScale,
+        Vector2 savedSize,
+        Vector2 savedImageSize)
+    {
+        rect.DOKill();
+
+        if (tileImage != null)
+        {
+            tileImage.DOKill();
+        }
+
+        rect.localScale = savedScale;
+        rect.sizeDelta = savedSize;
+
+        if (tileImage != null)
+        {
+            tileImage.sizeDelta = savedImageSize;
+        }
     }
 }

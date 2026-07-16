@@ -3,6 +3,11 @@ using UnityEngine.UI;
 
 public class AvatarSlot : MonoBehaviour
 {
+    [Header("Data")]
     public int slotIndex;
-    public Image iconImage;
+
+    [Header("UI")]
+    public Image frame;
+    public Image avatarImage;
+    public GameObject tick;
 }

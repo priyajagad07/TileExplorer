@@ -31,12 +31,27 @@ public class BoardGenerator : MonoBehaviour
     {
         if (data == null)
         {
-            Debug.LogError("Procedural data is null");
+            Debug.LogError(
+                "BoardGenerator: Procedural data is null."
+            );
+            return;
         }
 
-        if (data.layerLayouts == null || data.layerLayouts.Count == 0)
+        if (data.layerLayouts == null ||
+            data.layerLayouts.Count == 0)
         {
-            Debug.LogError("Procedural level data is missing layer layouts - tiles cannot spawn");
+            Debug.LogError(
+                "BoardGenerator: Procedural level data is missing " +
+                "layer layouts - tiles cannot spawn."
+            );
+            return;
+        }
+
+        if (BoardSpawner.instance == null)
+        {
+            Debug.LogError(
+                "BoardGenerator: BoardSpawner instance is missing."
+            );
             return;
         }
 
@@ -44,28 +59,33 @@ public class BoardGenerator : MonoBehaviour
 
         if (GameManager.instance != null)
         {
-            GameManager.instance.SetLevelDifficulty(proceduralData.difficulty);
+            GameManager.instance.SetLevelDifficulty(
+                proceduralData.difficulty
+            );
         }
 
-        MatchBoardMatch.instance.ResetBoardState();
+        if (MatchBoardMatch.instance != null)
+        {
+            MatchBoardMatch.instance.ResetBoardState();
+        }
 
         BoardSpawner.instance.ClearBoard();
         GenerateProceduralTiles();
     }
-
     void GenerateProceduralTiles()
     {
         List<GameObject> tilesToSpawn = new List<GameObject>();
 
         int totalTilesNeeded = GetTotalTilesNeeded();
 
-        if (totalTilesNeeded % 3 != 0)
+        if (totalTilesNeeded <= 0)
         {
             Debug.LogError(
-                $"Invalid level: {totalTilesNeeded} tiles is not divisible by 3."
+                "BoardGenerator: No valid tiles available to spawn."
             );
             return;
         }
+
         int typeCount = totalTilesNeeded / 3;
 
         List<GameObject> deepPool = new List<GameObject>();
@@ -146,10 +166,18 @@ public class BoardGenerator : MonoBehaviour
             }
         }
 
-        if (count % 3 != 0)
+        int remainder = count % 3;
+
+        if (remainder != 0)
         {
-            int missing = 3 - (count % 3);
-            Debug.LogError("🚨 SHAPE BROKEN! Total tiles is " + count + ". You MUST go into the Level Editor and add " + missing + " more tiles, or remove " + (count % 3) + " tiles so it divides evenly by 3!");
+            int validCount = count - remainder;
+
+            Debug.LogWarning(
+                $"Level shape has {count} positions. " +
+                $"Spawning {validCount} tiles so the total is divisible by 3."
+            );
+
+            return validCount;
         }
 
         return count;

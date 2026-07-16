@@ -11,27 +11,43 @@ public class MatchBoardRevive : MonoBehaviour
         if (isReviving)
             return;
 
-        SoundManager.instance.PlaySound(SoundName.ButtonPop);
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlaySound(SoundName.ButtonPop);
+        }
 
-        bool adStarted = AdManager.instance.ShowRewardedAd(() =>
-                {
-                    PerformRevive();
-                },
+        if (AdManager.instance == null)
+        {
+            Debug.LogWarning("REVIVE: AdManager is not available."
+            );
+
+            FinishReviveState();
+            return;
+        }
+
+        bool adStarted =
+            AdManager.instance.ShowRewardedAd(() => { PerformRevive(); },
                 () =>
                 {
-                    isReviving = false;
-
-                    Debug.Log("Revive ad was not completed.");
+                    FinishReviveState();
+                    Debug.Log("Revive ad was not completed."
+                    );
                 }
             );
 
         if (adStarted)
         {
             isReviving = true;
+
+            if (MatchBoard.instance != null)
+            {
+                MatchBoard.instance.isInputLocked = true;
+            }
         }
+
         else
         {
-            isReviving = false;
+            FinishReviveState();
             Debug.Log("Rewarded ad not ready. Revive not started.");
         }
     }
@@ -42,16 +58,18 @@ public class MatchBoardRevive : MonoBehaviour
             MatchBoard.instance == null ||
             MatchBoardMatch.instance == null)
         {
-            isReviving = false;
+            FinishReviveState();
             return;
         }
 
-        List<GameObject> placedTiles =
-            MatchBoard.instance.GetPlacedTiles();
+        MatchBoard.instance.CancelPendingBoardChecks();
+        List<GameObject> placedTiles = new List<GameObject>(MatchBoard.instance.GetPlacedTiles());
+
+        placedTiles.RemoveAll(tile => tile == null);
 
         if (placedTiles.Count == 0)
         {
-            isReviving = false;
+            FinishReviveState();
             return;
         }
 
@@ -63,15 +81,11 @@ public class MatchBoardRevive : MonoBehaviour
 
         int amountToTake = Mathf.Min(3, placedTiles.Count);
 
-        List<GameObject> matchBoardTilesToRemove =
-            new List<GameObject>();
+        List<GameObject> matchBoardTilesToRemove = new List<GameObject>();
 
-        for (int i = placedTiles.Count - amountToTake;
-             i < placedTiles.Count;
-             i++)
+        for (int i = placedTiles.Count - amountToTake; i < placedTiles.Count; i++)
         {
             GameObject tileObj = placedTiles[i];
-
             if (tileObj != null)
             {
                 matchBoardTilesToRemove.Add(tileObj);
@@ -91,8 +105,7 @@ public class MatchBoardRevive : MonoBehaviour
         // Mango = 1
         // --------------------------------------------------
 
-        Dictionary<int, int> removedCounts =
-            new Dictionary<int, int>();
+        Dictionary<int, int> removedCounts = new Dictionary<int, int>();
 
         foreach (GameObject tileObj in matchBoardTilesToRemove)
         {
@@ -111,19 +124,23 @@ public class MatchBoardRevive : MonoBehaviour
 
         // --------------------------------------------------
         // STEP 3:
-        // Find matching tiles on the MAIN BOARD so each
-        // removed tile type reaches the next multiple of 3.
+        // Build COMPLETE removal groups.
         //
-        // Removed 1 Flower -> remove 2 more Flowers
-        // Removed 2 Flowers -> remove 1 more Flower
-        // Removed 3 Flowers -> remove 0 more Flowers
+        // A tile type is removed only if enough matching
+        // tiles exist to complete its group of 3.
         // --------------------------------------------------
 
-        List<GameObject> mainBoardTilesToRemove =
-            new List<GameObject>();
+        List<GameObject> validMatchBoardTilesToRemove = new List<GameObject>();
+        List<GameObject> mainBoardTilesToRemove = new List<GameObject>();
 
-        Transform tileParent =
-            BoardSpawner.instance.GetTileParent();
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+
+        if (tileParent == null)
+        {
+            Debug.LogWarning("REVIVE: Main board tile parent is null.");
+            FinishReviveState();
+            return;
+        }
 
         foreach (KeyValuePair<int, int> pair in removedCounts)
         {
@@ -132,67 +149,91 @@ public class MatchBoardRevive : MonoBehaviour
 
             int remainder = removedFromMatchBoard % 3;
 
-            int neededFromMainBoard =
-                remainder == 0 ? 0 : 3 - remainder;
+            int neededFromMainBoard = remainder == 0 ? 0 : 3 - remainder;
+            List<GameObject> foundMainBoardMatches = new List<GameObject>();
 
-            if (neededFromMainBoard <= 0)
-                continue;
-
-            foreach (Transform child in tileParent)
+            // Find the required matching tiles
+            // from the main board.
+            if (neededFromMainBoard > 0)
             {
-                if (neededFromMainBoard <= 0)
-                    break;
-
-                if (!child.gameObject.activeSelf)
-                    continue;
-
-                Tile tile = child.GetComponent<Tile>();
-
-                if (tile == null)
-                    continue;
-
-                if (tile.tileId == tileId &&
-                    !tile.IsMoved())
+                foreach (Transform child in tileParent)
                 {
-                    mainBoardTilesToRemove.Add(
-                        child.gameObject
-                    );
+                    if (foundMainBoardMatches.Count >= neededFromMainBoard)
+                    {
+                        break;
+                    }
 
-                    neededFromMainBoard--;
+                    if (child == null || !child.gameObject.activeSelf)
+                    {
+                        continue;
+                    }
+
+                    Tile tile = child.GetComponent<Tile>();
+
+                    if (tile == null)
+                        continue;
+
+                    if (tile.tileId == tileId && !tile.IsMoved())
+                    {
+                        foundMainBoardMatches.Add(child.gameObject);
+                    }
                 }
             }
 
-            if (neededFromMainBoard > 0)
+            // Only remove this tile type if its
+            // complete group can be created.
+            if (foundMainBoardMatches.Count == neededFromMainBoard)
             {
-                Debug.LogWarning(
-                    $"REVIVE: Could not find enough matching " +
-                    $"main-board tiles for Tile ID {tileId}. " +
-                    $"Still needed: {neededFromMainBoard}"
-                );
+                foreach (GameObject trayTile in matchBoardTilesToRemove)
+                {
+                    if (trayTile == null)
+                        continue;
+
+                    Tile tile = trayTile.GetComponent<Tile>();
+
+                    if (tile != null && tile.tileId == tileId)
+                    {
+                        validMatchBoardTilesToRemove.Add(trayTile);
+                    }
+                }
+
+                mainBoardTilesToRemove.AddRange(foundMainBoardMatches);
             }
+            else
+            {
+                Debug.LogWarning($"REVIVE: Skipping Tile ID {tileId}. " + $"Needed {neededFromMainBoard} matching " + $"main-board tiles but found only " + $"{foundMainBoardMatches.Count}.");
+            }
+        }
+        // --------------------------------------------------
+        // SAFETY CHECK:
+        // Do not change the board if no valid group exists.
+        // --------------------------------------------------
+
+        if (validMatchBoardTilesToRemove.Count == 0)
+        {
+            Debug.LogWarning("REVIVE: No valid complete tile group could be removed.");
+            FinishReviveState();
+            return;
         }
 
         // --------------------------------------------------
         // STEP 4:
-        // Remove the 3 selected MatchBoard tiles.
+        // Remove only VALID MatchBoard tiles.
         // --------------------------------------------------
 
-        foreach (GameObject tileObj in matchBoardTilesToRemove)
+        foreach (GameObject tileObj
+                 in validMatchBoardTilesToRemove)
         {
             if (tileObj == null)
                 continue;
 
             MatchBoard.instance.RemoveTile(tileObj);
-
-            MatchBoardMatch.instance.PlayDestroyEffect(
-                tileObj
-            );
+            MatchBoardMatch.instance.PlayDestroyEffect(tileObj);
         }
 
         // --------------------------------------------------
         // STEP 5:
-        // Remove the required matching tiles
-        // from the main board.
+        // Remove matching main-board tiles.
         // --------------------------------------------------
 
         foreach (GameObject tileObj in mainBoardTilesToRemove)
@@ -200,14 +241,12 @@ public class MatchBoardRevive : MonoBehaviour
             if (tileObj == null)
                 continue;
 
-            MatchBoardMatch.instance.PlayDestroyEffect(
-                tileObj
-            );
+            MatchBoardMatch.instance.PlayDestroyEffect(tileObj);
         }
 
         Debug.Log(
             $"REVIVE COMPLETE: " +
-            $"Removed {matchBoardTilesToRemove.Count} " +
+            $"Removed {validMatchBoardTilesToRemove.Count} " +
             $"tiles from MatchBoard and " +
             $"{mainBoardTilesToRemove.Count} " +
             $"matching tiles from main board."
@@ -219,17 +258,21 @@ public class MatchBoardRevive : MonoBehaviour
         // Resume gameplay.
         Time.timeScale = 1f;
 
-        GameManager.instance.ResumeGameAfterRevive();
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.ResumeGameAfterRevive();
+        }
 
-        UIManager.Instance.HidePopup(
-            ScreenType.GameOver
-        );
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.HidePopup(ScreenType.GameOver);
+        }
 
         StartCoroutine(
             RefreshTilesAfterRevive()
         );
 
-        isReviving = false;
+        FinishReviveState();
     }
     private IEnumerator RefreshTilesAfterRevive()
     {
@@ -238,6 +281,21 @@ public class MatchBoardRevive : MonoBehaviour
         if (BoardSpawner.instance != null)
         {
             Tile.RefreshAllTileVisuals(BoardSpawner.instance.GetTileParent());
+        }
+
+        if (AutoShuffleManager.instance != null)
+        {
+            AutoShuffleManager.instance.CheckForDeadlock();
+        }
+    }
+
+    private void FinishReviveState()
+    {
+        isReviving = false;
+
+        if (MatchBoard.instance != null)
+        {
+            MatchBoard.instance.isInputLocked = false;
         }
     }
 }

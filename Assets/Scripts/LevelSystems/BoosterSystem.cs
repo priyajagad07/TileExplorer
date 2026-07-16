@@ -9,10 +9,11 @@ public class BoosterSystem : MonoBehaviour
     public static BoosterSystem instance;
     private Stack<UndoData> undoStack = new Stack<UndoData>();
     public bool justShuffled = false;
+    private MatchBoardMovement movement;
 
     void Awake()
     {
-         if (instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -22,89 +23,165 @@ public class BoosterSystem : MonoBehaviour
         }
     }
 
-    public void RecordMove(GameObject tile)
+    public UndoData CreateUndoData(GameObject tile)
     {
-        RectTransform rect = tile.GetComponent<RectTransform>();
-        UndoData data = new UndoData(
+        if (tile == null)
+            return null;
+
+        RectTransform rect =
+            tile.GetComponent<RectTransform>();
+
+        Tile tileScript =
+            tile.GetComponent<Tile>();
+
+        if (rect == null || tileScript == null)
+            return null;
+
+        return new UndoData(
             tile,
             tile.transform.parent,
             rect.anchoredPosition,
-            tile.transform.GetSiblingIndex()
+            tile.transform.GetSiblingIndex(),
+            rect.localScale,
+            tileScript.GetCurrentSize(),
+            tileScript.GetCurrentImageSize()
         );
+    }
+
+    public void CommitUndoData(UndoData data)
+    {
+        if (data == null)
+            return;
 
         justShuffled = false;
-
         undoStack.Push(data);
+
+        Debug.Log(
+            $"UNDO RECORDED: {data.tile.name} | " +
+            $"Scale: {data.originalScale} | " +
+            $"Size: {data.originalSizeDelta} | " +
+            $"Image Size: {data.originalImageSizeDelta}"
+        );
     }
 
     public bool UndoMove()
     {
-        Debug.Log("Undo Stack Count = " + undoStack.Count);
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.MediumImpact);
+        Debug.Log(
+            "Undo Stack Count = " +
+            undoStack.Count
+        );
+
+        SoundManager.instance.PlayHaptic(
+            MOST_HapticFeedback.HapticTypes.MediumImpact
+        );
 
         while (undoStack.Count > 0)
         {
-            UndoData data = undoStack.Pop();
-
-            Debug.Log("Checking tile = " + data.tile);
+            UndoData data =
+                undoStack.Pop();
 
             if (data.tile == null)
             {
-                Debug.Log("Tile destroyed, skipping");
+                Debug.Log(
+                    "Tile destroyed, skipping."
+                );
+
                 continue;
             }
-            Debug.Log("Undoing tile = " + data.tile.name);
 
-            if (!MatchBoard.instance.GetPlacedTiles().Contains(data.tile))
+            if (!MatchBoard.instance
+                .GetPlacedTiles()
+                .Contains(data.tile))
             {
-                Debug.Log("Tile already undone, skipping");
+                Debug.Log(
+                    "Tile already removed or matched, skipping."
+                );
+
                 continue;
             }
 
-            MatchBoard.instance.RemoveTile(data.tile);
-            Debug.Log("Placed Tiles After Remove = " + MatchBoard.instance.GetPlacedTiles().Count);
+            Debug.Log(
+                "Undoing tile = " +
+                data.tile.name
+            );
 
-            data.tile.transform.SetParent(data.originalParent);
-            data.tile.transform.SetSiblingIndex(data.siblingIndex);
+            // Remove it from the match tray first.
+            MatchBoard.instance.RemoveTile(
+                data.tile
+            );
 
-            RectTransform rect = data.tile.GetComponent<RectTransform>();
+            // Important: kill every active tween left
+            // from the tray movement/scale animation.
+            data.tile.transform.DOKill();
 
-            rect.anchoredPosition = data.originalPosition;
+            RectTransform rect =
+                data.tile.GetComponent<RectTransform>();
 
-            UndoBounce(data.tile.transform);
+            rect.DOKill();
 
-            Tile tileScript = data.tile.GetComponent<Tile>();
-            
-            tileScript.AnimateToSpawnSize(); 
+            // Return to the original board parent.
+            data.tile.transform.SetParent(
+                data.originalParent,
+                false
+            );
+
+            // Restore original hierarchy order.
+            data.tile.transform.SetSiblingIndex(
+                data.siblingIndex
+            );
+
+            // Restore exact board position.
+            rect.anchoredPosition =
+                data.originalPosition;
+
+            Tile tileScript =
+                data.tile.GetComponent<Tile>();
+
+            // It is now a main-board tile again.
             tileScript.SetMoved(false);
 
-            Tile.RefreshAllTileVisuals(data.originalParent);
+            // Restore the exact size and scale
+            // captured before it entered the tray.
+            tileScript.RestoreExactBoardSize(
+                data.originalScale,
+                data.originalSizeDelta,
+                data.originalImageSizeDelta
+            );
 
+            // The movement system must treat this tile
+            // as a new tray arrival if clicked again.
+            MatchBoard.instance.ForgetTrayTile(
+                data.tile
+            );
+
+            // Refresh blocked/unblocked visuals.
+            Tile.RefreshAllTileVisuals(
+                data.originalParent
+            );
+
+            // Rearrange remaining tray tiles.
             MatchBoard.instance.RearrangeBoard();
 
-            SoundManager.instance.PlaySound(SoundName.TileMoveToBoard);
+            if (AutoShuffleManager.instance != null)
+            {
+                AutoShuffleManager.instance
+                    .CheckForDeadlock();
+            }
+
+            SoundManager.instance.PlaySound(
+                SoundName.TileMoveToBoard
+            );
+
+            Debug.Log(
+                $"UNDO RESTORED: {data.tile.name} | " +
+                $"Scale: {rect.localScale} | " +
+                $"Size: {rect.sizeDelta}"
+            );
 
             return true;
         }
 
         return false;
-    }
-
-    void UndoBounce(Transform tile)
-    {
-        tile.DOKill();
-
-        Vector3 originalScale =
-            tile.localScale;
-
-        tile.localScale =
-            originalScale * 1.25f;
-
-        tile.DOScale(
-            originalScale,
-            0.25f
-        )
-        .SetEase(Ease.OutBack);
     }
 
     public void ClearUndoStack()
@@ -114,17 +191,33 @@ public class BoosterSystem : MonoBehaviour
 
     public bool CanUndo()
     {
+        if (MatchBoard.instance == null)
+            return false;
+
+        List<GameObject> placedTiles =
+            MatchBoard.instance.GetPlacedTiles();
+
         foreach (UndoData data in undoStack)
         {
-            if (data.tile != null)
+            if (data != null &&
+                data.tile != null &&
+                placedTiles.Contains(data.tile))
             {
-                return true;
+                Tile tile =
+                    data.tile.GetComponent<Tile>();
+
+                if (tile != null &&
+                    tile.IsMoved() &&
+                    !tile.isMatched)
+                {
+                    return true;
+                }
             }
         }
 
         return false;
     }
-    
+
     public void ShuffleTiles()
     {
         if (BoardSpawner.instance == null)
@@ -189,7 +282,7 @@ public class BoosterSystem : MonoBehaviour
         for (int i = 0; i < shuffledTiles.Count; i++)
         {
             Tile tile = shuffledTiles[i];
-            tile.layer = originalLayers[i]; 
+            tile.layer = originalLayers[i];
             tileToTargetPos[tile] = originalPositions[i];
             tileToTargetSibling[tile] = originalSiblingIndices[i];
         }
@@ -256,14 +349,21 @@ public class BoosterSystem : MonoBehaviour
 
     public bool CanUseMagic()
     {
-        if (BoardSpawner.instance == null) return false;
-        Transform tileParent = BoardSpawner.instance.GetTileParent();
+        if (BoardSpawner.instance == null)
+            return false;
+
+        Transform tileParent =
+            BoardSpawner.instance.GetTileParent();
 
         int availableTiles = 0;
+
         foreach (Transform child in tileParent)
         {
             Tile tile = child.GetComponent<Tile>();
-            if (tile != null && !tile.IsMoved())
+
+            if (tile != null &&
+                !tile.IsMoved() &&
+                !tile.isJellyLocked)
             {
                 availableTiles++;
             }
@@ -328,8 +428,10 @@ public class BoosterSystem : MonoBehaviour
 
             Tile tile = child.GetComponent<Tile>();
 
-            if (tile == null || tile.IsMoved())
+            if (tile == null || tile.IsMoved() || tile.isJellyLocked)
+            {
                 continue;
+            }
 
             availableBoardTiles.Add(tile);
         }

@@ -32,6 +32,39 @@ public class MatchBoard : MonoBehaviour
         if (isInputLocked)
             return false;
 
+        if (tile == null)
+        {
+            Debug.LogWarning("MatchBoard: Tried to add a null tile.");
+            return false;
+        }
+
+        Tile tileComponent = tile.GetComponent<Tile>();
+
+        if (tileComponent == null)
+        {
+            Debug.LogWarning($"MatchBoard: {tile.name} has no Tile component.");
+            return false;
+        }
+
+        if (movement == null)
+        {
+            Debug.LogError("MatchBoard: MatchBoardMovement component is missing.");
+            return false;
+        }
+
+        CleanBoard();
+        if (placedTiles.Count >= slots.Count)
+        {
+            return false;
+        }
+
+        // Prevent the same tile from being added twice.
+        if (placedTiles.Contains(tile))
+        {
+            Debug.LogWarning($"MatchBoard: {tile.name} is already in the tray.");
+            return false;
+        }
+
         if (IdleHintManager.instance != null)
         {
             IdleHintManager.instance.StopHints();
@@ -42,20 +75,22 @@ public class MatchBoard : MonoBehaviour
             TutorialManager.instance.CloseSoftTutorial();
         }
 
-        if (placedTiles.Count >= slots.Count)
-        {
-            return false;
-        }
-
-        BoosterSystem.instance.RecordMove(tile);
-
-        int tileID = tile.GetComponent<Tile>().tileId;
+        int tileID = tileComponent.tileId;
         int insertIndex = -1;
 
         for (int i = 0; i < placedTiles.Count; i++)
         {
-            Tile t = placedTiles[i].GetComponent<Tile>();
-            if (t.tileId == tileID && !t.isMatched)
+            GameObject existingTileObj = placedTiles[i];
+
+            if (existingTileObj == null)
+                continue;
+
+            Tile existingTile = existingTileObj.GetComponent<Tile>();
+
+            if (existingTile == null)
+                continue;
+
+            if (existingTile.tileId == tileID && !existingTile.isMatched)
             {
                 insertIndex = i + 1;
             }
@@ -71,141 +106,204 @@ public class MatchBoard : MonoBehaviour
         }
 
         RearrangeBoard();
-
-        if (matchTimer != null) matchTimer.Kill();
-
-        matchTimer = DOVirtual.DelayedCall(0.18f, () =>
-        {
-            ProcessBoard();
-        });
+        matchTimer?.Kill();
+        matchTimer = DOVirtual.DelayedCall(0.18f, ProcessBoard);
 
         return true;
     }
-
     void ProcessBoard()
     {
+        CleanBoard();
+
+        if (matchSystem == null)
+        {
+            Debug.LogWarning("MatchBoard: MatchBoardMatch component is missing.");
+            return;
+        }
+
         bool matchFound = false;
 
         for (int i = 0; i < placedTiles.Count; i++)
         {
-            if (placedTiles[i] == null) continue;
-            Tile currentTile = placedTiles[i].GetComponent<Tile>();
-            if (currentTile.isMatched) continue;
+            GameObject tileObj = placedTiles[i];
+
+            if (tileObj == null)
+                continue;
+
+            Tile currentTile = tileObj.GetComponent<Tile>();
+
+            if (currentTile == null)
+                continue;
+
+            if (currentTile.isMatched)
+                continue;
 
             int id = currentTile.tileId;
             int count = 0;
 
-            foreach (GameObject t in placedTiles)
+            foreach (GameObject otherTileObj in placedTiles)
             {
-                if (t != null)
+                if (otherTileObj == null)
+                    continue;
+
+                Tile checkTile = otherTileObj.GetComponent<Tile>();
+
+                if (checkTile == null)
+                    continue;
+
+                if (checkTile.tileId == id && !checkTile.isMatched)
                 {
-                    Tile checkTile = t.GetComponent<Tile>();
-                    if (checkTile.tileId == id && !checkTile.isMatched) count++;
+                    count++;
                 }
             }
 
             if (count >= 3)
             {
-                matchSystem.CheckMatch(placedTiles, id);
-                matchFound = true;
-                break;
+                bool matchStarted = matchSystem.CheckMatch(placedTiles, id);
+
+                if (matchStarted)
+                {
+                    matchFound = true;
+                    break;
+                }
             }
         }
 
         if (matchFound)
         {
-            matchTimer = DOVirtual.DelayedCall(0.65f, () => ProcessBoard());
+            matchTimer?.Kill();
+            matchTimer = DOVirtual.DelayedCall(0.65f, ProcessBoard);
         }
         else
         {
+            matchTimer = null;
             if (AutoShuffleManager.instance != null)
             {
                 AutoShuffleManager.instance.CheckForDeadlock();
             }
+
             CheckGameOver();
         }
     }
-
     void CheckGameOver()
     {
+        CleanBoard();
+
         bool isAnimating = false;
 
-        foreach (GameObject t in placedTiles)
+        foreach (GameObject tileObj in placedTiles)
         {
-            if (t != null &&
-                t.GetComponent<Tile>().isMatched)
+            if (tileObj == null)
+                continue;
+
+            Tile tile = tileObj.GetComponent<Tile>();
+
+            if (tile != null && tile.isMatched)
             {
                 isAnimating = true;
                 break;
             }
         }
 
-        if (placedTiles.Count >= slots.Count &&
-            !isAnimating)
+        if (placedTiles.Count < slots.Count ||
+            isAnimating)
         {
-            Debug.Log(
-                "Game Over condition met. Waiting for final check..."
-            );
-
-            gameOverTimer?.Kill();
-
-            gameOverTimer =
-                DOVirtual.DelayedCall(0.20f, () =>
-                {
-                    CleanBoard();
-
-                    bool stillAnimating = false;
-
-                    foreach (GameObject t in placedTiles)
-                    {
-                        if (t != null &&
-                            t.GetComponent<Tile>().isMatched)
-                        {
-                            stillAnimating = true;
-                            break;
-                        }
-                    }
-
-                    if (placedTiles.Count >= slots.Count &&
-                        !stillAnimating &&
-                        GameManager.instance.isGameInProgress)
-                    {
-                        GameManager.instance.GameOver();
-                    }
-                });
+            return;
         }
+
+        Debug.Log("Game Over condition met. Waiting for final check...");
+
+        gameOverTimer?.Kill();
+
+        gameOverTimer = DOVirtual.DelayedCall(0.20f, () =>
+        {
+            gameOverTimer = null;
+            CleanBoard();
+            bool stillAnimating = false;
+
+            foreach (GameObject tileObj in placedTiles)
+            {
+                if (tileObj == null)
+                    continue;
+
+                Tile tile = tileObj.GetComponent<Tile>();
+
+                if (tile != null && tile.isMatched)
+                {
+                    stillAnimating = true;
+                    break;
+                }
+            }
+
+            if (placedTiles.Count >= slots.Count &&
+                !stillAnimating &&
+                GameManager.instance != null &&
+                GameManager.instance.isGameInProgress)
+            {
+                GameManager.instance.GameOver();
+            }
+        });
     }
 
     public void RearrangeBoard()
     {
-        for (int i = 0; i < placedTiles.Count; i++)
+        if (movement == null)
         {
-            if (placedTiles[i] != null)
-            {
-                movement.MoveTile(placedTiles[i], slots[i]);
-            }
+            Debug.LogWarning("MatchBoard: MatchBoardMovement component is missing.");
+            return;
+        }
+
+        CleanBoard();
+
+        int moveCount = Mathf.Min(placedTiles.Count, slots.Count);
+
+        for (int i = 0; i < moveCount; i++)
+        {
+            GameObject tile = placedTiles[i];
+            Transform slot = slots[i];
+
+            if (tile == null || slot == null)
+                continue;
+
+            movement.MoveTile(tile, slot);
         }
     }
 
-    public void RemoveTile(GameObject tile)
+    public bool RemoveTile(GameObject tile)
     {
-        placedTiles.Remove(tile);
+        if (tile == null)
+            return false;
+
+        return placedTiles.Remove(tile);
+    }
+
+    public void ForgetTrayTile(GameObject tile)
+    {
+        if (tile == null)
+            return;
+
+        if (movement != null)
+        {
+            movement.ForgetTrayTile(tile);
+        }
     }
 
     public void ResetBoard()
     {
-        // Cancel delayed board processing from the previous attempt.
         matchTimer?.Kill();
         matchTimer = null;
 
         gameOverTimer?.Kill();
         gameOverTimer = null;
 
-        // Copy the list before despawning.
-        List<GameObject> tilesToRemove =
-            new List<GameObject>(placedTiles);
+        List<GameObject> tilesToRemove = new List<GameObject>(placedTiles);
 
         placedTiles.Clear();
+
+        if (movement != null)
+        {
+            movement.ResetMovementState();
+        }
 
         foreach (GameObject tile in tilesToRemove)
         {
@@ -213,15 +311,32 @@ public class MatchBoard : MonoBehaviour
                 continue;
 
             tile.transform.DOKill();
+            RectTransform rect = tile.GetComponent<RectTransform>();
 
-            ObjectPoolManager.Instance.Despawn(tile);
+            if (rect != null)
+            {
+                rect.DOKill();
+            }
+
+            Tile tileComponent = tile.GetComponent<Tile>();
+
+            if (tileComponent != null)
+            {
+                tileComponent.isMatched = false;
+            }
+
+            if (ObjectPoolManager.Instance != null)
+            {
+                ObjectPoolManager.Instance.Despawn(tile);
+            }
+            else
+            {
+                Debug.LogWarning("MatchBoard: ObjectPoolManager is missing.");
+            }
         }
 
         isInputLocked = false;
-
-        Debug.Log(
-            $"MATCH BOARD RESET: Removed {tilesToRemove.Count} tiles."
-        );
+        Debug.Log($"MATCH BOARD RESET: Removed {tilesToRemove.Count} tiles.");
     }
 
     public List<GameObject> GetPlacedTiles()
@@ -237,5 +352,14 @@ public class MatchBoard : MonoBehaviour
     public void CleanBoard()
     {
         placedTiles.RemoveAll(tile => tile == null);
+    }
+
+    public void CancelPendingBoardChecks()
+    {
+        matchTimer?.Kill();
+        matchTimer = null;
+
+        gameOverTimer?.Kill();
+        gameOverTimer = null;
     }
 }

@@ -230,8 +230,9 @@ public class GameManager : MonoBehaviour
             BoosterManager.instance.UpdateUI();
         }
 
-        HomeProgressUI progressUI = FindAnyObjectByType<HomeProgressUI>();
-        if (progressUI != null) progressUI.UpdateProgressUI();
+        // ProgressUI progressUI = FindAnyObjectByType<ProgressUI>();
+        // if (progressUI != null) progressUI.Refresh();
+        ProgressUI.RefreshAll();
     }
 
     private void CompleteLevelReward(int coinAmount)
