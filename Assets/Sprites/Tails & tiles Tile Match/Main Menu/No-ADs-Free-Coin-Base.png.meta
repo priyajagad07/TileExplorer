@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b25dc8ed98b824576b72779c2848e08b
+guid: c1d69bf0c449b4121b4c51e132d48ca2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7934800376117942130
-    second: Unselect_0
+      213: -8221143199474604563
+    second: No-ADs-Free-Coin-Base_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Unselect_0
+      name: No-ADs-Free-Coin-Base_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 0
-        width: 254
+        x: 4
+        y: 2
+        width: 248
         height: 252
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e88aad9291de1e190800000000000000
-      internalID: -7934800376117942130
+      spriteID: de5a2bb41d1a8ed80800000000000000
+      internalID: -8221143199474604563
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 13bf36661cf014ff0893124ba3983a49
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Unselect_0: -7934800376117942130
+      No-ADs-Free-Coin-Base_0: -8221143199474604563
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
