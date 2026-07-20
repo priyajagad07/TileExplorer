@@ -16,4 +16,5 @@ public enum ScreenType
     BuyMagicScreen,
     CountryInfoScreen,
     ContinueGame,
+    RemoveAdsPopup
 }

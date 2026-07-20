@@ -38,8 +38,6 @@ public partial class DailyStreakUI
         seq.OnComplete(() =>
         {
             rewardPopup.SetActive(false);
-
-            ShowKeepGoing();
         });
     }
 

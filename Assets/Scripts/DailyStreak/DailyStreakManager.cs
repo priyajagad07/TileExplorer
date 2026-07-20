@@ -93,12 +93,6 @@ public class DailyStreakManager : MonoBehaviour
         DailyRewardManager.instance.GiveRewardForDay(streak);
     }
 
-    public void ContinueFromDailyReward()
-    {
-        UIManager.Instance.HidePopup(ScreenType.LevelCompleted);
-        UIManager.Instance.Show(ScreenType.HomeScreen);
-    }
-
     public bool ShouldShowRewardPopup()
     {
         if (!HasPendingReward()) return false;

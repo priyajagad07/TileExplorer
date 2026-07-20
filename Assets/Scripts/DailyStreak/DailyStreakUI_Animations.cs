@@ -11,47 +11,25 @@ public partial class DailyStreakUI
 
         int streak = DailyStreakManager.instance.GetStreak();
 
-        if (streakText != null)
-        {
-            int previous = Mathf.Max(0, streak - 1);
-            streakText.text = previous.ToString();
-        }
-
         ShowPreviousProgress(streak);
 
-        keepGoingButton.localScale = Vector3.zero;
-        birdParent.localScale = Vector3.zero;
-
         Sequence seq = DOTween.Sequence().SetId("RewardSeq");
-        seq.AppendInterval(0.5f);
 
-        seq.AppendCallback(() =>
-        {
-            PlayBirdAnimation();
-        });
-
-        seq.AppendInterval(0.5f);
-
-        seq.AppendCallback(() =>
-        {
-            AnimateStreak(streak);
-        });
-
-        seq.AppendInterval(1f);
+        seq.AppendInterval(0.35f);
 
         seq.AppendCallback(() =>
         {
             ClaimDay(streak);
         });
 
-        seq.AppendInterval(0.25f);
+        seq.AppendInterval(0.35f);
 
         seq.AppendCallback(() =>
         {
             ShowRewardPopup(DailyRewardManager.instance.GetRewardTextForDay(streak));
         });
 
-        seq.AppendInterval(0.3f);
+        seq.AppendInterval(0.25f);
 
         seq.AppendCallback(() =>
         {
@@ -59,66 +37,131 @@ public partial class DailyStreakUI
         });
     }
 
-    void AnimateStreak(int targetValue)
-    {
-        if (streakText == null) return;
-
-        int previous = Mathf.Max(0, targetValue - 1);
-
-        SoundManager.instance.PlaySound(SoundName.CounterStart);
-
-        streakText.transform.DOKill(true);
-        streakText.transform.localScale = Vector3.one;
-
-        DOTween.To(() => previous, x => { streakText.text = x.ToString(); }, targetValue, 0.5f)
-        .OnComplete(() =>
-        {
-            SoundManager.instance.PlaySound(SoundName.NumberPop);
-            streakText.transform.DOPunchScale(Vector3.one * 0.3f, 0.35f, 10, 1);
-        });
-    }
-
-    void PlayBirdAnimation()
-    {
-        birdParent.DOKill(true);
-        birdParent.localScale = Vector3.zero;
-
-        SoundManager.instance.PlaySound(SoundName.BirdPop);
-        birdParent.DOScale(1f, 0.45f).SetEase(Ease.OutBack);
-    }
-
-    void ShowKeepGoing()
-    {
-        Debug.Log("ShowKeepGoing");
-        SoundManager.instance.PlaySound(SoundName.ButtonPop);
-
-        keepGoingButton.DOKill(true);
-        keepGoingButton.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
-    }
-
     void ClaimDay(int streak)
     {
         if (streak <= 0) return;
 
-        Image icon = dayIcons[streak - 1];
-        icon.color = completedColor;
+        DaySlotUI slot = daySlots[streak - 1];
 
-        icon.transform.DOKill(true);
-        icon.transform.localScale = Vector3.one * 0.7f;
+        RectTransform chest = slot.chest.rectTransform;
+        RectTransform bg = slot.background.rectTransform;
+        Vector2 startPos = chest.anchoredPosition;
+
+        chest.DOKill(true);
+        bg.DOKill(true);
+
+        chest.anchoredPosition = startPos;
+        chest.sizeDelta = new Vector2(normalChestSize, normalChestSize);
 
         Sequence seq = DOTween.Sequence();
 
-        seq.Append(icon.transform.DOScale(1.35f, 0.2f));
-        seq.Append(icon.transform.DOScale(1f, 0.15f));
+        // Squash
+        seq.Append(
+            chest.DOSizeDelta(
+                new Vector2(105, 105),
+                0.08f
+            ).SetEase(Ease.InQuad)
+        );
 
-        seq.Join(icon.transform.DOPunchRotation(new Vector3(0, 0, 15), 0.35f, 8, 1));
+        // Shake
+        seq.Append(
+            chest.DOShakeRotation(
+                0.10f,
+                new Vector3(0, 0, 8),
+                12,
+                90,
+                false
+            )
+        );
+
+        seq.Join(chest.DOAnchorPosY(startPos.y + 12f, 0.12f).SetLoops(2, LoopType.Yoyo));
+        // Tiny pause before opening
+        seq.AppendInterval(0.05f);
+
+        // Activate today's tab
+        seq.AppendCallback(() =>
+        {
+            slot.background.gameObject.SetActive(true);
+            bg.localScale = Vector3.zero;
+            slot.background.sprite = activeTabSprite;
+            slot.dayText.DOColor(activeTextColor, 0.15f);
+            slot.chest.sprite = claimedChestSprite;
+
+            SoundManager.instance.PlaySound(SoundName.RewardReveal);
+        });
+
+        // Chest Pop
+        seq.Append(
+            chest.DOSizeDelta(
+                new Vector2(popChestSize, popChestSize),
+                0.18f
+            ).SetEase(Ease.OutBack)
+        );
+
+        seq.Append(
+            chest.DOSizeDelta(
+                new Vector2(claimedChestSize, claimedChestSize),
+                0.12f
+            )
+        );
+
+        // Chest rotation
+        seq.Join(
+            chest.DOPunchRotation(
+                new Vector3(0, 0, 12),
+                0.25f,
+                8,
+                1
+            )
+        );
+
+        // Tab pop
+        seq.Join(
+            bg.DOScale(1.12f, 0.15f)
+                .SetEase(Ease.OutBack)
+        );
+
+        seq.Append(
+            bg.DOScale(1f, 0.12f)
+                .SetEase(Ease.OutQuad)
+        );
+
+        // Text punch
+        seq.Join(
+            slot.dayText.transform.DOPunchScale(
+                Vector3.one * 0.15f,
+                0.25f
+            )
+        );
     }
 
     void ShowPreviousProgress(int streak)
     {
-        for (int i = 0; i < dayIcons.Length; i++)
+        for (int i = 0; i < daySlots.Length; i++)
         {
-            dayIcons[i].color = i < streak - 1 ? completedColor : defaultColor;
+            bool claimed = i < streak - 1;
+
+            if (claimed)
+            {
+                daySlots[i].background.gameObject.SetActive(true);
+                daySlots[i].background.sprite = activeTabSprite;
+                daySlots[i].dayText.color = activeTextColor;
+            }
+            else
+            {
+                daySlots[i].background.gameObject.SetActive(false);
+                daySlots[i].dayText.color = inactiveTextColor;
+            }
+
+            daySlots[i].chest.sprite =
+                claimed ? claimedChestSprite : lockedChestSprite;
+
+            RectTransform rect = daySlots[i].chest.rectTransform;
+
+            rect.sizeDelta = new Vector2(
+                claimed ? claimedChestSize : normalChestSize,
+                claimed ? claimedChestSize : normalChestSize
+            );
         }
     }
 }

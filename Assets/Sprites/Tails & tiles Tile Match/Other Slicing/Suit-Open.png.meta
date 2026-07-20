@@ -132,12 +132,12 @@ TextureImporter:
       name: Suit-Open_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 290
-        width: 7
-        height: 8
+        x: 0
+        y: 304
+        width: 5
+        height: 5
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -159,7 +159,7 @@ TextureImporter:
         width: 489
         height: 426
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -176,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d4af9d2a83706475ba1be47e757ea36f
     internalID: 0
     vertices: []
     indices: 
