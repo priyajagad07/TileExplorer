@@ -27,24 +27,24 @@ public class ProgressUI : MonoBehaviour
 
     public void Refresh()
     {
-        if (SaveManager.instance == null || CountryManager.Instance == null)
+        if (SaveManager.instance == null || WorldManager.Instance == null)
             return;
 
         int currentLevel = SaveManager.instance.data.level + 1;
-        int virtualLevel = CountryManager.Instance.GetVirtualLevel(currentLevel);
+        int virtualLevel = WorldManager.Instance.GetVirtualLevel(currentLevel);
 
-        CountryData country =
-            CountryManager.Instance.GetCountryForLevel(virtualLevel);
+        WorldData world =
+            WorldManager.Instance.GetWorldForLevel(virtualLevel);
 
-        if (country == null)
+        if (world == null)
             return;
 
-        int totalDestinations = country.destinations.Length;
-        int countryLevels = country.endLevel - country.startLevel + 1;
-        float levelsPerDestination = (float)countryLevels / totalDestinations;
+        int totalDestinations = world.destinations.Length;
+        int worldLevels = world.endLevel - world.startLevel + 1;
+        float levelsPerDestination = (float)worldLevels / totalDestinations;
 
-        int levelInsideCountry = virtualLevel - country.startLevel;
-        int completed = Mathf.Max(levelInsideCountry - 1, 0);
+        int levelInsideWorld = virtualLevel - world.startLevel;
+        int completed = Mathf.Max(levelInsideWorld - 1, 0);
 
         int destination =
             Mathf.Clamp(

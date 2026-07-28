@@ -7,8 +7,12 @@ public partial class DailyStreakUI : MonoBehaviour
     public static DailyStreakUI instance;
 
     [SerializeField] private DaySlotUI[] daySlots;
+
+    [Header("Reward Popup")]
     [SerializeField] private GameObject rewardPopup;
-    [SerializeField] private TextMeshProUGUI rewardText;
+    [SerializeField] private Transform rewardContainer;
+    [SerializeField] private RewardItemUI rewardItemPrefab;
+    [SerializeField] private Button collectButton;
 
     [SerializeField] private GameObject rewardPreviewPopup;
     [SerializeField] private RewardSlotUI[] rewardSlots;

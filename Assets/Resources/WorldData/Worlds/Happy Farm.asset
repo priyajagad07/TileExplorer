@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: Happy Farm
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Happy Farm
+  startLevel: 201
+  endLevel: 320
+  backgrounds:
+  - {fileID: 7773900953925383654, guid: fec3d463ff984473ebdfdf6940fe45c6, type: 3}
+  - {fileID: -3820510952427351420, guid: 648a0fbeed77a4e5db42a12626b84a30, type: 3}
+  - {fileID: 5751234951834333940, guid: c9de3736233e3405a9387ae7b783bb57, type: 3}
+  - {fileID: 8585082687678664138, guid: a4a729d5ac5d74813a619ee285d7dd07, type: 3}
+  - {fileID: -4085512550612585903, guid: 00d79de73e1fb4879ab9722ed88b039b, type: 3}
+  - {fileID: -6507106082392812310, guid: e7fcb9d0118894c91a57739d40ae3974, type: 3}
+  previewCards:
+  - {fileID: 7773900953925383654, guid: fec3d463ff984473ebdfdf6940fe45c6, type: 3}
+  - {fileID: -3820510952427351420, guid: 648a0fbeed77a4e5db42a12626b84a30, type: 3}
+  - {fileID: 5751234951834333940, guid: c9de3736233e3405a9387ae7b783bb57, type: 3}
+  - {fileID: 8585082687678664138, guid: a4a729d5ac5d74813a619ee285d7dd07, type: 3}
+  - {fileID: -4085512550612585903, guid: 00d79de73e1fb4879ab9722ed88b039b, type: 3}
+  - {fileID: -6507106082392812310, guid: e7fcb9d0118894c91a57739d40ae3974, type: 3}
+  destinations:
+  - destinationName: Apple Orchard
+    description: 'Rows of healthy apple trees stretch across the sunny countryside.
+
+      Fresh
+      fruit fills the branches while birds sing overhead.
+
+      Explore peaceful
+      trails surrounded by nature''s harvest.
+
+      Every puzzle brings a sweet
+      new reward.'
+    background: {fileID: 7773900953925383654, guid: fec3d463ff984473ebdfdf6940fe45c6, type: 3}
+  - destinationName: Barnyard
+    description: 'Friendly farm animals roam happily around old wooden barns.
+
+      Country
+      roads lead to exciting discoveries hidden across the fields.
+
+      Life here
+      moves at a gentle and relaxing pace.
+
+      Adventure grows alongside every
+      harvest.'
+    background: {fileID: -3820510952427351420, guid: 648a0fbeed77a4e5db42a12626b84a30, type: 3}
+  - destinationName: Cornfield
+    description: 'Tall corn sways gently beneath the warm afternoon sun.
+
+      Hidden
+      pathways weave through endless golden rows.
+
+      Every twist and turn reveals
+      another exciting challenge.
+
+      Keep exploring until you uncover every secret.'
+    background: {fileID: 5751234951834333940, guid: c9de3736233e3405a9387ae7b783bb57, type: 3}
+  - destinationName: Pumpkin
+    description: Explore Pumpkin and begin a new adventure.
+    background: {fileID: 8585082687678664138, guid: a4a729d5ac5d74813a619ee285d7dd07, type: 3}
+  - destinationName: Windmill Road
+    description: 'A peaceful country road leads past giant windmills and open fields.
+
+      Fresh
+      breezes carry the scent of crops ready for harvest.
+
+      Explore every turn
+      to discover hidden treasures.
+
+      The countryside always has another surprise
+      waiting.'
+    background: {fileID: -4085512550612585903, guid: 00d79de73e1fb4879ab9722ed88b039b, type: 3}
+  - destinationName: Vegetable Garden
+    description: 'Healthy vegetables grow in colorful rows beneath the warm sunshine.
+
+      Busy
+      gardeners keep the fields thriving throughout every season.
+
+      Discover
+      hidden paths surrounded by fresh harvests.
+
+      Nature rewards every curious
+      explorer.'
+    background: {fileID: -6507106082392812310, guid: e7fcb9d0118894c91a57739d40ae3974, type: 3}

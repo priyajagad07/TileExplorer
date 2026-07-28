@@ -72,9 +72,9 @@ public class AvatarManager : MonoBehaviour
 
         SaveManager.instance.SaveData();
 
-        RefreshUI();
-
+        AvatarUI.RefreshAll();
         ProfileUI.Instance?.Refresh();
+        RefreshUI();
     }
 
     public void RefreshUI()

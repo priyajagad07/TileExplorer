@@ -13,25 +13,19 @@ public class CoinManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+
+            LoadCoins();
         }
         else
         {
             Destroy(gameObject);
         }
     }
-
-    void Start()
-    {
-        LoadCoins();
-    }
-
     public void AddCoins(int amount)
     {
         int startCoins = coins;
         coins += amount;
         SaveCoins();
-
-        //AnimateCoinUI(startCoins, coins); 
     }
 
     public bool SpendCoins(int amount)
@@ -42,9 +36,6 @@ public class CoinManager : MonoBehaviour
         int startCoins = coins;
         coins -= amount;
         SaveCoins();
-
-        //AnimateCoinUI(startCoins, coins); 
-
         return true;
     }
 
@@ -57,29 +48,9 @@ public class CoinManager : MonoBehaviour
         ProfileUI.Instance?.Refresh();
     }
 
-    // void UpdateCoinUI()
-    // {
-    //     foreach (TextMeshProUGUI text in coinText)
-    //     {
-    //         text.text = coins.ToString();
-    //     }
-    // }
-
-    // void AnimateCoinUI(int startAmount, int targetAmount)
-    // {
-    //     DOTween.To(() => startAmount, x => 
-    //     {
-    //         foreach (TextMeshProUGUI text in coinText)
-    //         {
-    //             text.text = x.ToString();
-    //         }
-    //     }, targetAmount, 0.5f).SetEase(Ease.OutQuad);
-    // }
-
     void LoadCoins()
     {
         coins = SaveManager.instance.data.coins;
-        //UpdateCoinUI();
     }
 
     public int GetCoins()

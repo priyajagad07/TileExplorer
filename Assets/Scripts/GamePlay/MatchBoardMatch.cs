@@ -530,30 +530,48 @@ public class MatchBoardMatch : MonoBehaviour
     ParticleSystem.MinMaxGradient GetMultiColor(Color c1, Color c2)
     {
         Gradient gradient = new Gradient();
-        gradient.mode = GradientMode.Fixed;
-        gradient.colorKeys = new GradientColorKey[] {
-            new GradientColorKey(c1, 0.0f),
-            new GradientColorKey(c2, 0.5f)
-        };
 
-        ParticleSystem.MinMaxGradient minMax = new ParticleSystem.MinMaxGradient(gradient);
-        minMax.mode = ParticleSystemGradientMode.RandomColor;
-        return minMax;
+        gradient.SetKeys(
+            new GradientColorKey[]
+            {
+            new GradientColorKey(c1, 0f),
+            new GradientColorKey(c2, 1f)
+            },
+            new GradientAlphaKey[]
+            {
+            new GradientAlphaKey(1f, 0f),
+            new GradientAlphaKey(1f, 1f)
+            });
+
+        return new ParticleSystem.MinMaxGradient
+        {
+            mode = ParticleSystemGradientMode.RandomColor,
+            gradient = gradient
+        };
     }
 
     ParticleSystem.MinMaxGradient GetMultiColor(Color c1, Color c2, Color c3)
     {
         Gradient gradient = new Gradient();
-        gradient.mode = GradientMode.Fixed;
-        gradient.colorKeys = new GradientColorKey[] {
-            new GradientColorKey(c1, 0.0f),
-            new GradientColorKey(c2, 0.33f),
-            new GradientColorKey(c3, 0.66f)
-        };
 
-        ParticleSystem.MinMaxGradient minMax = new ParticleSystem.MinMaxGradient(gradient);
-        minMax.mode = ParticleSystemGradientMode.RandomColor;
-        return minMax;
+        gradient.SetKeys(
+            new GradientColorKey[]
+            {
+            new GradientColorKey(c1, 0f),
+            new GradientColorKey(c2, 0.5f),
+            new GradientColorKey(c3, 1f)
+            },
+            new GradientAlphaKey[]
+            {
+            new GradientAlphaKey(1f, 0f),
+            new GradientAlphaKey(1f, 1f)
+            });
+
+        return new ParticleSystem.MinMaxGradient
+        {
+            mode = ParticleSystemGradientMode.RandomColor,
+            gradient = gradient
+        };
     }
 
     private void TryCheckLevelComplete()

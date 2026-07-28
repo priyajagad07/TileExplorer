@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: Tropical Jungle
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Tropical Jungle
+  startLevel: 561
+  endLevel: 680
+  backgrounds:
+  - {fileID: -7650948393612011259, guid: f892bd6ae28634115b2b0c8f85a8b0df, type: 3}
+  - {fileID: -8844290107566611656, guid: 9c53372bdd4494733a865f3f06a7cfc9, type: 3}
+  - {fileID: 4819329118229324453, guid: 1348655c5f33f4f99b82522bf1e7be0a, type: 3}
+  - {fileID: 2925679465770131994, guid: 670ce1bfcd50e4a829a6b94e2e48990d, type: 3}
+  - {fileID: 7107476504188617502, guid: ccb6488b468b740f8b8c612b985b64e5, type: 3}
+  - {fileID: 7276910582221583177, guid: 29e80bb542b6a4d8ab419a226a5efae1, type: 3}
+  previewCards:
+  - {fileID: -7650948393612011259, guid: f892bd6ae28634115b2b0c8f85a8b0df, type: 3}
+  - {fileID: -8844290107566611656, guid: 9c53372bdd4494733a865f3f06a7cfc9, type: 3}
+  - {fileID: 4819329118229324453, guid: 1348655c5f33f4f99b82522bf1e7be0a, type: 3}
+  - {fileID: 2925679465770131994, guid: 670ce1bfcd50e4a829a6b94e2e48990d, type: 3}
+  - {fileID: 7107476504188617502, guid: ccb6488b468b740f8b8c612b985b64e5, type: 3}
+  - {fileID: 7276910582221583177, guid: 29e80bb542b6a4d8ab419a226a5efae1, type: 3}
+  destinations:
+  - destinationName: Jungle Entrance
+    description: 'Step beyond the ancient trees into a vibrant tropical paradise.
+
+      Nature
+      surrounds you with colorful plants and exotic wildlife.
+
+      Every trail
+      leads deeper into the jungle''s hidden mysteries.
+
+      Adventure begins the
+      moment you enter.'
+    background: {fileID: -7650948393612011259, guid: f892bd6ae28634115b2b0c8f85a8b0df, type: 3}
+  - destinationName: Waterfall
+    description: 'Crystal-clear water cascades through lush tropical cliffs.
+
+      Mist
+      cools the air while birds sing high above the trees.
+
+      Hidden caves and
+      secret pathways wait beyond the flowing water.
+
+      Nature''s beauty shines
+      at every turn.'
+    background: {fileID: -8844290107566611656, guid: 9c53372bdd4494733a865f3f06a7cfc9, type: 3}
+  - destinationName: Ancient Temple
+    description: 'Deep within the jungle rests a forgotten temple lost to time.
+
+      Ancient
+      carvings whisper stories of explorers from long ago.
+
+      Solve challenging
+      puzzles to unlock hidden chambers.
+
+      Every discovery reveals another piece
+      of history.'
+    background: {fileID: 4819329118229324453, guid: 1348655c5f33f4f99b82522bf1e7be0a, type: 3}
+  - destinationName: Hanging Vines
+    description: 'Massive vines stretch between towering jungle trees overhead.
+
+      Swing
+      through lush forests filled with vibrant life.
+
+      Hidden pathways twist
+      beneath the leafy canopy.
+
+      Every step uncovers another jungle secret.'
+    background: {fileID: 2925679465770131994, guid: 670ce1bfcd50e4a829a6b94e2e48990d, type: 3}
+  - destinationName: Rainforest
+    description: 'Dense rainforest surrounds you with towering trees and colorful
+      wildlife.
+
+      Gentle rain keeps the forest alive with endless beauty.
+
+      Explore
+      winding trails filled with hidden rewards.
+
+      Every journey brings new
+      surprises waiting to be discovered.'
+    background: {fileID: 7107476504188617502, guid: ccb6488b468b740f8b8c612b985b64e5, type: 3}
+  - destinationName: Giant Tree
+    description: 'A colossal tree rises high above the surrounding jungle.
+
+      Its
+      massive roots hide forgotten tunnels and mysterious treasures.
+
+      Climb
+      higher to discover breathtaking views.
+
+      Every branch leads toward another
+      adventure.'
+    background: {fileID: 7276910582221583177, guid: 29e80bb542b6a4d8ab419a226a5efae1, type: 3}

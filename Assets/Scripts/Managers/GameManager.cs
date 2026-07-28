@@ -107,11 +107,11 @@ public class GameManager : MonoBehaviour
                 CoinManager.instance.AddCoins(100);
 
                 int currentLevel = SaveManager.instance.data.level + 1;
-                CountryData currentCountry = BackgroundManager.Instance.GetCurrentCountry();
-                CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+                WorldData currentWorld = BackgroundManager.Instance.GetCurrentWorld();
+                WorldData nextWorld = WorldManager.Instance.GetWorldForLevel(currentLevel + 1);
 
-                bool countryChanging = nextCountry != currentCountry;
-                bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || countryChanging;
+                bool worldChanging = nextWorld != currentWorld;
+                bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || worldChanging;
 
                 SaveManager.instance.data.level++;
                 SaveManager.instance.SaveData();
@@ -241,11 +241,11 @@ public class GameManager : MonoBehaviour
         CoinManager.instance.AddCoins(coinAmount);
 
         int currentLevel = SaveManager.instance.data.level + 1;
-        CountryData currentCountry = BackgroundManager.Instance.GetCurrentCountry();
-        CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+        WorldData currentWorld = BackgroundManager.Instance.GetCurrentWorld();
+        WorldData nextWorld = WorldManager.Instance.GetWorldForLevel(currentLevel + 1);
 
-        bool countryChanging = nextCountry != currentCountry;
-        bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || countryChanging;
+        bool worldChanging = nextWorld != currentWorld;
+        bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || worldChanging;
 
         if (willUnlock)
         {

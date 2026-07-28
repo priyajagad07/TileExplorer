@@ -9,8 +9,8 @@ public class MapManager : MonoBehaviour
     [Header("Lock Sprite")]
     public Sprite lockedCardSprite;
 
-    [Header("Country Panels")]
-    public List<CountryUIPanel> countryPanels;
+    [Header("World Panels")]
+    public List<WorldUIPanel> worldPanels;
     void Awake()
     {
         if (instance == null)
@@ -30,7 +30,7 @@ public class MapManager : MonoBehaviour
 
     public void RefreshMap()
     {
-        if (CountryManager.Instance == null) return;
+        if (WorldManager.Instance == null) return;
 
         int currentLevel = SaveManager.instance.data.level + 1;
         UpdateAllCountries(currentLevel);
@@ -38,33 +38,33 @@ public class MapManager : MonoBehaviour
 
    private void UpdateAllCountries(int currentLevel)
     {
-        CountryDatabase database = CountryManager.Instance.GetDatabase();
+        WorldDatabase database = WorldManager.Instance.GetDatabase();
         if (database == null) return;
 
-        int virtualLevel = CountryManager.Instance.GetVirtualLevel(currentLevel);
+        int virtualLevel = WorldManager.Instance.GetVirtualLevel(currentLevel);
 
-        foreach (CountryData country in database.countries)
+        foreach (WorldData world in database.worlds)
         {
-            CountryUIPanel matchingPanel = countryPanels.Find(p => p.countryData == country);
+            WorldUIPanel matchingPanel = worldPanels.Find(p => p.worldData == world);
 
             if (matchingPanel == null) continue;
 
-            UpdateCountryCards(matchingPanel, country, virtualLevel); // Pass virtualLevel here!
+            UpdateWorldCards(matchingPanel, world, virtualLevel); // Pass virtualLevel here!
         }
     }
 
-    private void UpdateCountryCards(CountryUIPanel panel, CountryData country, int currentLevel)
+    private void UpdateWorldCards(WorldUIPanel panel, WorldData world, int currentLevel)
     {
-        int totalLevels = country.endLevel - country.startLevel + 1;
-        int totalCards = country.previewCards.Length;
+        int totalLevels = world.endLevel - world.startLevel + 1;
+        int totalCards = world.previewCards.Length;
 
         float levelsPerCard = (float)totalLevels / totalCards;
         int unlockedCards = 0;
 
-        if (currentLevel >= country.startLevel)
+        if (currentLevel >= world.startLevel)
         {
-            int levelInsideCountry = currentLevel - country.startLevel;
-            int currentIndex = Mathf.FloorToInt(levelInsideCountry / levelsPerCard);
+            int levelInsideWorld = currentLevel - world.startLevel;
+            int currentIndex = Mathf.FloorToInt(levelInsideWorld / levelsPerCard);
             unlockedCards = currentIndex + 1;
         }
 
@@ -77,7 +77,7 @@ public class MapManager : MonoBehaviour
             DestinationCard destinationCard = panel.destinationCards[i];
             if (destinationCard == null) continue;
 
-            destinationCard.country = country;
+            destinationCard.world = world;
             destinationCard.destinationIndex = i;
 
             bool unlocked = i < unlockedCards;
@@ -85,7 +85,7 @@ public class MapManager : MonoBehaviour
 
             if (destinationCard.cityImage != null)
             {
-                destinationCard.cityImage.sprite = unlocked ? country.previewCards[i] : lockedCardSprite;
+                destinationCard.cityImage.sprite = unlocked ? world.previewCards[i] : lockedCardSprite;
             }
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class ProfileUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text coinsText;
-    [SerializeField] private TMP_Text countriesVisitedText;
+    [SerializeField] private TMP_Text WorldsVisitedText;
 
     public static ProfileUI Instance;
 
@@ -26,18 +26,18 @@ public class ProfileUI : MonoBehaviour
         int currentLevel =
             SaveManager.instance.data.level + 1;
 
-        CountryData currentCountry =
-            CountryManager.Instance.GetCountryForLevel(currentLevel);
+        WorldData currentWorld =
+            WorldManager.Instance.GetWorldForLevel(currentLevel);
 
-        if (currentCountry != null)
+        if (currentWorld != null)
         {
             int visited =
-                CountryManager.Instance
+                WorldManager.Instance
                 .GetDatabase()
-                .countries
-                .IndexOf(currentCountry) + 1;
+                .worlds
+                .IndexOf(currentWorld) + 1;
 
-            countriesVisitedText.text =
+            WorldsVisitedText.text =
                 visited.ToString();
         }
     }

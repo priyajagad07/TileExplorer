@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class DestinationCard : MonoBehaviour
 {
-    public CountryData country;
+    public WorldData world;
     public int destinationIndex;
     private bool isUnlocked;
 
@@ -22,17 +22,17 @@ public class DestinationCard : MonoBehaviour
             return;
         }
 
-        if (country == null) return;
+        if (world == null) return;
 
-        if (destinationIndex < 0 || destinationIndex >= country.destinations.Length)
+        if (destinationIndex < 0 || destinationIndex >= world.destinations.Length)
         {
-            Debug.LogError("Invalid destination index: " + destinationIndex + " for " + country.countryName);
+            Debug.LogError("Invalid destination index: " + destinationIndex + " for " + world.worldName);
             return;
         }
 
-        CountryInfoScreen.instance.ShowDestination(country.destinations[destinationIndex]);
-        CountryInfoScreen.instance.openedFromUnlock = false;
-        UIManager.Instance.Show(ScreenType.CountryInfoScreen);
+        WorldInfoScreen.instance.ShowDestination(world.destinations[destinationIndex]);
+        WorldInfoScreen.instance.openedFromUnlock = false;
+        UIManager.Instance.Show(ScreenType.WorldInfoScreen);
     }
 
     public void SetUnlocked(bool unlocked)

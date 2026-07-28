@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: CozyForest
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Cozy Forest
+  startLevel: 81
+  endLevel: 200
+  backgrounds:
+  - {fileID: -2416170729605204148, guid: 431370ece61614a3d965836aea49752e, type: 3}
+  - {fileID: -2793232688286180050, guid: 8acb19f9cb2d1422bbdbbaf17e91e054, type: 3}
+  - {fileID: 2964778737234396788, guid: 9627d37f9a922433f928d2849f7c0e5d, type: 3}
+  - {fileID: -5567485127816286670, guid: d5b87f79a3e4d4870b885dd52c356eaf, type: 3}
+  - {fileID: -497878556614250900, guid: 64b9f17d86a9649bd9f213d3e208b776, type: 3}
+  - {fileID: -3962425006660122120, guid: a973ee30a680c4fe79ce0b294cdbc98c, type: 3}
+  previewCards:
+  - {fileID: -2416170729605204148, guid: 431370ece61614a3d965836aea49752e, type: 3}
+  - {fileID: -2793232688286180050, guid: 8acb19f9cb2d1422bbdbbaf17e91e054, type: 3}
+  - {fileID: 2964778737234396788, guid: 9627d37f9a922433f928d2849f7c0e5d, type: 3}
+  - {fileID: -5567485127816286670, guid: d5b87f79a3e4d4870b885dd52c356eaf, type: 3}
+  - {fileID: -497878556614250900, guid: 64b9f17d86a9649bd9f213d3e208b776, type: 3}
+  - {fileID: -3962425006660122120, guid: a973ee30a680c4fe79ce0b294cdbc98c, type: 3}
+  destinations:
+  - destinationName: Pine Trail
+    description: 'Towering pine trees create cool shaded paths deep inside the forest.
+
+      Fresh
+      mountain air fills every breath as birds sing overhead.
+
+      Hidden treasures
+      lie beyond every bend in the trail.
+
+      Adventure quietly awaits those willing
+      to explore.'
+    background: {fileID: -2416170729605204148, guid: 431370ece61614a3d965836aea49752e, type: 3}
+  - destinationName: Mushroom Grove
+    description: 'Colorful mushrooms blanket the forest floor beneath ancient trees.
+
+      Tiny
+      woodland creatures peek from hidden corners as you journey onward.
+
+      Every
+      puzzle uncovers another magical part of this enchanted grove.
+
+      Nature''s
+      secrets are waiting to be discovered.'
+    background: {fileID: -2793232688286180050, guid: 8acb19f9cb2d1422bbdbbaf17e91e054, type: 3}
+  - destinationName: Hidden Pond
+    description: 'A crystal-clear pond rests quietly among dense forest trees.
+
+      Gentle
+      ripples reflect the sky while wildlife gathers along the shore.
+
+      Search
+      nearby paths to uncover hidden wonders and peaceful scenery.
+
+      Every visit
+      offers a moment of calm before the next adventure.'
+    background: {fileID: 2964778737234396788, guid: 9627d37f9a922433f928d2849f7c0e5d, type: 3}
+  - destinationName: Ancient Oak
+    description: 'An enormous oak tree has watched over these woods for countless
+      generations.
+
+      Its twisting roots hide forgotten pathways and mysterious
+      discoveries.
+
+      Explore beneath its mighty branches to uncover ancient
+      secrets.
+
+      Every challenge brings you closer to the forest''s timeless
+      story.'
+    background: {fileID: -5567485127816286670, guid: d5b87f79a3e4d4870b885dd52c356eaf, type: 3}
+  - destinationName: Firefly Forest
+    description: 'As daylight fades, thousands of glowing fireflies illuminate the
+      forest.
+
+      Soft golden lights dance through the trees creating a magical
+      atmosphere.
+
+      Each puzzle lights the way toward another hidden discovery.
+
+      Night
+      has never felt so full of wonder.'
+    background: {fileID: -497878556614250900, guid: 64b9f17d86a9649bd9f213d3e208b776, type: 3}
+  - destinationName: Fern Valley
+    description: 'Lush green ferns cover every corner of this peaceful valley.
+
+      Gentle
+      streams wind through the landscape surrounded by vibrant nature.
+
+      Hidden
+      trails invite curious explorers to venture even deeper.
+
+      Every step reveals
+      another beautiful surprise.'
+    background: {fileID: -3962425006660122120, guid: a973ee30a680c4fe79ce0b294cdbc98c, type: 3}

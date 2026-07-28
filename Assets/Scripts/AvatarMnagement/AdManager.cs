@@ -120,6 +120,13 @@ public class AdManager : MonoBehaviour
 
     public bool ShowInterstitialAd()
     {
+        if (PurchaseManager.instance != null &&
+            PurchaseManager.instance.IsRemoveAdsPurchased())
+        {
+            Debug.Log("Interstitial skipped (Remove Ads purchased).");
+            return false;
+        }
+
         if (interstitialAd != null &&
             interstitialAd.CanShowAd())
         {
@@ -130,7 +137,7 @@ public class AdManager : MonoBehaviour
         LoadInterstitialAd();
         return false;
     }
-
+    
     // ==========================================
     // REWARDED ADS
     // ==========================================
@@ -226,5 +233,10 @@ public class AdManager : MonoBehaviour
         pendingFailureCallback = null;
         rewardEarned = false;
         processAdClosed = false;
+    }
+
+    public bool IsAdsRemoved()
+    {
+        return SaveManager.instance.data.removeAdsPurchased == 1;
     }
 }

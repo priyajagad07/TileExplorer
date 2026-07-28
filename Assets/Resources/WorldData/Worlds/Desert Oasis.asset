@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: Desert Oasis
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Desert Oasis
+  startLevel: 681
+  endLevel: 800
+  backgrounds:
+  - {fileID: -5509395199181252754, guid: 07b7e6252accb47798c1937aafe2800c, type: 3}
+  - {fileID: 249316095728038088, guid: 3024b77af08e0433d94efee1ae74ae52, type: 3}
+  - {fileID: 7799155169862758303, guid: 4119a222f4ae3480a91247187212b505, type: 3}
+  - {fileID: 6725698030895690777, guid: 3a4f57283e78241f0a79ce98e01e07a2, type: 3}
+  - {fileID: 3846404560210177461, guid: 31389a9941a094f40a75a80fc6db4dcc, type: 3}
+  - {fileID: 6310229212490900833, guid: 2943505ae23764ae3a72a8e715f813f5, type: 3}
+  previewCards:
+  - {fileID: -5509395199181252754, guid: 07b7e6252accb47798c1937aafe2800c, type: 3}
+  - {fileID: 249316095728038088, guid: 3024b77af08e0433d94efee1ae74ae52, type: 3}
+  - {fileID: 7799155169862758303, guid: 4119a222f4ae3480a91247187212b505, type: 3}
+  - {fileID: 6725698030895690777, guid: 3a4f57283e78241f0a79ce98e01e07a2, type: 3}
+  - {fileID: 3846404560210177461, guid: 31389a9941a094f40a75a80fc6db4dcc, type: 3}
+  - {fileID: 6310229212490900833, guid: 2943505ae23764ae3a72a8e715f813f5, type: 3}
+  destinations:
+  - destinationName: Sand Dunes
+    description: 'Towering dunes roll endlessly beneath the blazing desert sun.
+
+      The
+      shifting sands hide forgotten paths and ancient secrets.
+
+      Every climb
+      reveals breathtaking views across the golden horizon.
+
+      Adventure awaits
+      beyond every drifting dune.'
+    background: {fileID: -5509395199181252754, guid: 07b7e6252accb47798c1937aafe2800c, type: 3}
+  - destinationName: Oasis
+    description: 'A sparkling oasis offers cool water in the heart of the desert.
+
+      Palm
+      trees provide welcome shade beneath the bright sky.
+
+      Explore nearby trails
+      to uncover hidden treasures.
+
+      Hope blooms wherever fresh water flows.'
+    background: {fileID: 249316095728038088, guid: 3024b77af08e0433d94efee1ae74ae52, type: 3}
+  - destinationName: Canyon
+    description: 'Massive canyon walls tower above winding desert pathways.
+
+      Centuries
+      of nature have carved incredible shapes into the rocks.
+
+      Hidden passages
+      reveal exciting new discoveries.
+
+      Every turn leads deeper into adventure.'
+    background: {fileID: 7799155169862758303, guid: 4119a222f4ae3480a91247187212b505, type: 3}
+  - destinationName: Ancient Ruins
+    description: 'Forgotten ruins stand silently beneath endless desert skies.
+
+      Ancient
+      stone walls guard mysteries waiting to be uncovered.
+
+      Solve challenging
+      puzzles to reveal long-lost secrets.
+
+      History lives within every weathered
+      stone.'
+    background: {fileID: 6725698030895690777, guid: 3a4f57283e78241f0a79ce98e01e07a2, type: 3}
+  - destinationName: Palm Valley
+    description: 'Lush palm trees create a peaceful escape from the desert heat.
+
+      Gentle
+      streams bring life to the surrounding landscape.
+
+      Explore hidden groves
+      filled with sparkling surprises.
+
+      Nature''s beauty thrives even in the
+      harshest places.'
+    background: {fileID: 3846404560210177461, guid: 31389a9941a094f40a75a80fc6db4dcc, type: 3}
+  - destinationName: Sunset Desert
+    description: 'The desert glows with warm orange and crimson colors as evening
+      arrives.
+
+      Long shadows stretch across endless rolling dunes.
+
+      Discover
+      hidden treasures before the sun disappears below the horizon.
+
+      Every
+      sunset paints a masterpiece across the sky.'
+    background: {fileID: 6310229212490900833, guid: 2943505ae23764ae3a72a8e715f813f5, type: 3}

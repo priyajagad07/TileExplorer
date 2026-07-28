@@ -72,6 +72,8 @@ public class BaseScreen : MonoBehaviour
                 }
             );
         }
+
+        
     }
 
     public void Hide()

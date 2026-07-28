@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: Safari Plains
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Safari Plains
+  startLevel: 441
+  endLevel: 560
+  backgrounds:
+  - {fileID: -6700081171296591153, guid: 54f7c36de43a64e92be1a82a5717598d, type: 3}
+  - {fileID: 6510215769898828853, guid: 9ace31c4a639c48f18749e33d003ca71, type: 3}
+  - {fileID: 7866509802124034278, guid: d5b768b6d51c94daea7cec1a3bc4e464, type: 3}
+  - {fileID: -8391632891642230533, guid: f8311b569509c4a0294779908d55541e, type: 3}
+  - {fileID: 527522180080246753, guid: 489ea0a4bc7b04e35abccfce33481065, type: 3}
+  - {fileID: 7407278298525031083, guid: 0e77031dd7af0478686db0b667c0bf32, type: 3}
+  previewCards:
+  - {fileID: -6700081171296591153, guid: 54f7c36de43a64e92be1a82a5717598d, type: 3}
+  - {fileID: 6510215769898828853, guid: 9ace31c4a639c48f18749e33d003ca71, type: 3}
+  - {fileID: 7866509802124034278, guid: d5b768b6d51c94daea7cec1a3bc4e464, type: 3}
+  - {fileID: -8391632891642230533, guid: f8311b569509c4a0294779908d55541e, type: 3}
+  - {fileID: 527522180080246753, guid: 489ea0a4bc7b04e35abccfce33481065, type: 3}
+  - {fileID: 7407278298525031083, guid: 0e77031dd7af0478686db0b667c0bf32, type: 3}
+  destinations:
+  - destinationName: Savannah
+    description: 'Golden grasslands stretch endlessly beneath the warm African sun.
+
+      Gentle
+      breezes ripple across the open plains as wildlife roams freely.
+
+      Keep
+      exploring to uncover hidden paths and exciting discoveries.
+
+      Every journey
+      brings you closer to the heart of the wild.'
+    background: {fileID: -6700081171296591153, guid: 54f7c36de43a64e92be1a82a5717598d, type: 3}
+  - destinationName: Elephant
+    description: 'Follow the footsteps of majestic elephants through ancient migration
+      routes.
+
+      Towering trees and peaceful watering spots line the dusty trail.
+
+      Hidden
+      treasures await explorers who stay curious.
+
+      Every path tells a story
+      of the giants who came before.'
+    background: {fileID: 6510215769898828853, guid: 9ace31c4a639c48f18749e33d003ca71, type: 3}
+  - destinationName: Waterhole
+    description: 'A refreshing oasis attracts animals from every corner of the plains.
+
+      Watch
+      nature gather beneath the bright blue sky.
+
+      Explore the surrounding landscape
+      to uncover exciting surprises.
+
+      Adventure flourishes wherever life comes
+      together.'
+    background: {fileID: 7866509802124034278, guid: d5b768b6d51c94daea7cec1a3bc4e464, type: 3}
+  - destinationName: Acacia Plains
+    description: 'Umbrella-shaped acacia trees stand proudly across the endless savannah.
+
+      Warm
+      sunlight paints the landscape with golden beauty.
+
+      Discover hidden routes
+      winding through peaceful grasslands.
+
+      Nature''s wonders await beyond
+      every horizon.'
+    background: {fileID: -8391632891642230533, guid: f8311b569509c4a0294779908d55541e, type: 3}
+  - destinationName: Golden Grassland
+    description: 'Rolling fields of golden grass shimmer beneath the afternoon sun.
+
+      Gentle
+      winds create waves across the vast open landscape.
+
+      Search every corner
+      for treasures hidden among the tall grasses.
+
+      Every adventure feels larger
+      than life.'
+    background: {fileID: 527522180080246753, guid: 489ea0a4bc7b04e35abccfce33481065, type: 3}
+  - destinationName: Sunset Rock
+    description: 'Climb towering rock formations overlooking the glowing evening
+      sky.
+
+      The setting sun fills the horizon with brilliant shades of orange.
+
+      Explore
+      hidden ledges and secret pathways nearby.
+
+      Every sunset marks another
+      unforgettable adventure.'
+    background: {fileID: 7407278298525031083, guid: 0e77031dd7af0478686db0b667c0bf32, type: 3}

@@ -4,41 +4,70 @@ using Solo.MOST_IN_ONE;
 
 public partial class DailyStreakUI
 {
-    void ShowRewardPopup(string reward)
+    void ShowRewardPopup(WeeklyReward reward)
     {
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
         SoundManager.instance.PlaySound(SoundName.RewardPop);
 
         rewardPopup.SetActive(true);
+        collectButton.interactable = true;
 
-        rewardText.text = reward;
+        // Remove previous rewards
+        foreach (Transform child in rewardContainer)
+            Destroy(child.gameObject);
+
+        // Create reward items
+        foreach (RewardData rewardData in reward.rewards)
+        {
+            RewardItemUI item =
+                Instantiate(rewardItemPrefab, rewardContainer);
+
+            item.Setup(rewardData);
+        }
 
         rewardPopup.transform.DOKill();
-        rewardPopup.transform.localScale =
-            Vector3.one * 0.7f;
+        rewardPopup.transform.localScale = Vector3.one * .7f;
 
         Sequence seq = DOTween.Sequence();
 
-        seq.Append(rewardPopup.transform.DOScale(1.08f, 0.35f)
-                .SetEase(
-                    Ease.OutBack
-                )
+        seq.Append(
+            rewardPopup.transform.DOScale(1.08f, .35f)
+            .SetEase(Ease.OutBack)
         );
 
-        seq.Append(rewardPopup.transform.DOScale(1f, 0.1f));
+        seq.Append(
+            rewardPopup.transform.DOScale(1f, .1f)
+        );
+    }
 
-        seq.AppendInterval(1.3f);
+    public void CollectReward()
+    {
+        collectButton.interactable = false;
 
-        seq.Append(rewardPopup.transform.DOScale(0f, 0.25f)
-                .SetEase(
-                    Ease.InBack
-                )
+        DailyStreakManager.instance.GiveRewardForCurrentDay();
+
+        rewardPopup.transform.DOKill();
+
+        Sequence seq = DOTween.Sequence();
+
+        seq.Append(
+            rewardPopup.transform.DOScale(0f, 0.25f)
+                .SetEase(Ease.InBack)
         );
 
         seq.OnComplete(() =>
         {
             rewardPopup.SetActive(false);
+
+            collectButton.interactable = true;
+
+            CloseDailyReward();
         });
+    }
+
+    void CloseDailyReward()
+    {
+        UIManager.Instance.Show(ScreenType.HomeScreen);
     }
 
     public void ShowRewardPreview(int day, Transform chest)

@@ -53,9 +53,9 @@ public class MapScreenUI : MonoBehaviour
         int pending = DestinationUnlocker.GetPending();
         if (pending < 0) return;
 
-        CountryData country = CountryManager.Instance.GetNextCountry();
+        WorldData world = WorldManager.Instance.GetNextWorld();
 
-        CountryUIPanel panel = MapManager.instance.countryPanels.Find(p => p.countryData == country);
+        WorldUIPanel panel = MapManager.instance.worldPanels.Find(p => p.worldData == world);
         if (panel == null) return;
 
         if (pending >= panel.destinationCards.Length) return;
@@ -72,7 +72,7 @@ public class MapScreenUI : MonoBehaviour
         seq.AppendCallback(() =>
         {
             if (SoundManager.instance != null) SoundManager.instance.PlaySound(SoundName.MapUnlock);
-            image.sprite = country.previewCards[pending];
+            image.sprite = world.previewCards[pending];
         });
 
         seq.AppendInterval(0.3f);
@@ -80,7 +80,7 @@ public class MapScreenUI : MonoBehaviour
         seq.AppendCallback(() =>
         {
             unlockZoomImage.gameObject.SetActive(true);
-            unlockZoomImage.sprite = country.previewCards[pending];
+            unlockZoomImage.sprite = world.previewCards[pending];
             unlockZoomImage.rectTransform.localScale = Vector3.zero;
             unlockZoomGroup.alpha = 1f;
         });
@@ -92,9 +92,9 @@ public class MapScreenUI : MonoBehaviour
         {
             DestinationUnlocker.Clear();
             MapManager.instance.RefreshMap();
-            CountryInfoScreen.instance.openedFromUnlock = true;
-            CountryInfoScreen.instance.ShowDestination(country.destinations[pending], true);
-            UIManager.Instance.Show(ScreenType.CountryInfoScreen);
+            WorldInfoScreen.instance.openedFromUnlock = true;
+            WorldInfoScreen.instance.ShowDestination(world.destinations[pending], true);
+            UIManager.Instance.Show(ScreenType.WorldInfoScreen);
         });
     }
 

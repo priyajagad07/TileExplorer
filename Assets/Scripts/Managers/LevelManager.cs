@@ -52,12 +52,12 @@ public class LevelManager : MonoBehaviour
         Debug.Log("Loading Level Index: " + index);
 
         currentLevelIndex = index;
-        CountryData country = CountryManager.Instance.GetCountryForLevel(index + 1);
+        WorldData world = WorldManager.Instance.GetWorldForLevel(index + 1);
 
-        if (country != null)
+        if (world != null)
         {
-            Debug.Log("Country found: " + country.countryName);
-            BackgroundManager.Instance.UpdateBackgrounds(country, index + 1);
+            Debug.Log("World found: " + world.worldName);
+            BackgroundManager.Instance.UpdateBackgrounds(world, index + 1);
 
             if (!skipMapRefresh)
             {
@@ -68,7 +68,7 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No country found for level: " + (index + 1));
+            Debug.LogWarning("No world found for level: " + (index + 1));
         }
 
         if (index < levelDatabase.levels.Count)
@@ -179,12 +179,12 @@ public class LevelManager : MonoBehaviour
     {
         int currentLevel = SaveManager.instance.data.level + 1;
 
-        CountryData currentCountry = BackgroundManager.Instance.GetCurrentCountry();
-        CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
+        WorldData currentWorld = BackgroundManager.Instance.GetCurrentWorld();
+        WorldData nextWorld = WorldManager.Instance.GetWorldForLevel(currentLevel + 1);
 
-        bool countryChanging = nextCountry != currentCountry;
+        bool worldChanging = nextWorld != currentWorld;
         bool unlockingDestination = BackgroundManager.Instance.IsNextDestinationUnlock();
 
-        nextLevelText.text = (unlockingDestination || countryChanging) ? "Next Destination" : "Next Level";
+        nextLevelText.text = (unlockingDestination || worldChanging) ? "Next Destination" : "Next Level";
     }
 }

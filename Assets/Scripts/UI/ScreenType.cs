@@ -14,7 +14,7 @@ public enum ScreenType
     BuyUndoScreen,
     BuyShuffleScreen,
     BuyMagicScreen,
-    CountryInfoScreen,
+    WorldInfoScreen,
     ContinueGame,
-    RemoveAdsPopup
+    RemoveAdsPopup,
 }

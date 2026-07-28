@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: MeadowValley
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Meadow Valley
+  startLevel: 1
+  endLevel: 80
+  backgrounds:
+  - {fileID: -5529835088768909531, guid: 5ead41110dd1a4ad0a0b360f79ab0168, type: 3}
+  - {fileID: 8122833037930648595, guid: d54865927a8fb4caf83ebd9a9c78a27e, type: 3}
+  - {fileID: 9068621135088790376, guid: f7c8966b95c244ddb95ffd43e61fd741, type: 3}
+  - {fileID: -2216102210296003592, guid: feed6bc460a0c4fc592ec4b533676489, type: 3}
+  previewCards:
+  - {fileID: -5529835088768909531, guid: 5ead41110dd1a4ad0a0b360f79ab0168, type: 3}
+  - {fileID: 8122833037930648595, guid: d54865927a8fb4caf83ebd9a9c78a27e, type: 3}
+  - {fileID: 9068621135088790376, guid: f7c8966b95c244ddb95ffd43e61fd741, type: 3}
+  - {fileID: -2216102210296003592, guid: feed6bc460a0c4fc592ec4b533676489, type: 3}
+  destinations:
+  - destinationName: Daisy Field
+    description: 'Welcome to Daisy Field, where colorful blooms stretch as far as
+      the eye can see.
+
+      A gentle breeze carries the sweet scent of fresh flowers
+      through the open meadows.
+
+      Hidden surprises await among winding paths
+      and vibrant blossoms.
+
+      Take your first steps into a peaceful adventure
+      filled with charm and discovery.'
+    background: {fileID: -5529835088768909531, guid: 5ead41110dd1a4ad0a0b360f79ab0168, type: 3}
+  - destinationName: Butterfly Garden
+    description: 'Thousands of beautiful butterflies dance gracefully above blooming
+      gardens.
+
+      Every path is lined with colorful flowers and peaceful resting
+      spots.
+
+      Keep exploring to uncover hidden treasures tucked beneath nature''s
+      beauty.
+
+      A magical journey begins with every fluttering wing.'
+    background: {fileID: 8122833037930648595, guid: d54865927a8fb4caf83ebd9a9c78a27e, type: 3}
+  - destinationName: Windmill Farm
+    description: 'Rolling fields and towering windmills create the perfect countryside
+      escape.
+
+      Golden crops sway gently beneath the bright blue sky.
+
+      Explore
+      rustic pathways while solving exciting challenges along the way.
+
+      Every
+      corner of the farm hides a delightful surprise.'
+    background: {fileID: 9068621135088790376, guid: f7c8966b95c244ddb95ffd43e61fd741, type: 3}
+  - destinationName: Sunflower Path
+    description: 'Walk through endless rows of glowing sunflowers reaching toward
+      the sunshine.
+
+      Warm summer breezes guide your adventure along peaceful
+      country trails.
+
+      Bright petals hide sparkling rewards waiting to be discovered.
+
+      Every
+      step feels like a celebration of nature.'
+    background: {fileID: -2216102210296003592, guid: feed6bc460a0c4fc592ec4b533676489, type: 3}

@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: Bamboo Valley
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Bamboo Valley
+  startLevel: 321
+  endLevel: 440
+  backgrounds:
+  - {fileID: 2906209119599174030, guid: 379b3d989441c41329f4593c94a33d3f, type: 3}
+  - {fileID: -5516008940900807360, guid: 2f7fbc4e98fca4fc99e6fbea21800ea9, type: 3}
+  - {fileID: 3572718391364940844, guid: 412362d2e62fe4479b647768b5bedb25, type: 3}
+  - {fileID: 6125924906015428500, guid: 74a79c63bd3644e5f8769becb68f46b3, type: 3}
+  - {fileID: -4219545354283001210, guid: d9575051acf6d466798b43eb0323e040, type: 3}
+  - {fileID: 3615442613106613315, guid: 47ddc6399fdc04c6bbdf74a6f7cc3bb9, type: 3}
+  previewCards:
+  - {fileID: 2906209119599174030, guid: 379b3d989441c41329f4593c94a33d3f, type: 3}
+  - {fileID: -5516008940900807360, guid: 2f7fbc4e98fca4fc99e6fbea21800ea9, type: 3}
+  - {fileID: 3572718391364940844, guid: 412362d2e62fe4479b647768b5bedb25, type: 3}
+  - {fileID: 6125924906015428500, guid: 74a79c63bd3644e5f8769becb68f46b3, type: 3}
+  - {fileID: -4219545354283001210, guid: d9575051acf6d466798b43eb0323e040, type: 3}
+  - {fileID: 3615442613106613315, guid: 47ddc6399fdc04c6bbdf74a6f7cc3bb9, type: 3}
+  destinations:
+  - destinationName: Bamboo Forest
+    description: 'Tall bamboo sways gently as sunlight filters through the leaves.
+
+      Peaceful
+      pathways guide your journey into nature''s quiet beauty.
+
+      Hidden treasures
+      rest between the towering green stalks.
+
+      Every step feels calm, balanced,
+      and refreshing.'
+    background: {fileID: 2906209119599174030, guid: 379b3d989441c41329f4593c94a33d3f, type: 3}
+  - destinationName: Zen Garden
+    description: 'Carefully arranged stones and peaceful gardens create perfect harmony.
+
+      The
+      gentle sound of flowing water calms every traveler.
+
+      Take your time exploring
+      each peaceful corner.
+
+      Balance and beauty await your discovery.'
+    background: {fileID: -5516008940900807360, guid: 2f7fbc4e98fca4fc99e6fbea21800ea9, type: 3}
+  - destinationName: River Bridge
+    description: 'A wooden bridge stretches across a sparkling mountain river.
+
+      Crystal-clear
+      water flows peacefully beneath your feet.
+
+      Explore both sides of the
+      valley to uncover hidden rewards.
+
+      Every crossing begins a new adventure.'
+    background: {fileID: 3572718391364940844, guid: 412362d2e62fe4479b647768b5bedb25, type: 3}
+  - destinationName: Temple Gate
+    description: 'An ancient gate welcomes visitors into a sacred mountain sanctuary.
+
+      Stone
+      pathways reveal centuries of history and tradition.
+
+      Every puzzle unlocks
+      another forgotten story.
+
+      The journey grows more mysterious with every
+      step.'
+    background: {fileID: 6125924906015428500, guid: 74a79c63bd3644e5f8769becb68f46b3, type: 3}
+  - destinationName: Waterfall
+    description: 'Crystal-clear water cascades through lush tropical cliffs.
+
+      Mist
+      cools the air while birds sing high above the trees.
+
+      Hidden caves and
+      secret pathways wait beyond the flowing water.
+
+      Nature''s beauty shines
+      at every turn.'
+    background: {fileID: -4219545354283001210, guid: d9575051acf6d466798b43eb0323e040, type: 3}
+  - destinationName: Mountain Path
+    description: 'Steep trails climb toward breathtaking mountain views.
+
+      Every
+      step rewards explorers with spectacular scenery.
+
+      Hidden shortcuts lead
+      to exciting discoveries.
+
+      The summit is only the beginning of your journey.'
+    background: {fileID: 3615442613106613315, guid: 47ddc6399fdc04c6bbdf74a6f7cc3bb9, type: 3}

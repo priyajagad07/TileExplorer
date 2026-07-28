@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: Ocean Paradise
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Ocean Paradise
+  startLevel: 921
+  endLevel: 1060
+  backgrounds:
+  - {fileID: -8578183933221340778, guid: 01699a3a239f641fc9a1ee42ea3c60a4, type: 3}
+  - {fileID: -506248469827834193, guid: 5e992c075f78b472f80eb8cdf2f82b60, type: 3}
+  - {fileID: 895686523750061401, guid: 32da66d85efc04a818275d884838c86d, type: 3}
+  - {fileID: 5825439195892849121, guid: 2fc302c1f3eae44c88a390dca3d4c09d, type: 3}
+  - {fileID: -8239933057047612337, guid: 6b04540313ec742acb2ea3e56f0e1a48, type: 3}
+  - {fileID: 506880638764355997, guid: f83c134f61d6b493a80e9786c0581efe, type: 3}
+  previewCards:
+  - {fileID: -8578183933221340778, guid: 01699a3a239f641fc9a1ee42ea3c60a4, type: 3}
+  - {fileID: -506248469827834193, guid: 5e992c075f78b472f80eb8cdf2f82b60, type: 3}
+  - {fileID: 895686523750061401, guid: 32da66d85efc04a818275d884838c86d, type: 3}
+  - {fileID: 5825439195892849121, guid: 2fc302c1f3eae44c88a390dca3d4c09d, type: 3}
+  - {fileID: -8239933057047612337, guid: 6b04540313ec742acb2ea3e56f0e1a48, type: 3}
+  - {fileID: 506880638764355997, guid: f83c134f61d6b493a80e9786c0581efe, type: 3}
+  destinations:
+  - destinationName: Sandy Beach
+    description: 'Golden sands stretch along the sparkling shoreline beneath the
+      warm tropical sun.
+
+      Gentle waves wash ashore while seashells and hidden
+      treasures await curious explorers.
+
+      Feel the refreshing ocean breeze
+      as you journey along the peaceful coast.
+
+      Every step brings a new seaside
+      adventure waiting to be discovered.'
+    background: {fileID: -8578183933221340778, guid: 01699a3a239f641fc9a1ee42ea3c60a4, type: 3}
+  - destinationName: Coral Reef
+    description: 'Dive beneath crystal-clear waters into a colorful underwater paradise.
+
+      Brilliant
+      coral gardens are home to playful fish and fascinating sea creatures.
+
+      Hidden
+      treasures sparkle among the vibrant reefs.
+
+      Every puzzle reveals another
+      breathtaking corner of the ocean.'
+    background: {fileID: -506248469827834193, guid: 5e992c075f78b472f80eb8cdf2f82b60, type: 3}
+  - destinationName: Blue Lagoon
+    description: 'A peaceful lagoon glows with brilliant shades of turquoise and
+      sapphire.
+
+      Calm waters reflect the endless sky, creating a picture-perfect
+      escape.
+
+      Explore hidden coves and secret pathways around the shoreline.
+
+      Nature''s
+      beauty surrounds every moment of your adventure.'
+    background: {fileID: 895686523750061401, guid: 32da66d85efc04a818275d884838c86d, type: 3}
+  - destinationName: Pirate Cove
+    description: 'A hidden cove once served as the secret refuge of legendary pirates.
+
+      Old
+      ships, forgotten maps, and mysterious caves hold stories of lost treasure.
+
+      Search
+      every corner to uncover long-buried riches.
+
+      Adventure and mystery await
+      every fearless explorer.'
+    background: {fileID: 5825439195892849121, guid: 2fc302c1f3eae44c88a390dca3d4c09d, type: 3}
+  - destinationName: Lighthouse
+    description: 'A towering lighthouse watches over the endless sea with its guiding
+      light.
+
+      Climb winding staircases to admire breathtaking ocean views.
+
+      Hidden
+      paths around the rocky cliffs conceal exciting discoveries.
+
+      Every beacon
+      shines the way toward your next adventure.'
+    background: {fileID: -8239933057047612337, guid: 6b04540313ec742acb2ea3e56f0e1a48, type: 3}
+  - destinationName: Island Bay
+    description: 'A secluded island paradise welcomes explorers with crystal-clear
+      waters and lush greenery.
+
+      Gentle waves and tropical breezes create the
+      perfect place to unwind.
+
+      Discover hidden beaches, ancient secrets, and
+      sparkling treasures.
+
+      Every journey across the bay feels like a dream
+      come true.'
+    background: {fileID: 506880638764355997, guid: f83c134f61d6b493a80e9786c0581efe, type: 3}

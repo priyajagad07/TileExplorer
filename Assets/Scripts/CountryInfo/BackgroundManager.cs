@@ -17,10 +17,10 @@ public class BackgroundManager : MonoBehaviour
     [Header("Daily Streak Screen")]
     [SerializeField] private Image dailyStreakScreenBackground;
 
-    [Header("Country Info Screen")]
-    [SerializeField] private Image countryInfoScreenBackground;
+    [Header("World Info Screen")]
+    [SerializeField] private Image worldInfoScreenBackground;
 
-    private CountryData currentCountry;
+    private WorldData currentWorld;
 
     private void Awake()
     {
@@ -36,21 +36,21 @@ public class BackgroundManager : MonoBehaviour
 
     private int lastUpdatedLevel = -1;
 
-    public void UpdateBackgrounds(CountryData country, int playerLevel)
+    public void UpdateBackgrounds(WorldData world, int playerLevel)
     {
-        if (country == null)
+        if (world == null)
             return;
 
-        if (lastUpdatedLevel == playerLevel && currentCountry == country)
+        if (lastUpdatedLevel == playerLevel && currentWorld == world)
         {
             Debug.Log($"Background already updated for level {playerLevel}, skipping...");
             return;
         }
 
-        currentCountry = country;
+        currentWorld = world;
         lastUpdatedLevel = playerLevel;
 
-        Sprite bg = GetBackgroundForLevel(country, playerLevel);
+        Sprite bg = GetBackgroundForLevel(world, playerLevel);
 
         SetGameplayBackground(bg);
         SetHomeBackground(bg);
@@ -61,6 +61,7 @@ public class BackgroundManager : MonoBehaviour
             mapBackground.sprite = bg;
         }
     }
+
     public void SetGameplayBackground(Sprite bg)
     {
         if (gameplayBackground == null || bg == null) return;
@@ -79,59 +80,59 @@ public class BackgroundManager : MonoBehaviour
         dailyStreakScreenBackground.sprite = bg;
     }
 
-    public void SetCountryInfoScreen(Sprite bg)
+    public void SetWorldInfoScreen(Sprite bg)
     {
-        if (countryInfoScreenBackground == null || bg == null) return;
-        countryInfoScreenBackground.sprite = bg;
+        if (worldInfoScreenBackground == null || bg == null) return;
+        worldInfoScreenBackground.sprite = bg;
     }
 
-    public CountryData GetCurrentCountry()
+    public WorldData GetCurrentWorld()
     {
-        return currentCountry;
+        return currentWorld;
     }
 
-    public void RefreshCurrentCountry()
+    public void RefreshCurrentWorld()
     {
-        if (currentCountry == null) return;
+        if (currentWorld == null) return;
 
         int currentLevel = SaveManager.instance.data.level + 1;
-        UpdateBackgrounds(currentCountry, currentLevel);
+        UpdateBackgrounds(currentWorld, currentLevel);
     }
 
-    Sprite GetBackgroundForLevel(CountryData country, int playerLevel)
+    Sprite GetBackgroundForLevel(WorldData world, int playerLevel)
     {
-        if (country.backgrounds == null || country.backgrounds.Length == 0) return null;
+        if (world.backgrounds == null || world.backgrounds.Length == 0) return null;
 
-        int countryLevels = country.endLevel - country.startLevel + 1;
-        float levelsPerDestination = (float)countryLevels / country.backgrounds.Length;
+        int worldLevels = world.endLevel - world.startLevel + 1;
+        float levelsPerDestination = (float)worldLevels / world.backgrounds.Length;
 
-        int virtualLevel = CountryManager.Instance.GetVirtualLevel(playerLevel);
-        int levelInsideCountry = virtualLevel - country.startLevel;
+        int virtualLevel = WorldManager.Instance.GetVirtualLevel(playerLevel);
+        int levelInsideWorld = virtualLevel - world.startLevel;
 
-        int bgIndex = Mathf.FloorToInt(levelInsideCountry / levelsPerDestination);
-        bgIndex = Mathf.Clamp(bgIndex, 0, country.backgrounds.Length - 1);
+        int bgIndex = Mathf.FloorToInt(levelInsideWorld / levelsPerDestination);
+        bgIndex = Mathf.Clamp(bgIndex, 0, world.backgrounds.Length - 1);
 
-        return country.backgrounds[bgIndex];
+        return world.backgrounds[bgIndex];
     }
 
     public bool IsNextDestinationUnlock()
     {
         int currentLevel = SaveManager.instance.data.level + 1;
 
-        int vCurrent = CountryManager.Instance.GetVirtualLevel(currentLevel);
-        int vNext = CountryManager.Instance.GetVirtualLevel(currentLevel + 1);
+        int vCurrent = WorldManager.Instance.GetVirtualLevel(currentLevel);
+        int vNext = WorldManager.Instance.GetVirtualLevel(currentLevel + 1);
 
-        CountryData country = GetCurrentCountry();
-        if (country == null) return false;
+        WorldData world = GetCurrentWorld();
+        if (world == null) return false;
 
-        CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
-        if (nextCountry != country) return true;
+        WorldData nextWorld = WorldManager.Instance.GetWorldForLevel(currentLevel + 1);
+        if (nextWorld != world) return true;
 
-        int countryLevels = country.endLevel - country.startLevel + 1;
-        float levelsPerDestination = (float)countryLevels / country.backgrounds.Length;
+        int worldLevels = world.endLevel - world.startLevel + 1;
+        float levelsPerDestination = (float)worldLevels / world.backgrounds.Length;
 
-        int currentIndex = Mathf.FloorToInt((vCurrent - country.startLevel) / levelsPerDestination);
-        int nextIndex = Mathf.FloorToInt((vNext - country.startLevel) / levelsPerDestination);
+        int currentIndex = Mathf.FloorToInt((vCurrent - world.startLevel) / levelsPerDestination);
+        int nextIndex = Mathf.FloorToInt((vNext - world.startLevel) / levelsPerDestination);
 
         return nextIndex > currentIndex;
     }
@@ -140,19 +141,19 @@ public class BackgroundManager : MonoBehaviour
     {
         int currentLevel = SaveManager.instance.data.level + 1;
 
-        int vNext = CountryManager.Instance.GetVirtualLevel(currentLevel + 1);
+        int vNext = WorldManager.Instance.GetVirtualLevel(currentLevel + 1);
 
-        CountryData currentCountry = GetCurrentCountry();
-        if (currentCountry == null) return 0;
+        WorldData currentWorld = GetCurrentWorld();
+        if (currentWorld == null) return 0;
 
-        CountryData nextCountry = CountryManager.Instance.GetCountryForLevel(currentLevel + 1);
-        if (nextCountry != currentCountry) return 0;
+        WorldData nextWorld = WorldManager.Instance.GetWorldForLevel(currentLevel + 1);
+        if (nextWorld != currentWorld) return 0;
 
-        int countryLevels = currentCountry.endLevel - currentCountry.startLevel + 1;
-        float levelsPerDestination = (float)countryLevels / currentCountry.backgrounds.Length;
+        int worldLevels = currentWorld.endLevel - currentWorld.startLevel + 1;
+        float levelsPerDestination = (float)worldLevels / currentWorld.backgrounds.Length;
 
-        int nextIndex = Mathf.FloorToInt((vNext - currentCountry.startLevel) / levelsPerDestination);
+        int nextIndex = Mathf.FloorToInt((vNext - currentWorld.startLevel) / levelsPerDestination);
 
-        return Mathf.Clamp(nextIndex, 0, currentCountry.backgrounds.Length - 1);
+        return Mathf.Clamp(nextIndex, 0, currentWorld.backgrounds.Length - 1);
     }
 }

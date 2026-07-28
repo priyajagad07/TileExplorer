@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a767766b589dc4a349481ab398d17c4d, type: 3}
+  m_Name: Sky Kingdom
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  worldName: Sky Kingdom
+  startLevel: 1061
+  endLevel: 1200
+  backgrounds:
+  - {fileID: -5469876113357775020, guid: c5da83ea7c62e4c70b4d13dbf821fb58, type: 3}
+  - {fileID: 6278825603142385126, guid: 6acf8d42fda9941b29657d9bc0d7d09e, type: 3}
+  - {fileID: 7619248319715371830, guid: 11679d57d086249f491a13b4df5575ac, type: 3}
+  - {fileID: 435491305517117919, guid: a1b035435568d4ae5b248b62bd98256f, type: 3}
+  - {fileID: -811428147901337123, guid: 634dfb96fe1f94c4aafa481f800a3aac, type: 3}
+  - {fileID: 6072248598735154451, guid: b5bdf6481ff0642ba8ad316453f5c739, type: 3}
+  previewCards:
+  - {fileID: -5469876113357775020, guid: c5da83ea7c62e4c70b4d13dbf821fb58, type: 3}
+  - {fileID: 6278825603142385126, guid: 6acf8d42fda9941b29657d9bc0d7d09e, type: 3}
+  - {fileID: 7619248319715371830, guid: 11679d57d086249f491a13b4df5575ac, type: 3}
+  - {fileID: 435491305517117919, guid: a1b035435568d4ae5b248b62bd98256f, type: 3}
+  - {fileID: -811428147901337123, guid: 634dfb96fe1f94c4aafa481f800a3aac, type: 3}
+  - {fileID: 6072248598735154451, guid: b5bdf6481ff0642ba8ad316453f5c739, type: 3}
+  destinations:
+  - destinationName: Cloud Garden
+    description: 'Soft clouds bloom like floating gardens high above the world below.
+
+      Colorful
+      flowers sway gently in the cool sky breeze.
+
+      Hidden pathways connect
+      magical islands drifting through the heavens.
+
+      Every step feels lighter
+      than air.'
+    background: {fileID: -5469876113357775020, guid: c5da83ea7c62e4c70b4d13dbf821fb58, type: 3}
+  - destinationName: Rainbow Bridge
+    description: 'A magnificent rainbow stretches across the endless sky, connecting
+      magical lands.
+
+      Brilliant colors light your path toward exciting new
+      adventures.
+
+      Cross shimmering arches while discovering hidden surprises
+      along the way.
+
+      Every journey begins with a touch of magic.'
+    background: {fileID: 6278825603142385126, guid: 6acf8d42fda9941b29657d9bc0d7d09e, type: 3}
+  - destinationName: Floating Islands
+    description: 'Ancient islands drift peacefully among the clouds, untouched by
+      time.
+
+      Each floating world hides unique treasures and breathtaking scenery.
+
+      Explore
+      mysterious pathways suspended high above the horizon.
+
+      Adventure reaches
+      new heights with every discovery.'
+    background: {fileID: 7619248319715371830, guid: 11679d57d086249f491a13b4df5575ac, type: 3}
+  - destinationName: Crystal Castle
+    description: 'A dazzling castle built from shimmering crystals stands proudly
+      among the clouds.
+
+      Sunlight dances across every tower, filling the kingdom
+      with radiant colors.
+
+      Hidden chambers guard magical secrets waiting to
+      be uncovered.
+
+      Every puzzle unlocks another piece of this sparkling wonder.'
+    background: {fileID: 435491305517117919, guid: a1b035435568d4ae5b248b62bd98256f, type: 3}
+  - destinationName: Sky Temple
+    description: 'An ancient temple floats peacefully above the clouds, protected
+      by timeless magic.
+
+      Marble pathways lead through sacred halls filled
+      with mystery and beauty.
+
+      Solve challenging puzzles to reveal forgotten
+      legends.
+
+      Every step brings you closer to the heart of the heavens.'
+    background: {fileID: -811428147901337123, guid: 634dfb96fe1f94c4aafa481f800a3aac, type: 3}
+  - destinationName: Sun Palace
+    description: 'The grand Sun Palace shines brilliantly at the highest point of
+      the Sky Kingdom.
+
+      Golden halls glow with warmth as clouds drift peacefully
+      below.
+
+      Celebrate your incredible journey through every world as you
+      uncover its final secrets.
+
+      Only the greatest explorers earn the honor
+      of reaching this majestic destination.'
+    background: {fileID: 6072248598735154451, guid: b5bdf6481ff0642ba8ad316453f5c739, type: 3}

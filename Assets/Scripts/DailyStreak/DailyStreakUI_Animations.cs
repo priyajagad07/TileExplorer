@@ -26,14 +26,7 @@ public partial class DailyStreakUI
 
         seq.AppendCallback(() =>
         {
-            ShowRewardPopup(DailyRewardManager.instance.GetRewardTextForDay(streak));
-        });
-
-        seq.AppendInterval(0.25f);
-
-        seq.AppendCallback(() =>
-        {
-            DailyStreakManager.instance.GiveRewardForCurrentDay();
+            ShowRewardPopup(DailyRewardManager.instance.GetRewardForDay(streak));
         });
     }
 

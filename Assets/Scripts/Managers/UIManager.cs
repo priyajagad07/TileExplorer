@@ -76,6 +76,19 @@ public class UIManager : MonoBehaviour
                         }
                     });
                 }
+
+                if (type == ScreenType.MapScreen)
+                {
+                    DOVirtual.DelayedCall(0.05f, () =>
+                    {
+                        Canvas.ForceUpdateCanvases();
+
+                        scrollRect.StopMovement();
+
+                        RectTransform content = scrollRect.content;
+                        content.anchoredPosition = Vector2.zero;
+                    });
+                }
                 return;
             }
         }
@@ -125,10 +138,10 @@ public class UIManager : MonoBehaviour
 
     public void GoBack()
     {
-        if (scrollRect != null)
-        {
-            scrollRect.verticalNormalizedPosition = 1;
-        }
+        // if (scrollRect != null)
+        // {
+        //     scrollRect.verticalNormalizedPosition = 1;
+        // }
 
         if (screenHistory.Count > 0)
         {
@@ -143,4 +156,30 @@ public class UIManager : MonoBehaviour
             Show(previous, true);
         }
     }
+
+    // public void GoBack()
+    // {
+    //     if (screenHistory.Count > 0)
+    //     {
+    //         ScreenType previous = screenHistory.Pop();
+
+    //         Show(previous, true);
+
+    //         if (previous == ScreenType.MapScreen)
+    //         {
+    //             DOVirtual.DelayedCall(0.45f, () =>
+    //             {
+    //                 Debug.Log("Before: " + scrollRect.verticalNormalizedPosition);
+
+    //                 scrollRect.verticalNormalizedPosition = 1f;
+    //                 Debug.Log("After: " + scrollRect.verticalNormalizedPosition);
+
+    //                 DOVirtual.DelayedCall(0.3f, () =>
+    //                 {
+    //                     Debug.Log("0.3 sec later: " + scrollRect.verticalNormalizedPosition);
+    //                 });
+    //             });
+    //         }
+    //     }
+    // }
 }
