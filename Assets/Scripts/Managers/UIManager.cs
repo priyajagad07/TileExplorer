@@ -77,17 +77,10 @@ public class UIManager : MonoBehaviour
                     });
                 }
 
-                if (type == ScreenType.MapScreen)
+                ScrollReset reset = currentScreen.GetComponent<ScrollReset>();
+                if (reset != null)
                 {
-                    DOVirtual.DelayedCall(0.05f, () =>
-                    {
-                        Canvas.ForceUpdateCanvases();
-
-                        scrollRect.StopMovement();
-
-                        RectTransform content = scrollRect.content;
-                        content.anchoredPosition = Vector2.zero;
-                    });
+                    reset.ResetToTop();
                 }
                 return;
             }

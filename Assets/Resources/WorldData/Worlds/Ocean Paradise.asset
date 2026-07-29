@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Ocean Paradise
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Ocean Paradise
-  startLevel: 921
-  endLevel: 1060
+  startLevel: 873
+  endLevel: 1024
   backgrounds:
   - {fileID: -8578183933221340778, guid: 01699a3a239f641fc9a1ee42ea3c60a4, type: 3}
   - {fileID: -506248469827834193, guid: 5e992c075f78b472f80eb8cdf2f82b60, type: 3}

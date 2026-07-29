@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 780d7ef7ddd6f4173967452807272daa
+guid: f9e80e6a061564395a84e5880ec70518
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6368277819465814172
-    second: Logo 7_0
+      213: 986354813754066518
+    second: comingsoon1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Logo 7_0
+      name: comingsoon1_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 42
-        width: 492
-        height: 409
+        x: 0
+        y: 0
+        width: 947
+        height: 1661
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 46fadb350155f97a0800000000000000
-      internalID: -6368277819465814172
+      spriteID: 656ce482a7c30bd00800000000000000
+      internalID: 986354813754066518
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Logo 7_0: -6368277819465814172
+      comingsoon1_0: 986354813754066518
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
 
             DOVirtual.DelayedCall(1.1f, () =>
             {
-                CoinManager.instance.AddCoins(100);
+                CoinManager.instance.AddCoins(50);
 
                 int currentLevel = SaveManager.instance.data.level + 1;
                 WorldData currentWorld = BackgroundManager.Instance.GetCurrentWorld();
@@ -350,7 +350,7 @@ public class GameManager : MonoBehaviour
 
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
 
-        DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(100));
+        DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(50));
     }
 
     public void ResetLevelState()

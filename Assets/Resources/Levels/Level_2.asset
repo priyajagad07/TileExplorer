@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_2
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelNumber: 2
-  rewardCoins: 100
+  rewardCoins: 50
   difficulty: 2
   stackStyle: 2
   stackOffsetX: -35

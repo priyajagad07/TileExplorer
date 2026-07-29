@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 780d7ef7ddd6f4173967452807272daa
+guid: f313ccd59c14443628c72e0c3e4afcba
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6368277819465814172
-    second: Logo 7_0
+      213: -9154031399666937193
+    second: GlowBorder_0
+  - first:
+      213: -2462547934309076166
+    second: GlowBorder_1
+  - first:
+      213: 7213230992014025796
+    second: GlowBorder_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,23 +132,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Logo 7_0
+      name: GlowBorder_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 42
-        width: 492
-        height: 409
+        x: 128
+        y: 140
+        width: 774
+        height: 747
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 46fadb350155f97a0800000000000000
-      internalID: -6368277819465814172
+      spriteID: 792941031f856f080800000000000000
+      internalID: -9154031399666937193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GlowBorder_1
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 122
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a33b22d63b543ddd0800000000000000
+      internalID: -2462547934309076166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GlowBorder_2
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 119
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 444a5d1be5b8a1460800000000000000
+      internalID: 7213230992014025796
       vertices: []
       indices: 
       edges: []
@@ -151,8 +201,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
-    internalID: 0
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
@@ -161,7 +211,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Logo 7_0: -6368277819465814172
+      GlowBorder_0: -9154031399666937193
+      GlowBorder_1: -2462547934309076166
+      GlowBorder_2: 7213230992014025796
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

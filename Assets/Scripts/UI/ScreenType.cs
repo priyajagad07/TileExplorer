@@ -17,4 +17,5 @@ public enum ScreenType
     WorldInfoScreen,
     ContinueGame,
     RemoveAdsPopup,
+    LeaderBoardScreen,
 }

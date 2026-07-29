@@ -117,7 +117,7 @@ public class LevelImporterWindow : EditorWindow
             newLevel.stackStyle = currentStyle;
             newLevel.stackOffsetX = offX;
             newLevel.stackOffsetY = offY;
-            newLevel.rewardCoins = 100;
+            newLevel.rewardCoins = 50;
 
             SaveLevelAsset(newLevel, levelName);
         }

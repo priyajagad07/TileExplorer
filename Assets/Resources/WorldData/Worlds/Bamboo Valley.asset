@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Bamboo Valley
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Bamboo Valley
-  startLevel: 321
-  endLevel: 440
+  startLevel: 153
+  endLevel: 248
   backgrounds:
   - {fileID: 2906209119599174030, guid: 379b3d989441c41329f4593c94a33d3f, type: 3}
   - {fileID: -5516008940900807360, guid: 2f7fbc4e98fca4fc99e6fbea21800ea9, type: 3}

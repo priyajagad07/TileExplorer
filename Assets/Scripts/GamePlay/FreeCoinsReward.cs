@@ -7,7 +7,7 @@ public class FreeCoinsReward : MonoBehaviour
 {
     [SerializeField] private UIParticle rewardParticles;
     [SerializeField] private Button watchButton;
-    [SerializeField] private int rewardAmount = 50;
+    [SerializeField] private int rewardAmount = 100;
     [SerializeField] private float rewardDelay = 0.8f;
 
     public void ClaimFreeCoins()

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CozyForest
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Cozy Forest
-  startLevel: 81
-  endLevel: 200
+  startLevel: 33
+  endLevel: 80
   backgrounds:
   - {fileID: -2416170729605204148, guid: 431370ece61614a3d965836aea49752e, type: 3}
   - {fileID: -2793232688286180050, guid: 8acb19f9cb2d1422bbdbbaf17e91e054, type: 3}

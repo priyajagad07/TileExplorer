@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sky Kingdom
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Sky Kingdom
-  startLevel: 1061
+  startLevel: 1025
   endLevel: 1200
   backgrounds:
   - {fileID: -5469876113357775020, guid: c5da83ea7c62e4c70b4d13dbf821fb58, type: 3}

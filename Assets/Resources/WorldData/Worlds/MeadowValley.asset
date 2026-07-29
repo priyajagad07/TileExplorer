@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Meadow Valley
   startLevel: 1
-  endLevel: 80
+  endLevel: 32
   backgrounds:
   - {fileID: -5529835088768909531, guid: 5ead41110dd1a4ad0a0b360f79ab0168, type: 3}
   - {fileID: 8122833037930648595, guid: d54865927a8fb4caf83ebd9a9c78a27e, type: 3}

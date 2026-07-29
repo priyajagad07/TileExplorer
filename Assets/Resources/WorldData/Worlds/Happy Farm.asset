@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Happy Farm
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Happy Farm
-  startLevel: 201
-  endLevel: 320
+  startLevel: 81
+  endLevel: 152
   backgrounds:
   - {fileID: 7773900953925383654, guid: fec3d463ff984473ebdfdf6940fe45c6, type: 3}
   - {fileID: -3820510952427351420, guid: 648a0fbeed77a4e5db42a12626b84a30, type: 3}

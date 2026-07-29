@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Desert Oasis
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Desert Oasis
-  startLevel: 681
-  endLevel: 800
+  startLevel: 513
+  endLevel: 680
   backgrounds:
   - {fileID: -5509395199181252754, guid: 07b7e6252accb47798c1937aafe2800c, type: 3}
   - {fileID: 249316095728038088, guid: 3024b77af08e0433d94efee1ae74ae52, type: 3}

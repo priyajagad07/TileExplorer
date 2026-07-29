@@ -49,11 +49,11 @@ MonoBehaviour:
     - rewardType: 3
       amount: 1
       rewardIcon: {fileID: 531900777684001255, guid: 6de13c2d76bb340fea100c5ae09c6f39, type: 3}
-  - rewardName: 200 Coins
+  - rewardName: 2 Undo
     rewards:
-    - rewardType: 0
-      amount: 200
-      rewardIcon: {fileID: -6638354514906406222, guid: ff59cc2d896d74c27abf80c89844766b, type: 3}
+    - rewardType: 1
+      amount: 2
+      rewardIcon: {fileID: -6277166971244473696, guid: 5bb4d8084a28940c99c0bc829e1a8396, type: 3}
   day3Rewards:
   - rewardName: 100 Coins + 1 Undo
     rewards:
@@ -125,11 +125,11 @@ MonoBehaviour:
       amount: 1500
       rewardIcon: {fileID: -6638354514906406222, guid: ff59cc2d896d74c27abf80c89844766b, type: 3}
   day6Rewards:
-  - rewardName: 300 Coins + 2 Shuffle
+  - rewardName: 3 Undo + 2 Shuffle
     rewards:
-    - rewardType: 0
-      amount: 300
-      rewardIcon: {fileID: -6638354514906406222, guid: ff59cc2d896d74c27abf80c89844766b, type: 3}
+    - rewardType: 1
+      amount: 3
+      rewardIcon: {fileID: -6277166971244473696, guid: 5bb4d8084a28940c99c0bc829e1a8396, type: 3}
     - rewardType: 2
       amount: 2
       rewardIcon: {fileID: -1847492642863852513, guid: bf2d150bdc8e8419aa1758269f174076, type: 3}
@@ -149,11 +149,11 @@ MonoBehaviour:
     - rewardType: 3
       amount: 1
       rewardIcon: {fileID: 531900777684001255, guid: 6de13c2d76bb340fea100c5ae09c6f39, type: 3}
-  - rewardName: '200 Coins + 1 Shuffle '
+  - rewardName: '2 Magic + 1 Shuffle '
     rewards:
-    - rewardType: 0
-      amount: 200
-      rewardIcon: {fileID: -6638354514906406222, guid: ff59cc2d896d74c27abf80c89844766b, type: 3}
+    - rewardType: 3
+      amount: 2
+      rewardIcon: {fileID: 531900777684001255, guid: 6de13c2d76bb340fea100c5ae09c6f39, type: 3}
     - rewardType: 2
       amount: 1
       rewardIcon: {fileID: -1847492642863852513, guid: bf2d150bdc8e8419aa1758269f174076, type: 3}

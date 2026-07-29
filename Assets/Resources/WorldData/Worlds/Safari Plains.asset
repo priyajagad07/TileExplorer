@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Safari Plains
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldName: Safari Plains
-  startLevel: 441
-  endLevel: 560
+  startLevel: 249
+  endLevel: 368
   backgrounds:
   - {fileID: -6700081171296591153, guid: 54f7c36de43a64e92be1a82a5717598d, type: 3}
   - {fileID: 6510215769898828853, guid: 9ace31c4a639c48f18749e33d003ca71, type: 3}

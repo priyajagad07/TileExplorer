@@ -16,7 +16,7 @@ public class LevelData : ScriptableObject
 {
     [Header("Level Info")]
     public int levelNumber;
-    public int rewardCoins = 100;
+    public int rewardCoins = 50;
     public int difficulty = 1;
 
     [Header("Stack Settings")]
