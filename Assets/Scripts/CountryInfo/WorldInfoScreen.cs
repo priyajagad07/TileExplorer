@@ -9,16 +9,14 @@ public class WorldInfoScreen : MonoBehaviour
 
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text descriptionText;
-
-    [SerializeField] private RectTransform backButton;
     [SerializeField] private RectTransform titleTextRect;
     [SerializeField] private RectTransform continueButton;
-    [SerializeField] private CanvasGroup backButtonGroup;
     [SerializeField] private CanvasGroup titleGroup;
     [SerializeField] private CanvasGroup descriptionGroup;
     [SerializeField] private CanvasGroup continueButtonGroup;
 
     public bool openedFromUnlock;
+    public bool openedFromMap;
 
     void Awake()
     {
@@ -46,21 +44,13 @@ public class WorldInfoScreen : MonoBehaviour
     {
         DOTween.Kill("WorldInfoSeq");
         DOTween.Kill(descriptionText);
-        backButton.DOKill();
         titleTextRect.DOKill();
         continueButton.DOKill();
-        backButtonGroup.DOKill();
         titleGroup.DOKill();
         descriptionGroup.DOKill();
         continueButtonGroup.DOKill();
-
-        backButton.gameObject.SetActive(!isFromUnlock);
-
-        backButton.localScale = Vector3.zero;
         titleTextRect.localScale = Vector3.zero;
         continueButton.localScale = Vector3.zero;
-
-        backButtonGroup.alpha = 0;
         titleGroup.alpha = 0;
         descriptionGroup.alpha = 0;
         continueButtonGroup.alpha = 0;
@@ -80,10 +70,6 @@ public class WorldInfoScreen : MonoBehaviour
                 MapScreenUI.instance.HideUnlockTransition();
             });
         }
-
-        // Back Button
-        seq.Append(backButton.DOScale(1f, 0.3f).SetEase(Ease.OutBack));
-        seq.Join(backButtonGroup.DOFade(1f, 0.25f));
 
         // Title
         seq.Append(titleTextRect.DOScale(1f, 0.35f).SetEase(Ease.OutBack));
@@ -115,23 +101,60 @@ public class WorldInfoScreen : MonoBehaviour
         seq.Join(continueButtonGroup.DOFade(1f, 0.25f));
     }
 
+    // public void ContinueExploring()
+    // {
+    //     openedFromUnlock = false;
+
+    //     if (GameManager.instance != null && GameManager.instance.returnToHomeAfterMap)
+    //     {
+    //         GameManager.instance.returnToHomeAfterMap = false;
+    //         UIManager.Instance.Show(ScreenType.HomeScreen);
+    //     }
+    //     else
+    //     {
+    //         UIManager.Instance.Show(ScreenType.GamePlay);
+
+    //         if (BoardSpawner.instance != null)
+    //         {
+    //             BoardSpawner.instance.PlaySpawnAnimation();
+    //         }
+    //     }
+    // }
+
     public void ContinueExploring()
     {
-        openedFromUnlock = false;
+        // Opened manually from Map
+        if (openedFromMap)
+        {
+            openedFromMap = false;
+            UIManager.Instance.Show(ScreenType.MapScreen);
+            return;
+        }
 
+        // Opened after unlocking
+        if (openedFromUnlock)
+        {
+            openedFromUnlock = false;
+
+            UIManager.Instance.Show(ScreenType.GamePlay);
+
+            if (BoardSpawner.instance != null)
+                BoardSpawner.instance.PlaySpawnAnimation();
+
+            return;
+        }
+
+        // Returned to Home after level complete
         if (GameManager.instance != null && GameManager.instance.returnToHomeAfterMap)
         {
             GameManager.instance.returnToHomeAfterMap = false;
             UIManager.Instance.Show(ScreenType.HomeScreen);
+            return;
         }
-        else
-        {
-            UIManager.Instance.Show(ScreenType.GamePlay);
 
-            if (BoardSpawner.instance != null)
-            {
-                BoardSpawner.instance.PlaySpawnAnimation();
-            }
-        }
+        UIManager.Instance.Show(ScreenType.GamePlay);
+
+        if (BoardSpawner.instance != null)
+            BoardSpawner.instance.PlaySpawnAnimation();
     }
 }

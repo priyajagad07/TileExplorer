@@ -15,24 +15,23 @@ public partial class DailyStreakUI
 
         Sequence seq = DOTween.Sequence().SetId("RewardSeq");
 
-        seq.AppendInterval(0.35f);
+        Sequence chestSequence = ClaimDay(streak);
+
+        seq.Append(chestSequence);
+
+        seq.AppendInterval(0.15f);
 
         seq.AppendCallback(() =>
         {
-            ClaimDay(streak);
-        });
-
-        seq.AppendInterval(0.35f);
-
-        seq.AppendCallback(() =>
-        {
-            ShowRewardPopup(DailyRewardManager.instance.GetRewardForDay(streak));
+            ShowRewardPopup(
+                DailyRewardManager.instance.GetRewardForDay(streak));
         });
     }
 
-    void ClaimDay(int streak)
+    Sequence ClaimDay(int streak)
     {
-        if (streak <= 0) return;
+        if (streak <= 0)
+            return DOTween.Sequence();
 
         DaySlotUI slot = daySlots[streak - 1];
 
@@ -126,6 +125,8 @@ public partial class DailyStreakUI
                 0.25f
             )
         );
+
+        return seq;
     }
 
     void ShowPreviousProgress(int streak)

@@ -93,6 +93,8 @@ public class MapScreenUI : MonoBehaviour
             DestinationUnlocker.Clear();
             MapManager.instance.RefreshMap();
             WorldInfoScreen.instance.openedFromUnlock = true;
+            WorldInfoScreen.instance.openedFromMap = false;
+
             WorldInfoScreen.instance.ShowDestination(world.destinations[pending], true);
             UIManager.Instance.Show(ScreenType.WorldInfoScreen);
         });

@@ -9,60 +9,174 @@ public partial class DailyStreakUI
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
         SoundManager.instance.PlaySound(SoundName.RewardPop);
 
-        rewardPopup.SetActive(true);
-        collectButton.interactable = true;
+        int day = DailyStreakManager.instance.GetStreak();
 
-        // Remove previous rewards
-        foreach (Transform child in rewardContainer)
-            Destroy(child.gameObject);
+        // Hide all reward layouts
+        foreach (var popup in rewardPopups)
+            popup.root.SetActive(false);
 
-        // Create reward items
-        foreach (RewardData rewardData in reward.rewards)
+        RewardPopupDayUI currentPopup = rewardPopups[day - 1];
+
+        int count = Mathf.Min(reward.rewards.Count, currentPopup.icons.Length);
+
+        // Fill reward data
+        for (int i = 0; i < count; i++)
         {
-            RewardItemUI item =
-                Instantiate(rewardItemPrefab, rewardContainer);
+            currentPopup.icons[i].sprite = reward.rewards[i].rewardIcon;
 
-            item.Setup(rewardData);
+            currentPopup.amounts[i].text =
+                reward.rewards[i].rewardType == RewardType.Coins
+                ? reward.rewards[i].amount + " Coins"
+                : reward.rewards[i].amount.ToString();
         }
 
+        currentPopup.root.SetActive(true);
+
+        // -----------------------------
+        // Prepare UI
+        // -----------------------------
+
+        rewardPopup.SetActive(true);
+
         rewardPopup.transform.DOKill();
+        bird.DOKill();
+        collectButtonRect.DOKill();
+        collectButton.transform.DOKill();
+
         rewardPopup.transform.localScale = Vector3.one * .7f;
+
+        bird.localScale = Vector3.zero;
+
+        Vector2 originalButtonPos = collectButtonRect.anchoredPosition;
+
+        collectButtonRect.anchoredPosition =
+            originalButtonPos + Vector2.down * 120;
+
+        collectButtonRect.localScale = Vector3.zero;
+        collectButton.interactable = false;
+
+        // Hide reward items initially
+        for (int i = 0; i < count; i++)
+        {
+            Transform item = currentPopup.icons[i].transform.parent;
+
+            item.DOKill();
+            item.localScale = Vector3.zero;
+        }
+
+        // -----------------------------
+        // Animation
+        // -----------------------------
 
         Sequence seq = DOTween.Sequence();
 
+        // Popup
         seq.Append(
-            rewardPopup.transform.DOScale(1.08f, .35f)
-            .SetEase(Ease.OutBack)
-        );
+            rewardPopup.transform
+                .DOScale(1.08f, .35f)
+                .SetEase(Ease.OutBack));
 
         seq.Append(
-            rewardPopup.transform.DOScale(1f, .1f)
-        );
+            rewardPopup.transform
+                .DOScale(1f, .1f));
+
+        // Bird
+        seq.Append(
+            bird.DOScale(1.15f, .3f)
+                .SetEase(Ease.OutBack));
+
+        seq.Append(
+            bird.DOScale(1f, .08f));
+
+
+
+        // Rewards one by one
+        for (int i = 0; i < count; i++)
+        {
+            Transform item = currentPopup.icons[i].transform.parent;
+
+            seq.AppendInterval(.08f);
+
+            seq.Append(
+                item.DOScale(1.15f, .22f)
+                    .SetEase(Ease.OutBack));
+
+            seq.Join(
+                item.DOPunchRotation(
+                    new Vector3(0, 0, 8),
+                    .22f,
+                    8,
+                    1));
+
+            seq.Append(
+                item.DOScale(1f, .08f));
+
+            seq.Join(
+    item.DOLocalMoveY(
+        item.localPosition.y + 8f,
+        .12f)
+    .SetLoops(2, LoopType.Yoyo)
+    .SetEase(Ease.OutQuad)
+);
+        }
+
+        // Button
+        seq.AppendInterval(.15f);
+
+        seq.AppendCallback(() =>
+ {
+     Sequence buttonSeq = DOTween.Sequence();
+
+     buttonSeq.Join(
+         collectButtonRect
+             .DOAnchorPos(originalButtonPos, .35f)
+             .SetEase(Ease.OutBack)
+     );
+
+     buttonSeq.Join(
+         collectButtonRect
+             .DOScale(1f, .35f)
+             .SetEase(Ease.OutBack)
+     );
+
+     buttonSeq.Append(
+         collectButtonRect
+             .DOPunchScale(Vector3.one * .1f, .2f)
+     );
+
+     collectButton.interactable = true;
+ });
     }
-
     public void CollectReward()
     {
         collectButton.interactable = false;
 
         DailyStreakManager.instance.GiveRewardForCurrentDay();
 
+        foreach (var popup in rewardPopups)
+        {
+            foreach (var icon in popup.icons)
+            {
+                icon.transform.parent.DOKill();
+            }
+
+            popup.root.SetActive(false);
+        }
+
+        bird.DOKill();
+        collectButton.transform.DOKill();
+        collectButtonRect.DOKill();
         rewardPopup.transform.DOKill();
 
-        Sequence seq = DOTween.Sequence();
-
-        seq.Append(
-            rewardPopup.transform.DOScale(0f, 0.25f)
-                .SetEase(Ease.InBack)
-        );
-
-        seq.OnComplete(() =>
-        {
-            rewardPopup.SetActive(false);
-
-            collectButton.interactable = true;
-
-            CloseDailyReward();
-        });
+        rewardPopup.transform
+            .DOScale(0f, .25f)
+            .SetEase(Ease.InBack)
+            .OnComplete(() =>
+            {
+                rewardPopup.SetActive(false);
+                collectButton.interactable = true;
+                CloseDailyReward();
+            });
     }
 
     void CloseDailyReward()
@@ -70,54 +184,39 @@ public partial class DailyStreakUI
         UIManager.Instance.Show(ScreenType.HomeScreen);
     }
 
-    public void ShowRewardPreview(int day, Transform chest)
+    public void ShowRewardPreview(int day)
     {
         WeeklyReward reward = DailyRewardManager.instance.GetRewardForDay(day);
-        if (reward == null) return;
+        if (reward == null)
+            return;
 
-        Transform popup = rewardPreviewPopup.transform;
-        bool isOpen = rewardPreviewPopup.activeSelf && popup.localScale.x > 0.1f;
+        // Hide all previews
+        foreach (var p in previewPopups)
+            p.root.SetActive(false);
 
-        DOTween.Kill("RewardPreviewSeq");
-        popup.DOKill();
+        RewardPreviewUI popup = previewPopups[day - 1];
 
-        rewardPreviewPopup.transform.position = chest.position + Vector3.up * 180f;
-
-        int maxSlotsToFill = Mathf.Min(reward.rewards.Count, rewardSlots.Length);
-
-        for (int i = 0; i < rewardSlots.Length; i++)
+        for (int i = 0; i < reward.rewards.Count; i++)
         {
-            rewardSlots[i].root.SetActive(false);
+            popup.icons[i].sprite = reward.rewards[i].rewardIcon;
+            //popup.amounts[i].text = reward.rewards[i].rewardType == RewardType.Coins ? reward.rewards[i].amount + " Coins" : reward.rewards[i].amount.ToString();
+            popup.amounts[i].text = reward.rewards[i].amount.ToString();
         }
 
-        for (int i = 0; i < maxSlotsToFill; i++)
-        {
-            rewardSlots[i].root.SetActive(true);
-            rewardSlots[i].icon.sprite = reward.rewards[i].rewardIcon;
-            rewardSlots[i].amountText.text = reward.rewards[i].amount.ToString();
-        }
+        popup.root.SetActive(true);
 
-        rewardPreviewPopup.SetActive(true);
-        SoundManager.instance.PlaySound(SoundName.RewardReveal);
-        Sequence seq = DOTween.Sequence().SetId("RewardPreviewSeq");
+        popup.root.transform.localScale = Vector3.zero;
+        popup.root.transform
+            .DOScale(1f, 0.3f)
+            .SetEase(Ease.OutBack);
 
-        if (isOpen)
+        DOVirtual.DelayedCall(1.2f, () =>
         {
-            popup.localScale = Vector3.one;
-            seq.Append(popup.DOPunchScale(Vector3.one * 0.15f, 0.2f, 2, 0.5f));
-        }
-        else
-        {
-            popup.localScale = Vector3.zero;
-            seq.Append(popup.DOScale(1f, 0.3f).SetEase(Ease.OutBack));
-        }
-
-        seq.AppendInterval(1.2f);
-        seq.Append(popup.DOScale(0f, 0.2f).SetEase(Ease.InBack));
-
-        seq.OnComplete(() =>
-        {
-            rewardPreviewPopup.SetActive(false);
+            popup.root.transform
+                .DOScale(0f, 0.2f)
+                .SetEase(Ease.InBack)
+                .OnComplete(() => popup.root.SetActive(false));
         });
     }
+
 }

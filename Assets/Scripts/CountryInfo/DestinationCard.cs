@@ -30,8 +30,11 @@ public class DestinationCard : MonoBehaviour
             return;
         }
 
-        WorldInfoScreen.instance.ShowDestination(world.destinations[destinationIndex]);
         WorldInfoScreen.instance.openedFromUnlock = false;
+        WorldInfoScreen.instance.openedFromMap = true;
+
+        WorldInfoScreen.instance.ShowDestination(world.destinations[destinationIndex]);
+
         UIManager.Instance.Show(ScreenType.WorldInfoScreen);
     }
 

@@ -10,12 +10,12 @@ public partial class DailyStreakUI : MonoBehaviour
 
     [Header("Reward Popup")]
     [SerializeField] private GameObject rewardPopup;
-    [SerializeField] private Transform rewardContainer;
-    [SerializeField] private RewardItemUI rewardItemPrefab;
+    [SerializeField] private RewardPopupDayUI[] rewardPopups;
     [SerializeField] private Button collectButton;
+    [SerializeField] private RectTransform bird;
+    [SerializeField] private RectTransform collectButtonRect;
 
-    [SerializeField] private GameObject rewardPreviewPopup;
-    [SerializeField] private RewardSlotUI[] rewardSlots;
+    [SerializeField] private RewardPreviewUI[] previewPopups;
 
     [Header("Day Tabs")]
     [SerializeField] private Sprite activeTabSprite;
@@ -41,7 +41,16 @@ public partial class DailyStreakUI : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        rewardPopup.SetActive(false);
+
+        foreach (var popup in previewPopups)
+        {
+            popup.root.SetActive(false);
+        }
+
+        foreach (var popup in rewardPopups)
+        {
+            popup.root.SetActive(false);
+        }
     }
 
     void Start()
@@ -105,4 +114,22 @@ public partial class DailyStreakUI : MonoBehaviour
 
         Refresh();
     }
+}
+
+[System.Serializable]
+public class RewardPreviewUI
+{
+    public GameObject root;
+
+    public Image[] icons;
+    public TMP_Text[] amounts;
+}
+
+[System.Serializable]
+public class RewardPopupDayUI
+{
+    public GameObject root;
+
+    public Image[] icons;
+    public TMP_Text[] amounts;
 }
