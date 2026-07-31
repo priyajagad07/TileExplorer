@@ -17,7 +17,6 @@ public class ShopManager : MonoBehaviour
     public void BuySuperBundle()
     {
         SoundManager.instance.PlaySound(SoundName.Coins);
-
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
 
         // Coins
