@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -12,7 +13,10 @@ public class UIManager : MonoBehaviour
     private BaseScreen activePopup;
     private ScreenType currentScreenType;
     private Stack<ScreenType> screenHistory = new Stack<ScreenType>();
-    public ScrollRect scrollRect;
+
+    [Header("Shop Scroll")]
+    [SerializeField] private ScrollRect shopScrollRect;
+    [SerializeField] private RectTransform coinPacksSection;
 
     void Awake()
     {
@@ -61,6 +65,7 @@ public class UIManager : MonoBehaviour
                 currentScreenType = type;
 
                 currentScreen.Show();
+                RefreshBannerVisibility();
 
                 if (type == ScreenType.HomeScreen)
                 {
@@ -105,6 +110,7 @@ public class UIManager : MonoBehaviour
 
                 activePopup = s.screen;
                 activePopup.Show();
+                RefreshBannerVisibility();
 
                 return;
             }
@@ -124,6 +130,7 @@ public class UIManager : MonoBehaviour
                     activePopup = null;
                 }
 
+                RefreshBannerVisibility();
                 return;
             }
         }
@@ -131,11 +138,6 @@ public class UIManager : MonoBehaviour
 
     public void GoBack()
     {
-        // if (scrollRect != null)
-        // {
-        //     scrollRect.verticalNormalizedPosition = 1;
-        // }
-
         if (screenHistory.Count > 0)
         {
             ScreenType previous =
@@ -150,29 +152,77 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // public void GoBack()
-    // {
-    //     if (screenHistory.Count > 0)
-    //     {
-    //         ScreenType previous = screenHistory.Pop();
+    public void OpenShopAtCoinPacks()
+    {
+        Show(ScreenType.ShopScreen);
 
-    //         Show(previous, true);
+        DOVirtual.DelayedCall(0.2f, () =>
+        {
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(shopScrollRect.content);
 
-    //         if (previous == ScreenType.MapScreen)
-    //         {
-    //             DOVirtual.DelayedCall(0.45f, () =>
-    //             {
-    //                 Debug.Log("Before: " + scrollRect.verticalNormalizedPosition);
+            float contentHeight = shopScrollRect.content.rect.height;
+            float viewportHeight = shopScrollRect.viewport.rect.height;
 
-    //                 scrollRect.verticalNormalizedPosition = 1f;
-    //                 Debug.Log("After: " + scrollRect.verticalNormalizedPosition);
+            float hiddenHeight = contentHeight - viewportHeight;
 
-    //                 DOVirtual.DelayedCall(0.3f, () =>
-    //                 {
-    //                     Debug.Log("0.3 sec later: " + scrollRect.verticalNormalizedPosition);
-    //                 });
-    //             });
-    //         }
-    //     }
-    // }
+            float targetY = Mathf.Abs(coinPacksSection.anchoredPosition.y);
+
+            float normalized = Mathf.Clamp01(targetY / hiddenHeight);
+
+            shopScrollRect.DOVerticalNormalizedPos(
+                1f - normalized,
+                0.5f
+            ).SetEase(Ease.OutCubic);
+        });
+    }
+
+    private bool ShouldShowBanner(ScreenType screenType)
+    {
+        return screenType == ScreenType.GamePlay;
+    }
+
+    private void RefreshBannerVisibility()
+    {
+        if (AdManager.instance == null)
+            return;
+
+        // Hide banners whenever a popup is open.
+        if (activePopup != null)
+        {
+            AdManager.instance.HideBannerAd();
+            return;
+        }
+
+        if (ShouldShowBanner(currentScreenType))
+        {
+            AdManager.instance.ShowBannerAd();
+        }
+        else
+        {
+            AdManager.instance.HideBannerAd();
+        }
+    }
+
+    public void ReturnToGameplayFromPopup()
+    {
+        // Close whichever popup is currently registered.
+        if (activePopup != null)
+        {
+            activePopup.Hide();
+            activePopup = null;
+        }
+
+        Show(ScreenType.GamePlay);
+
+        // Refresh again next frame after all popup/screen
+        // activation changes have completed.
+        StartCoroutine(RefreshBannerNextFrame());
+    }
+
+    private IEnumerator RefreshBannerNextFrame()
+    {
+        yield return null;
+        RefreshBannerVisibility();
+    }
 }

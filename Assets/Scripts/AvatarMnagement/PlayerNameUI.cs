@@ -10,7 +10,8 @@ public class PlayerNameUI : MonoBehaviour
 
     private void Awake()
     {
-        instances.Add(this);
+        if (!instances.Contains(this))
+            instances.Add(this);
     }
 
     private void OnDestroy()
@@ -25,12 +26,33 @@ public class PlayerNameUI : MonoBehaviour
 
     public void Refresh()
     {
+        if (playerNameText == null ||
+            SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
+            return;
+        }
+
         playerNameText.text = SaveManager.instance.data.playerName;
     }
 
     public static void RefreshAll()
     {
-        foreach (var ui in instances)
-            ui.Refresh();
+        for (int i = instances.Count - 1; i >= 0; i--)
+        {
+            if (instances[i] == null)
+            {
+                instances.RemoveAt(i);
+                continue;
+            }
+
+            instances[i].Refresh();
+        }
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        instances.Clear();
     }
 }

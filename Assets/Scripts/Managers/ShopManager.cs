@@ -77,6 +77,132 @@ public class ShopManager : MonoBehaviour
         );
     }
 
+     public void BuyMegaBundle()
+    {
+        SoundManager.instance.PlaySound(SoundName.Coins);
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
+
+        // Coins
+        DOVirtual.DelayedCall(0f, () =>
+        {
+            bundleParticles[0]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                CoinManager.instance.AddCoins(1200);
+            }
+             );
+        }
+        );
+
+        // Undo
+        DOVirtual.DelayedCall(0.50f, () =>
+        {
+            bundleParticles[1]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                BoosterManager.instance.AddUndo(3);
+            }
+            );
+
+        }
+        );
+
+        // Magic
+        DOVirtual.DelayedCall(1f, () =>
+        {
+            bundleParticles[2]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                BoosterManager.instance.AddMagic(3);
+            }
+            );
+        }
+        );
+
+        // Shuffle
+        DOVirtual.DelayedCall(1.5f, () =>
+        {
+            bundleParticles[3]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                BoosterManager.instance.AddShuffle(3);
+            }
+            );
+        }
+        );
+    }
+
+ public void BuyBrillianceBundle()
+    {
+        SoundManager.instance.PlaySound(SoundName.Coins);
+        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
+
+        // Coins
+        DOVirtual.DelayedCall(0f, () =>
+        {
+            bundleParticles[0]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                CoinManager.instance.AddCoins(1200);
+            }
+             );
+        }
+        );
+
+        // Undo
+        DOVirtual.DelayedCall(0.50f, () =>
+        {
+            bundleParticles[1]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                BoosterManager.instance.AddUndo(3);
+            }
+            );
+
+        }
+        );
+
+        // Magic
+        DOVirtual.DelayedCall(1f, () =>
+        {
+            bundleParticles[2]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                BoosterManager.instance.AddMagic(3);
+            }
+            );
+        }
+        );
+
+        // Shuffle
+        DOVirtual.DelayedCall(1.5f, () =>
+        {
+            bundleParticles[3]?.Play();
+
+            DOVirtual.DelayedCall(bundleDelay, () =>
+            {
+                SoundManager.instance.PlaySound(SoundName.CoinReach);
+                BoosterManager.instance.AddShuffle(3);
+            }
+            );
+        }
+        );
+    }
+
     public void BuyRemoveAds()
     {
         SoundManager.instance.PlaySound(SoundName.Coins);

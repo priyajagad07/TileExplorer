@@ -72,7 +72,10 @@ public class AvatarManager : MonoBehaviour
 
         SaveManager.instance.SaveData();
 
+        // Refresh all UI displaying saved profile data.
         AvatarUI.RefreshAll();
+        PlayerNameUI.RefreshAll(); // Add this line
+
         ProfileUI.Instance?.Refresh();
         RefreshUI();
     }

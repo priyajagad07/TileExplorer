@@ -1,11 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Coffee.UIExtensions;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
-using UnityEngine.XR;
 
 public class LevelManager : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private TMP_Text nextLevelText;
     public bool skipMapRefresh;
+    private const int FIRST_INSTALL_FREE_LEVELS = 10;
+    private const int DAILY_FREE_LEVELS_MIN = 2;
+    private const int DAILY_FREE_LEVELS_MAX_EXCLUSIVE = 4;
 
     void Awake()
     {
@@ -131,18 +135,58 @@ public class LevelManager : MonoBehaviour
 
         if (isLoadingNextLevel)
         {
-            Debug.LogWarning("Already loading next level - ignoring call");
+            Debug.LogWarning(
+                "Already loading next level - ignoring call"
+            );
+
             return;
         }
 
-        StartCoroutine(NextLevelRoutine(playParticle));
+        // Lock immediately so double-tapping cannot launch
+        // multiple ads or multiple level transitions.
+        isLoadingNextLevel = true;
+
+        if (nextLevelButton != null)
+            nextLevelButton.interactable = false;
+
+        bool shouldShowInterstitial =
+            ShouldShowNextLevelInterstitial();
+
+        if (shouldShowInterstitial &&
+            AdManager.instance != null)
+        {
+            bool adStarted =
+                AdManager.instance.ShowInterstitialAd(
+                    () =>
+                    {
+                        StartCoroutine(
+                            NextLevelRoutine(playParticle)
+                        );
+                    }
+                );
+
+            if (adStarted)
+            {
+                Debug.Log(
+                    "Interstitial started before next level."
+                );
+
+                return;
+            }
+
+            Debug.Log(
+                "Interstitial eligible but unavailable. " +
+                "Continuing to next level."
+            );
+        }
+
+        StartCoroutine(
+            NextLevelRoutine(playParticle)
+        );
     }
 
     private IEnumerator NextLevelRoutine(bool playParticle)
     {
-        isLoadingNextLevel = true;
-        nextLevelButton.interactable = false;
-
         if (playParticle && nextLevelParticles != null)
         {
             nextLevelParticles.Play();
@@ -186,5 +230,140 @@ public class LevelManager : MonoBehaviour
         bool unlockingDestination = BackgroundManager.Instance.IsNextDestinationUnlock();
 
         nextLevelText.text = (unlockingDestination || worldChanging) ? "Next Destination" : "Next Level";
+    }
+
+    private bool ShouldShowNextLevelInterstitial()
+    {
+        if (SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
+            return false;
+        }
+
+        GameData data = SaveManager.instance.data;
+
+        InitializeInterstitialPolicy(data);
+        RefreshDailyInterstitialPolicy(data);
+
+        // Check grace periods before incrementing.
+        bool isInsideFirstInstallGrace =
+            data.interstitialLifetimeNextClicks <
+            FIRST_INSTALL_FREE_LEVELS;
+
+        bool isInsideDailyGrace =
+            data.interstitialDailyNextClicks <
+            data.interstitialDailyFreeLevels;
+
+        bool isDestinationOrWorldChanging =
+            IsDestinationOrWorldChanging();
+
+        // Every successful next-level request counts as one transition,
+        // including destination/world transition levels.
+        data.interstitialLifetimeNextClicks++;
+        data.interstitialDailyNextClicks++;
+
+        // Save immediately, before showing the external ad.
+        SaveManager.instance.SaveData();
+
+        Debug.Log(
+            "Interstitial policy: " +
+            $"LifetimeClicks={data.interstitialLifetimeNextClicks}, " +
+            $"DailyClicks={data.interstitialDailyNextClicks}, " +
+            $"DailyFree={data.interstitialDailyFreeLevels}, " +
+            $"InstallGrace={isInsideFirstInstallGrace}, " +
+            $"DailyGrace={isInsideDailyGrace}, " +
+            $"DestinationChange={isDestinationOrWorldChanging}"
+        );
+
+        if (AdManager.instance == null)
+            return false;
+
+        if (AdManager.instance.IsAdsRemoved())
+            return false;
+
+        if (isInsideFirstInstallGrace)
+            return false;
+
+        if (isInsideDailyGrace)
+            return false;
+
+        if (isDestinationOrWorldChanging)
+            return false;
+
+        return true;
+    }
+
+    private void InitializeInterstitialPolicy(GameData data)
+    {
+        if (data.interstitialPolicyInitialized)
+            return;
+
+        data.interstitialPolicyInitialized = true;
+
+        // Existing players do not incorrectly receive a new
+        // 10-level installation grace period after updating the game.
+        data.interstitialLifetimeNextClicks =
+            Mathf.Max(0, data.level);
+
+        SaveManager.instance.SaveData();
+    }
+
+    private void RefreshDailyInterstitialPolicy(GameData data)
+    {
+        string today = DateTime.Now.ToString(
+            "yyyy-MM-dd",
+            CultureInfo.InvariantCulture
+        );
+
+        if (data.interstitialDailyDate == today)
+            return;
+
+        data.interstitialDailyDate = today;
+
+        data.interstitialDailyFreeLevels =
+            UnityEngine.Random.Range(
+                DAILY_FREE_LEVELS_MIN,
+                DAILY_FREE_LEVELS_MAX_EXCLUSIVE
+            );
+
+        data.interstitialDailyNextClicks = 0;
+
+        SaveManager.instance.SaveData();
+
+        Debug.Log(
+            "New interstitial day. Free levels today: " +
+            data.interstitialDailyFreeLevels
+        );
+    }
+
+    private bool IsDestinationOrWorldChanging()
+    {
+        if (WorldManager.Instance == null ||
+            BackgroundManager.Instance == null)
+        {
+            return false;
+        }
+
+        // SaveManager.data.level is zero-based.
+        int currentDisplayLevel =
+            SaveManager.instance.data.level + 1;
+
+        WorldData currentWorld =
+            BackgroundManager.Instance.GetCurrentWorld();
+
+        WorldData nextWorld =
+            WorldManager.Instance.GetWorldForLevel(
+                currentDisplayLevel + 1
+            );
+
+        bool worldChanging =
+            nextWorld != null &&
+            nextWorld != currentWorld;
+
+        bool destinationUnlocking =
+            BackgroundManager.Instance
+                .IsNextDestinationUnlock();
+
+        return destinationUnlocking || worldChanging;
     }
 }

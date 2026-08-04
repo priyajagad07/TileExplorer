@@ -47,4 +47,12 @@ public class GameData
 
     // Purchases
     public int removeAdsPurchased = 0;
+
+    // Interstitial frequency tracking
+    public bool interstitialPolicyInitialized;
+    public int interstitialLifetimeNextClicks;
+
+    public string interstitialDailyDate;
+    public int interstitialDailyFreeLevels;
+    public int interstitialDailyNextClicks;
 }

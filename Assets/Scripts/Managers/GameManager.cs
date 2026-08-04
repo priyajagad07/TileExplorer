@@ -171,8 +171,8 @@ public class GameManager : MonoBehaviour
 
     public void ContinueMidGame()
     {
-        UIManager.Instance.HidePopup(ScreenType.ContinueGame);
-        UIManager.Instance.Show(ScreenType.GamePlay);
+        Time.timeScale = 1f;
+        UIManager.Instance.ReturnToGameplayFromPopup();
     }
 
     public void RestartMidGame()
@@ -204,9 +204,7 @@ public class GameManager : MonoBehaviour
 
         LevelManager.instance.LoadLevel(currentLevel);
 
-        UIManager.Instance.HidePopup(ScreenType.GameOver);
-        UIManager.Instance.HidePopup(ScreenType.ContinueGame);
-        UIManager.Instance.Show(ScreenType.GamePlay);
+        UIManager.Instance.ReturnToGameplayFromPopup();
 
         DOVirtual.DelayedCall(0.1f, () =>
         {
@@ -400,6 +398,10 @@ public class GameManager : MonoBehaviour
 
     public void ResumeGameAfterRevive()
     {
+        Time.timeScale = 1f;
+
+        UIManager.Instance.ReturnToGameplayFromPopup();
+
         isGameInProgress = true;
 
         if (MatchBoard.instance != null)

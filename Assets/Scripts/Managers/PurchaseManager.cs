@@ -46,7 +46,6 @@ public class PurchaseManager : MonoBehaviour
             return;
 
         SaveManager.instance.data.removeAdsPurchased = 1;
-        SaveManager.instance.SaveData();
 
         CoinManager.instance.AddCoins(REMOVE_ADS_COINS);
 
@@ -56,6 +55,13 @@ public class PurchaseManager : MonoBehaviour
             REMOVE_ADS_MAGIC
         );
 
+        // Save after all purchase rewards have been applied.
+        SaveManager.instance.SaveData();
+
+        // Immediately remove any banner or loaded interstitial.
+        AdManager.instance?.DisableNonRewardedAds();
+
+        CoinsUI.RefreshAll();
         RefreshUI();
 
         if (removeAdsPopup != null)
@@ -63,7 +69,7 @@ public class PurchaseManager : MonoBehaviour
 
         Debug.Log("Remove Ads Purchased Successfully");
     }
-
+    
     public void RefreshUI()
     {
         bool purchased = IsRemoveAdsPurchased();

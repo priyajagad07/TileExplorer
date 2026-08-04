@@ -46,8 +46,8 @@
   <Project Path="Unity.VisualScripting.State.Editor.csproj" />
   <Project Path="Coffee.UIEffect.csproj" />
   <Project Path="Unity.VisualEffectGraph.Runtime.csproj" />
-  <Project Path="Unity.Services.Core.Editor.csproj" />
   <Project Path="Unity.Burst.CodeGen.csproj" />
+  <Project Path="Unity.Services.Core.Editor.csproj" />
   <Project Path="Unity.LevelPlay.csproj" />
   <Project Path="Unity.Services.Core.csproj" />
   <Project Path="Unity.Purchasing.LiveContentAdapterService.csproj" />
@@ -71,8 +71,8 @@
   <Project Path="Unity.VisualScripting.State.csproj" />
   <Project Path="Unity.InternalAPIEditorBridge.001.csproj" />
   <Project Path="Unity.Purchasing.AppleMacosStub.csproj" />
-  <Project Path="Coffee.UIEffect.Editor.csproj" />
   <Project Path="Unity.Purchasing.Codeless.csproj" />
+  <Project Path="Coffee.UIEffect.Editor.csproj" />
   <Project Path="UnityEditor.UI.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Editor.Overrides.csproj" />
   <Project Path="Unity.2D.Sprite.Editor.csproj" />
@@ -113,8 +113,8 @@
   <Project Path="Unity.Purchasing.AppleStub.csproj" />
   <Project Path="Unity.Purchasing.SecurityStub.csproj" />
   <Project Path="Unity.CollabProxy.Editor.csproj" />
-  <Project Path="Unity.RenderPipeline.Universal.ShaderLibrary.csproj" />
   <Project Path="IAPResolver.csproj" />
+  <Project Path="Unity.RenderPipeline.Universal.ShaderLibrary.csproj" />
   <Project Path="Unity.Bindings.OpenImageIO.Editor.csproj" />
   <Project Path="Unity.Services.Core.Registration.csproj" />
   <Project Path="Unity.2D.PixelPerfect.csproj" />
