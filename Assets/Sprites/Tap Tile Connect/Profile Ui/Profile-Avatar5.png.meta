@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7d49900d3e70a447ca7f0ffa7b5b6f68
+guid: 186613223a2294cdbb3b2a4435766c73
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6582956209461107322
-    second: awesome_0
+      213: -6117160616930096424
+    second: Profile-Avatar5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: awesome_0
+      name: Profile-Avatar5_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
-        width: 255
-        height: 63
+        x: 47
+        y: 82
+        width: 938
+        height: 919
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a7a91e46bcb5b5b50800000000000000
-      internalID: 6582956209461107322
+      spriteID: 8da4fd934da7b1ba0800000000000000
+      internalID: -6117160616930096424
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      awesome_0: 6582956209461107322
+      Profile-Avatar5_0: -6117160616930096424
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

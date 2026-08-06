@@ -31,6 +31,18 @@ public class UIManager : MonoBehaviour
 
     private Coroutine pendingScreenAnalyticsCoroutine;
 
+    [Header("Bottom Tab Transition")]
+    [SerializeField]
+    private float bottomTabTransitionDuration = 0.35f;
+
+    [SerializeField]
+    private Ease bottomTabTransitionEase =
+        Ease.OutCubic;
+
+    private bool isBottomTabTransitioning;
+
+    private Sequence bottomTabTransitionSequence;
+
     void Awake()
     {
         if (Instance == null)
@@ -52,19 +64,32 @@ public class UIManager : MonoBehaviour
 
         Show(startScreenType);
     }
-    public void Show(ScreenType type, bool isBack = false)
+    public void Show(
+    ScreenType type,
+    bool isBack = false)
     {
+        if (isBottomTabTransitioning)
+        {
+            return;
+        }
+
         CancelPendingScreenAnalytics();
 
         foreach (var s in screens)
         {
             if (s.screenType != type)
+            {
                 continue;
+            }
 
-            // Never treat a popup as the main screen.
             if (s.isPopup)
             {
                 ShowPopup(type);
+                return;
+            }
+
+            if (currentScreen == s.screen)
+            {
                 return;
             }
 
@@ -72,13 +97,32 @@ public class UIManager : MonoBehaviour
                 currentScreen != null &&
                 currentScreen != s.screen)
             {
-                screenHistory.Push(currentScreenType);
+                screenHistory.Push(
+                    currentScreenType
+                );
             }
 
-            if (type == ScreenType.SettingsScreen &&
-                currentScreenType == ScreenType.GamePlay)
+            if (type ==
+                    ScreenType.SettingsScreen &&
+                currentScreenType ==
+                    ScreenType.GamePlay)
             {
-                Time.timeScale = 0;
+                Time.timeScale = 0f;
+            }
+
+            bool shouldUseTabTransition =
+                currentScreen != null &&
+                IsBottomTab(currentScreenType) &&
+                IsBottomTab(type);
+
+            if (shouldUseTabTransition)
+            {
+                StartBottomTabTransition(
+                    s.screen,
+                    type
+                );
+
+                return;
             }
 
             if (currentScreen != null)
@@ -86,48 +130,15 @@ public class UIManager : MonoBehaviour
                 currentScreen.Hide();
             }
 
-            currentScreen = s.screen;
-            currentScreenType = type;
+            currentScreen =
+                s.screen;
+
+            currentScreenType =
+                type;
 
             currentScreen.Show();
-            RefreshBannerVisibility();
 
-            // Do not log a background screen while a popup
-            // is still covering it.
-            if (activePopup == null)
-            {
-                LogScreenView(
-                    type,
-                    isPopup: false
-                );
-            }
-
-            if (type == ScreenType.HomeScreen)
-            {
-                DOVirtual.DelayedCall(0.5f, () =>
-                {
-                    if (DailyStreakManager.instance != null &&
-                        DailyStreakManager.instance.CanShowReward())
-                    {
-                        UIManager.Instance.Show(
-                            ScreenType.DailyStreakScreen
-                        );
-
-                        if (DailyStreakUI.instance != null)
-                        {
-                            DailyStreakUI.instance.OpenDailyReward();
-                        }
-                    }
-                });
-            }
-
-            ScrollReset reset =
-                currentScreen.GetComponent<ScrollReset>();
-
-            if (reset != null)
-            {
-                reset.ResetToTop();
-            }
+            FinishOpeningScreen(type);
 
             return;
         }
@@ -543,5 +554,249 @@ public class UIManager : MonoBehaviour
         );
 
         pendingScreenAnalyticsCoroutine = null;
+    }
+
+    private bool IsBottomTab(
+    ScreenType type)
+    {
+        return
+            type == ScreenType.ShopScreen ||
+            type == ScreenType.DailyStreakScreen ||
+            type == ScreenType.HomeScreen ||
+            type == ScreenType.MapScreen ||
+            type == ScreenType.LeaderBoardScreen;
+    }
+
+    private int GetBottomTabIndex(
+        ScreenType type)
+    {
+        switch (type)
+        {
+            case ScreenType.ShopScreen:
+                return 0;
+
+            case ScreenType.DailyStreakScreen:
+                return 1;
+
+            case ScreenType.HomeScreen:
+                return 2;
+
+            case ScreenType.MapScreen:
+                return 3;
+
+            case ScreenType.LeaderBoardScreen:
+                return 4;
+
+            default:
+                return -1;
+        }
+    }
+
+    private void StartBottomTabTransition(
+    BaseScreen nextScreen,
+    ScreenType nextScreenType)
+    {
+        if (isBottomTabTransitioning)
+        {
+            return;
+        }
+
+        BaseScreen previousScreen =
+            currentScreen;
+
+        ScreenType previousScreenType =
+            currentScreenType;
+
+        RectTransform previousRect =
+            previousScreen.TransitionRect;
+
+        RectTransform nextRect =
+            nextScreen.TransitionRect;
+
+        if (previousRect == null ||
+            nextRect == null)
+        {
+            Debug.LogError(
+                "TransitionRoot is not assigned in BaseScreen."
+            );
+
+            return;
+        }
+
+        if (previousScreen.target ==
+                previousScreen.transform ||
+            nextScreen.target ==
+                nextScreen.transform)
+        {
+            Debug.LogError(
+                "Assign the TransitionRoot child as BaseScreen Target."
+            );
+
+            return;
+        }
+
+        int previousIndex =
+            GetBottomTabIndex(
+                previousScreenType
+            );
+
+        int nextIndex =
+            GetBottomTabIndex(
+                nextScreenType
+            );
+
+        if (previousIndex == -1 ||
+            nextIndex == -1)
+        {
+            return;
+        }
+
+        isBottomTabTransitioning = true;
+
+        int direction =
+            nextIndex > previousIndex
+                ? 1
+                : -1;
+
+        Canvas.ForceUpdateCanvases();
+
+        float screenWidth =
+            previousRect.rect.width;
+
+        if (screenWidth <= 0f)
+        {
+            screenWidth = 1080f;
+        }
+
+        Vector2 slideOffset =
+            Vector2.right *
+            screenWidth *
+            direction;
+
+        bottomTabTransitionSequence?.Kill();
+
+        previousRect.DOKill();
+        nextRect.DOKill();
+
+        previousScreen
+            .PrepareForTabTransition();
+
+        nextScreen
+            .PrepareForTabTransition();
+
+        previousRect.anchoredPosition =
+            previousScreen.RestingAnchoredPosition;
+
+        nextRect.anchoredPosition =
+            nextScreen.RestingAnchoredPosition +
+            slideOffset;
+
+        bottomTabTransitionSequence =
+            DOTween.Sequence();
+
+        bottomTabTransitionSequence
+            .SetUpdate(true);
+
+        // Current screen moves out.
+        bottomTabTransitionSequence.Join(
+            previousRect
+                .DOAnchorPos(
+                    previousScreen
+                        .RestingAnchoredPosition -
+                    slideOffset,
+                    bottomTabTransitionDuration
+                )
+                .SetEase(
+                    bottomTabTransitionEase
+                )
+        );
+
+        // New screen moves in.
+        bottomTabTransitionSequence.Join(
+            nextRect
+                .DOAnchorPos(
+                    nextScreen
+                        .RestingAnchoredPosition,
+                    bottomTabTransitionDuration
+                )
+                .SetEase(
+                    bottomTabTransitionEase
+                )
+        );
+
+        bottomTabTransitionSequence
+            .OnComplete(() =>
+            {
+                previousScreen
+                    .CompleteTabHide();
+
+                nextScreen
+                    .CompleteTabShow();
+
+                currentScreen =
+                    nextScreen;
+
+                currentScreenType =
+                    nextScreenType;
+
+                isBottomTabTransitioning =
+                    false;
+
+                bottomTabTransitionSequence =
+                    null;
+
+                FinishOpeningScreen(
+                    nextScreenType
+                );
+            });
+    }
+
+    private void FinishOpeningScreen(
+    ScreenType type)
+    {
+        RefreshBannerVisibility();
+
+        if (activePopup == null)
+        {
+            LogScreenView(
+                type,
+                isPopup: false
+            );
+        }
+
+        if (type == ScreenType.HomeScreen)
+        {
+            DOVirtual.DelayedCall(
+                0.5f,
+                () =>
+                {
+                    if (
+                        DailyStreakManager.instance != null &&
+                        DailyStreakManager.instance
+                            .CanShowReward()
+                    )
+                    {
+                        UIManager.Instance.Show(
+                            ScreenType.DailyStreakScreen
+                        );
+
+                        if (DailyStreakUI.instance != null)
+                        {
+                            DailyStreakUI.instance
+                                .OpenDailyReward();
+                        }
+                    }
+                }
+            );
+        }
+
+        ScrollReset reset =
+            currentScreen
+                .GetComponent<ScrollReset>();
+
+        if (reset != null)
+        {
+            reset.ResetToTop();
+        }
     }
 }

@@ -10,9 +10,11 @@ public class AvatarUI : MonoBehaviour
 
     private void Awake()
     {
-        instances.Add(this);
+        if (!instances.Contains(this))
+        {
+            instances.Add(this);
+        }
     }
-
     private void OnDestroy()
     {
         instances.Remove(this);
@@ -25,13 +27,20 @@ public class AvatarUI : MonoBehaviour
 
     public void Refresh()
     {
-        if (AvatarManager.Instance == null)
+        if (avatarImage == null ||
+            AvatarManager.Instance == null ||
+            SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
             return;
+        }
 
-        int avatarIndex = SaveManager.instance.data.avatarIndex;
+        int avatarIndex =
+            SaveManager.instance.data.avatarIndex;
 
         avatarImage.sprite =
-            AvatarManager.Instance.GetAvatarSprite(avatarIndex);
+            AvatarManager.Instance
+                .GetAvatarSprite(avatarIndex);
     }
 
     public static void RefreshAll()

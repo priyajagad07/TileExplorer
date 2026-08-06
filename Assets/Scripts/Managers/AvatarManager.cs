@@ -91,17 +91,13 @@ public class AvatarManager : MonoBehaviour
 
     private void LoadProfile()
     {
-        if (string.IsNullOrEmpty(SaveManager.instance.data.playerName))
-        {
-            SaveManager.instance.data.playerName =
-                "Player" + Random.Range(1000, 9999);
-
-            SaveManager.instance.SaveData();
-        }
-
-        selectedAvatar = SaveManager.instance.data.avatarIndex;
+        selectedAvatar =
+            SaveManager.instance.data.avatarIndex;
 
         RefreshUI();
+
+        AvatarUI.RefreshAll();
+        PlayerNameUI.RefreshAll();
     }
 
     public Sprite GetAvatarSprite(int index)

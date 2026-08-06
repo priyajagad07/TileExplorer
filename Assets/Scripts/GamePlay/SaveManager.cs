@@ -36,17 +36,41 @@ public class SaveManager : MonoBehaviour
 
     public void LoadData()
     {
+        bool dataChanged = false;
+
         if (File.Exists(saveFilePath))
         {
-            string json = File.ReadAllText(saveFilePath);
-            data = JsonUtility.FromJson<GameData>(json);
+            string json =
+                File.ReadAllText(saveFilePath);
+
+            data =
+                JsonUtility.FromJson<GameData>(json);
         }
         else
         {
             data = new GameData();
-            SaveData();
+            dataChanged = true;
         }
 
-        //data.level = 598;
+        // Protect against invalid or empty save data.
+        if (data == null)
+        {
+            data = new GameData();
+            dataChanged = true;
+        }
+
+        // Create the name before any UI screen is shown.
+        if (string.IsNullOrWhiteSpace(data.playerName))
+        {
+            data.playerName =
+                "Player" + Random.Range(1000, 10000);
+
+            dataChanged = true;
+        }
+
+        if (dataChanged)
+        {
+            SaveData();
+        }
     }
 }

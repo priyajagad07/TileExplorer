@@ -4,104 +4,127 @@ using DG.Tweening;
 public class BaseScreen : MonoBehaviour
 {
     private Canvas canvas;
+    private CanvasGroup canvasGroup;
+
     public AnimationType animationType;
     public float duration = 0.4f;
+
+    [Tooltip(
+        "For bottom-tab screens, assign the TransitionRoot child."
+    )]
     public Transform target;
 
     private UIScreenAnimation screenAnimation;
+    private Vector2 restingAnchoredPosition;
+
+    public Canvas ScreenCanvas => canvas;
+
+    public RectTransform TransitionRect =>
+        target as RectTransform;
+
+    public Vector2 RestingAnchoredPosition =>
+        restingAnchoredPosition;
 
     void Awake()
     {
-        if (canvas == null)
-            canvas = GetComponent<Canvas>();
+        canvas = GetComponent<Canvas>();
 
-        screenAnimation = GetComponent<UIScreenAnimation>();
+        if (canvas == null)
+        {
+            Debug.LogError(
+                $"Canvas is missing on {gameObject.name}."
+            );
+        }
+
+        screenAnimation =
+            GetComponent<UIScreenAnimation>();
 
         if (screenAnimation == null)
         {
-            screenAnimation = gameObject.AddComponent<UIScreenAnimation>();
+            screenAnimation =
+                gameObject.AddComponent<UIScreenAnimation>();
         }
 
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup =
+            GetComponent<CanvasGroup>();
+
         if (canvasGroup == null)
         {
-            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            canvasGroup =
+                gameObject.AddComponent<CanvasGroup>();
         }
-
-        screenAnimation.canvasGroup = canvasGroup;
 
         if (target == null)
         {
             target = transform;
         }
 
-        screenAnimation.animationType = animationType;
-        screenAnimation.duration = duration;
-        screenAnimation.target = target;
+        RectTransform targetRect =
+            target as RectTransform;
+
+        if (targetRect != null)
+        {
+            restingAnchoredPosition =
+                targetRect.anchoredPosition;
+        }
+
+        screenAnimation.canvasGroup =
+            canvasGroup;
+
+        screenAnimation.animationType =
+            animationType;
+
+        screenAnimation.duration =
+            duration;
+
+        screenAnimation.target =
+            target;
     }
 
     public void Show()
     {
-        Debug.Log("SHOW SCREEN: " + gameObject.name);
+        Debug.Log(
+            "SHOW SCREEN: " +
+            gameObject.name
+        );
+
         canvas.enabled = true;
 
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
 
-        if (canvasGroup != null)
-        {
-            canvasGroup.interactable = true;
-            canvasGroup.blocksRaycasts = true;
-        }
+        PlayerNameUI.RefreshAll();
 
         screenAnimation.Show();
 
         if (gameObject.name == "GamePlay")
         {
-            Debug.Log("GAMEPLAY SHOW CALLED");
+            Debug.Log(
+                "GAMEPLAY SHOW CALLED"
+            );
 
             DOVirtual.DelayedCall(
                 0.35f,
                 () =>
                 {
-                    Debug.Log("PLAYING SPAWN");
+                    Debug.Log(
+                        "PLAYING SPAWN"
+                    );
 
                     if (BoardSpawner.instance != null)
                     {
-                        BoardSpawner.instance.PlaySpawnAnimation();
+                        BoardSpawner.instance
+                            .PlaySpawnAnimation();
                     }
                 }
             );
         }
-
-
     }
-
-    // public void Hide()
-    // {
-    //     CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-
-    //     if (canvasGroup != null)
-    //     {
-    //         canvasGroup.interactable = false;
-    //         canvasGroup.blocksRaycasts = false;
-    //     }
-
-    //     screenAnimation.Hide(() =>
-    //     {
-    //         canvas.enabled = false;
-    //     });
-    // }
 
     public void Hide()
     {
-        CanvasGroup canvasGroup =
-            GetComponent<CanvasGroup>();
-
-        if (canvasGroup != null)
-        {
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
-        }
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
 
         screenAnimation.Hide(() =>
         {
@@ -109,8 +132,67 @@ public class BaseScreen : MonoBehaviour
 
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.NotifyScreenFinishedHiding(this);
+                UIManager.Instance
+                    .NotifyScreenFinishedHiding(this);
             }
         });
+    }
+
+    public void PrepareForTabTransition()
+    {
+        if (canvas == null)
+        {
+            canvas = GetComponent<Canvas>();
+        }
+
+        if (canvasGroup == null)
+        {
+            canvasGroup =
+                GetComponent<CanvasGroup>();
+        }
+
+        canvas.enabled = true;
+
+        canvasGroup.alpha = 1f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    public void CompleteTabShow()
+    {
+        canvas.enabled = true;
+
+        canvasGroup.alpha = 1f;
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+
+        RectTransform rect =
+            TransitionRect;
+
+        if (rect != null)
+        {
+            rect.anchoredPosition =
+                restingAnchoredPosition;
+        }
+
+        PlayerNameUI.RefreshAll();
+        AvatarUI.RefreshAll();
+    }
+
+    public void CompleteTabHide()
+    {
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+
+        RectTransform rect =
+            TransitionRect;
+
+        if (rect != null)
+        {
+            rect.anchoredPosition =
+                restingAnchoredPosition;
+        }
+
+        canvas.enabled = false;
     }
 }
