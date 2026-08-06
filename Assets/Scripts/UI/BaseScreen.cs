@@ -73,12 +73,29 @@ public class BaseScreen : MonoBehaviour
             );
         }
 
-        
+
     }
+
+    // public void Hide()
+    // {
+    //     CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+
+    //     if (canvasGroup != null)
+    //     {
+    //         canvasGroup.interactable = false;
+    //         canvasGroup.blocksRaycasts = false;
+    //     }
+
+    //     screenAnimation.Hide(() =>
+    //     {
+    //         canvas.enabled = false;
+    //     });
+    // }
 
     public void Hide()
     {
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        CanvasGroup canvasGroup =
+            GetComponent<CanvasGroup>();
 
         if (canvasGroup != null)
         {
@@ -89,6 +106,11 @@ public class BaseScreen : MonoBehaviour
         screenAnimation.Hide(() =>
         {
             canvas.enabled = false;
+
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.NotifyScreenFinishedHiding(this);
+            }
         });
     }
 }

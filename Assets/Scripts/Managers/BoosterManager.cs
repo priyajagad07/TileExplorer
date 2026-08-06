@@ -80,19 +80,72 @@ public class BoosterManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        int currentLevel = SaveManager.instance.data.level + 1;
+        RefreshUndoUI();
+        RefreshShuffleUI();
+        RefreshMagicUI();
+    }
 
-        bool undoUnlocked = currentLevel > 3 || (currentLevel == 3 && SaveManager.instance.data.undoAnimPlayed == 1);
-        if (undoLockImage != null) undoLockImage.SetActive(!undoUnlocked);
-        foreach (TextMeshProUGUI undo in undoText) undo.text = undoUnlocked ? undoCount.ToString() : "Lv.3";
+    public void RefreshUndoUI()
+    {
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
 
-        bool shuffleUnlocked = currentLevel > 5 || (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 1);
-        if (shuffleLockImage != null) shuffleLockImage.SetActive(!shuffleUnlocked);
-        foreach (TextMeshProUGUI shuffle in shuffleText) shuffle.text = shuffleUnlocked ? shuffleCount.ToString() : "Lv.5";
+        bool unlocked =
+            currentLevel > 3 ||
+            (currentLevel == 3 &&
+             SaveManager.instance.data.undoAnimPlayed == 1);
 
-        bool magicUnlocked = currentLevel > 7 || (currentLevel == 7 && SaveManager.instance.data.magicAnimPlayed == 1);
-        if (magicLockImage != null) magicLockImage.SetActive(!magicUnlocked);
-        foreach (TextMeshProUGUI magic in magicText) magic.text = magicUnlocked ? magicCount.ToString() : "Lv.7";
+        if (undoLockImage != null)
+            undoLockImage.SetActive(!unlocked);
+
+        foreach (TextMeshProUGUI text in undoText)
+        {
+            text.text = unlocked
+                ? undoCount.ToString()
+                : "Lv.3";
+        }
+    }
+
+    public void RefreshShuffleUI()
+    {
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        bool unlocked =
+            currentLevel > 5 ||
+            (currentLevel == 5 &&
+             SaveManager.instance.data.shuffleAnimPlayed == 1);
+
+        if (shuffleLockImage != null)
+            shuffleLockImage.SetActive(!unlocked);
+
+        foreach (TextMeshProUGUI text in shuffleText)
+        {
+            text.text = unlocked
+                ? shuffleCount.ToString()
+                : "Lv.5";
+        }
+    }
+
+    public void RefreshMagicUI()
+    {
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        bool unlocked =
+            currentLevel > 7 ||
+            (currentLevel == 7 &&
+             SaveManager.instance.data.magicAnimPlayed == 1);
+
+        if (magicLockImage != null)
+            magicLockImage.SetActive(!unlocked);
+
+        foreach (TextMeshProUGUI text in magicText)
+        {
+            text.text = unlocked
+                ? magicCount.ToString()
+                : "Lv.7";
+        }
     }
 
     public void CheckUnlockRewards()
@@ -103,16 +156,39 @@ public class BoosterManager : MonoBehaviour
         {
             undoCount += 3;
             SaveManager.instance.data.undoUnlocked = 1;
+            AnalyticsManager.Instance?.LogBoosterEvent(
+        "unlocked",
+        "undo",
+        3,
+        currentLevel,
+        "level_unlock"
+    );
         }
         if (currentLevel >= 5 && SaveManager.instance.data.shuffleUnlocked == 0)
         {
             shuffleCount += 3;
             SaveManager.instance.data.shuffleUnlocked = 1;
+
+            AnalyticsManager.Instance?.LogBoosterEvent(
+        "unlocked",
+        "shuffle",
+        3,
+        currentLevel,
+        "level_unlock"
+    );
         }
         if (currentLevel >= 7 && SaveManager.instance.data.magicUnlocked == 0)
         {
             magicCount += 3;
             SaveManager.instance.data.magicUnlocked = 1;
+
+            AnalyticsManager.Instance?.LogBoosterEvent(
+        "unlocked",
+        "magic",
+        3,
+        currentLevel,
+        "level_unlock"
+    );
         }
         SaveBoosters();
     }
@@ -233,20 +309,314 @@ public class BoosterManager : MonoBehaviour
         });
     }
 
-    public bool UseUndo() { if (undoCount <= 0) return false; undoCount--; SaveBoosters(); UpdateUI(); return true; }
-    public bool UseShuffle() { if (shuffleCount <= 0) return false; shuffleCount--; SaveBoosters(); UpdateUI(); return true; }
-    public bool UseMagic() { if (magicCount <= 0) return false; magicCount--; SaveBoosters(); UpdateUI(); return true; }
+    public bool UseUndo()
+    {
+        if (undoCount <= 0)
+            return false;
+
+        undoCount--;
+
+        SaveBoosters();
+        UpdateUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            action: "used",
+            boosterType: "undo",
+            amount: 1,
+            levelNumber: GetCurrentLevelNumber(),
+            source: "gameplay"
+        );
+
+        return true;
+    }
+
+    public bool UseShuffle()
+    {
+        if (shuffleCount <= 0)
+            return false;
+
+        shuffleCount--;
+
+        SaveBoosters();
+        UpdateUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            action: "used",
+            boosterType: "shuffle",
+            amount: 1,
+            levelNumber: GetCurrentLevelNumber(),
+            source: "gameplay"
+        );
+
+        return true;
+    }
+
+    public bool UseMagic()
+    {
+        if (magicCount <= 0)
+            return false;
+
+        magicCount--;
+
+        SaveBoosters();
+        UpdateUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            action: "used",
+            boosterType: "magic",
+            amount: 1,
+            levelNumber: GetCurrentLevelNumber(),
+            source: "gameplay"
+        );
+
+        return true;
+    }
 
     public void ShowNothingToUndo() { ShowMessage(nothingToUndoMessage); }
     public void ShowNothingToShuffle() { ShowMessage(nothingToShuffleMessage); }
     public void ShowNothingToMagic() { ShowMessage(nothingToMagicMessage); }
 
-    public void BuyUndo() { if (CoinManager.instance.SpendCoins(1200)) { undoCount += 3; SaveBoosters(); UpdateUI(); UIManager.Instance.HidePopup(ScreenType.BuyUndoScreen); } else ShowMessage(insuffientCoinUndo); }
-    public void BuyShuffle() { if (CoinManager.instance.SpendCoins(1400)) { shuffleCount += 3; SaveBoosters(); UpdateUI(); UIManager.Instance.HidePopup(ScreenType.BuyShuffleScreen); } else ShowMessage(insuffientCoinsShuffle); }
-    public void BuyMagic() { if (CoinManager.instance.SpendCoins(1800)) { magicCount += 3; SaveBoosters(); UpdateUI(); UIManager.Instance.HidePopup(ScreenType.BuyMagicScreen); } else ShowMessage(insuffientCoinsMagic); }
+    public void BuyUndo()
+    {
+        bool purchased =
+            CoinManager.instance.SpendCoins(
+                1200,
+                "undo_pack_3"
+            );
 
-    public void AddBoosters(int undo, int shuffle, int magic) { undoCount += undo; shuffleCount += shuffle; magicCount += magic; SaveBoosters(); UpdateUI(); }
-    public void AddUndo(int amount) { undoCount += amount; SaveBoosters(); UpdateUI(); }
-    public void AddShuffle(int amount) { shuffleCount += amount; SaveBoosters(); UpdateUI(); }
-    public void AddMagic(int amount) { magicCount += amount; SaveBoosters(); UpdateUI(); }
+        if (!purchased)
+        {
+            ShowMessage(insuffientCoinUndo);
+            return;
+        }
+
+        undoCount += 3;
+
+        SaveBoosters();
+        UpdateUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            action: "purchased",
+            boosterType: "undo",
+            amount: 3,
+            levelNumber: GetCurrentLevelNumber(),
+            source: "coins"
+        );
+
+        UIManager.Instance.HidePopup(
+            ScreenType.BuyUndoScreen
+        );
+    }
+
+    public void BuyShuffle()
+    {
+        bool purchased =
+            CoinManager.instance.SpendCoins(
+                1400,
+                "shuffle_pack_3"
+            );
+
+        if (!purchased)
+        {
+            ShowMessage(insuffientCoinsShuffle);
+            return;
+        }
+
+        shuffleCount += 3;
+
+        SaveBoosters();
+        UpdateUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            action: "purchased",
+            boosterType: "shuffle",
+            amount: 3,
+            levelNumber: GetCurrentLevelNumber(),
+            source: "coins"
+        );
+
+        UIManager.Instance.HidePopup(
+            ScreenType.BuyShuffleScreen
+        );
+    }
+
+    public void BuyMagic()
+    {
+        bool purchased =
+            CoinManager.instance.SpendCoins(
+                1800,
+                "magic_pack_3"
+            );
+
+        if (!purchased)
+        {
+            ShowMessage(insuffientCoinsMagic);
+            return;
+        }
+
+        magicCount += 3;
+
+        SaveBoosters();
+        UpdateUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            action: "purchased",
+            boosterType: "magic",
+            amount: 3,
+            levelNumber: GetCurrentLevelNumber(),
+            source: "coins"
+        );
+
+        UIManager.Instance.HidePopup(
+            ScreenType.BuyMagicScreen
+        );
+    }
+
+    public void AddBoosters(
+    int undo,
+    int shuffle,
+    int magic,
+    bool refreshUI = true,
+    string source = "reward")
+    {
+        undo = Mathf.Max(0, undo);
+        shuffle = Mathf.Max(0, shuffle);
+        magic = Mathf.Max(0, magic);
+
+        if (undo == 0 &&
+            shuffle == 0 &&
+            magic == 0)
+        {
+            return;
+        }
+
+        undoCount += undo;
+        shuffleCount += shuffle;
+        magicCount += magic;
+
+        SaveBoosters();
+
+        if (refreshUI)
+        {
+            UpdateUI();
+        }
+
+        int levelNumber =
+            GetCurrentLevelNumber();
+
+        if (undo > 0)
+        {
+            AnalyticsManager.Instance?.LogBoosterEvent(
+                action: "earned",
+                boosterType: "undo",
+                amount: undo,
+                levelNumber: levelNumber,
+                source: source
+            );
+        }
+
+        if (shuffle > 0)
+        {
+            AnalyticsManager.Instance?.LogBoosterEvent(
+                action: "earned",
+                boosterType: "shuffle",
+                amount: shuffle,
+                levelNumber: levelNumber,
+                source: source
+            );
+        }
+
+        if (magic > 0)
+        {
+            AnalyticsManager.Instance?.LogBoosterEvent(
+                action: "earned",
+                boosterType: "magic",
+                amount: magic,
+                levelNumber: levelNumber,
+                source: source
+            );
+        }
+    }
+
+    public void AddUndo(
+    int amount,
+    bool refreshUI = true,
+    string source = "reward")
+    {
+        if (amount <= 0)
+            return;
+
+        undoCount += amount;
+
+        SaveBoosters();
+
+        if (refreshUI)
+            RefreshUndoUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            "earned",
+            "undo",
+            amount,
+            GetCurrentLevelNumber(),
+            source
+        );
+    }
+
+    public void AddShuffle(
+        int amount,
+        bool refreshUI = true,
+        string source = "reward")
+    {
+        if (amount <= 0)
+            return;
+
+        shuffleCount += amount;
+
+        SaveBoosters();
+
+        if (refreshUI)
+            RefreshShuffleUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            "earned",
+            "shuffle",
+            amount,
+            GetCurrentLevelNumber(),
+            source
+        );
+    }
+
+    public void AddMagic(
+        int amount,
+        bool refreshUI = true,
+        string source = "reward")
+    {
+        if (amount <= 0)
+            return;
+
+        magicCount += amount;
+
+        SaveBoosters();
+
+        if (refreshUI)
+            RefreshMagicUI();
+
+        AnalyticsManager.Instance?.LogBoosterEvent(
+            "earned",
+            "magic",
+            amount,
+            GetCurrentLevelNumber(),
+            source
+        );
+    }
+    private int GetCurrentLevelNumber()
+    {
+        if (SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
+            return -1;
+        }
+
+        return SaveManager.instance.data.level + 1;
+    }
 }

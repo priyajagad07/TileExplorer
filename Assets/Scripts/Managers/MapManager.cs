@@ -40,31 +40,31 @@ public class MapManager : MonoBehaviour
 
     private void UpdateAllCountries(int currentLevel)
     {
-        Debug.Log("UpdateAllCountries");
+        //Debug.Log("UpdateAllCountries");
         WorldDatabase database = WorldManager.Instance.GetDatabase();
         if (database == null)
         {
-            Debug.Log("Database NULL");
+            //Debug.Log("Database NULL");
             return;
         }
 
-        Debug.Log("World Count = " + database.worlds.Count);
+        //Debug.Log("World Count = " + database.worlds.Count);
         int virtualLevel = WorldManager.Instance.GetVirtualLevel(currentLevel);
 
         foreach (WorldData world in database.worlds)
         {
-            Debug.Log("Searching panel for " + world.worldName);
+            //Debug.Log("Searching panel for " + world.worldName);
 
             WorldUIPanel matchingPanel = worldPanels.Find(p => p.worldData == world);
 
-            if (matchingPanel == null)
-            {
-                Debug.Log("NOT FOUND : " + world.worldName);
-            }
-            else
-            {
-                Debug.Log("FOUND : " + world.worldName);
-            }
+            // if (matchingPanel == null)
+            // {
+            //     Debug.Log("NOT FOUND : " + world.worldName);
+            // }
+            // else
+            // {
+            //     Debug.Log("FOUND : " + world.worldName);
+            // }
 
             if (matchingPanel == null) continue;
 
@@ -107,17 +107,17 @@ public class MapManager : MonoBehaviour
                 destinationCard.cityImage.sprite = unlocked ? world.previewCards[i] : lockedCardSprite;
             }
 
-            Debug.Log(
-    $"World: {world.worldName}, Card: {i}, " +
-    $"Unlocked: {unlocked}, CurrentLevel: {currentLevel}, " +
-    $"UnlockedCards: {unlockedCards}"
-);
+//             Debug.Log(
+//     $"World: {world.worldName}, Card: {i}, " +
+//     $"Unlocked: {unlocked}, CurrentLevel: {currentLevel}, " +
+//     $"UnlockedCards: {unlockedCards}"
+// );
+//         }
+//         Debug.Log($"Current Level: {currentLevel}");
+//         Debug.Log($"World Start: {world.startLevel}");
+//         Debug.Log($"World End: {world.endLevel}");
+//         Debug.Log($"Levels Per Card: {levelsPerCard}");
+//         Debug.Log($"Unlocked Cards: {unlockedCards}");
         }
-        Debug.Log($"Current Level: {currentLevel}");
-        Debug.Log($"World Start: {world.startLevel}");
-        Debug.Log($"World End: {world.endLevel}");
-        Debug.Log($"Levels Per Card: {levelsPerCard}");
-        Debug.Log($"Unlocked Cards: {unlockedCards}");
-
     }
 }

@@ -42,9 +42,9 @@ public class FreeCoinsReward : MonoBehaviour
                             );
 
                             CoinManager.instance.AddCoins(
-                                rewardAmount
-                            );
-
+    rewardAmount,
+    source: "rewarded_free_coins"
+);
                             UIManager.Instance.HidePopup(
                                 ScreenType.FreeCoinsScreen
                             );
@@ -62,7 +62,8 @@ public class FreeCoinsReward : MonoBehaviour
                     Debug.Log(
                         "Free coins ad was not completed."
                     );
-                }
+                },
+                "free_coins"
             );
 
         if (adStarted)

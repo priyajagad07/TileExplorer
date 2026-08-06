@@ -48,6 +48,11 @@ public class GameData
     // Purchases
     public int removeAdsPurchased = 0;
 
+    // Prevent the same pending transaction from being granted twice.
+    public List<string> processedIapTransactionIds =
+        new List<string>();
+
+
     // Interstitial frequency tracking
     public bool interstitialPolicyInitialized;
     public int interstitialLifetimeNextClicks;

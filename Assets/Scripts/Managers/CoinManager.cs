@@ -21,29 +21,59 @@ public class CoinManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void AddCoins(int amount)
+
+    public void AddCoins(
+     int amount,
+     bool refreshUI = true,
+     string source = "unspecified")
     {
-        int startCoins = coins;
+        if (amount <= 0)
+            return;
+
         coins += amount;
-        SaveCoins();
+
+        SaveCoins(refreshUI);
+
+        AnalyticsManager.Instance?.LogCurrencyEarned(
+            currencyName: "coins",
+            amount: amount,
+            source: source
+        );
     }
 
-    public bool SpendCoins(int amount)
+    public bool SpendCoins(
+        int amount,
+        string itemName = "unspecified")
     {
-        if (coins < amount)
+        if (amount <= 0 || coins < amount)
             return false;
 
-        int startCoins = coins;
         coins -= amount;
+
         SaveCoins();
+
+        AnalyticsManager.Instance?.LogCurrencySpent(
+            currencyName: "coins",
+            amount: amount,
+            itemName: itemName
+        );
+
         return true;
     }
 
-    void SaveCoins()
+    private void SaveCoins(bool refreshUI = true)
     {
         SaveManager.instance.data.coins = coins;
         SaveManager.instance.SaveData();
 
+        if (refreshUI)
+        {
+            RefreshCoinsUI();
+        }
+    }
+
+    public void RefreshCoinsUI()
+    {
         CoinsUI.RefreshAll();
         ProfileUI.Instance?.Refresh();
     }

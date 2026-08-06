@@ -16,9 +16,20 @@ public class MatchBoardRevive : MonoBehaviour
             SoundManager.instance.PlaySound(SoundName.ButtonPop);
         }
 
+        LogReviveAnalytics(
+    "requested",
+    "pending"
+);
+
         if (AdManager.instance == null)
         {
-            Debug.LogWarning("REVIVE: AdManager is not available."
+            LogReviveAnalytics(
+                "unavailable",
+                "ad_manager_missing"
+            );
+
+            Debug.LogWarning(
+                "REVIVE: AdManager is not available."
             );
 
             FinishReviveState();
@@ -26,14 +37,30 @@ public class MatchBoardRevive : MonoBehaviour
         }
 
         bool adStarted =
-            AdManager.instance.ShowRewardedAd(() => { PerformRevive(); },
-                () =>
-                {
-                    FinishReviveState();
-                    Debug.Log("Revive ad was not completed."
-                    );
-                }
-            );
+     AdManager.instance.ShowRewardedAd(
+         // REWARD EARNED
+         () =>
+         {
+             PerformRevive();
+         },
+
+         // FAILED OR CLOSED
+         () =>
+         {
+             LogReviveAnalytics(
+                 "failed",
+                 "ad_not_completed"
+             );
+
+             FinishReviveState();
+
+             Debug.Log(
+                 "Revive ad was not completed."
+             );
+         },
+
+         "revive"
+     );
 
         if (adStarted)
         {
@@ -47,6 +74,11 @@ public class MatchBoardRevive : MonoBehaviour
 
         else
         {
+            LogReviveAnalytics(
+                "unavailable",
+                "ad_not_ready"
+            );
+
             FinishReviveState();
             Debug.Log("Rewarded ad not ready. Revive not started.");
         }
@@ -58,6 +90,11 @@ public class MatchBoardRevive : MonoBehaviour
             MatchBoard.instance == null ||
             MatchBoardMatch.instance == null)
         {
+            LogReviveAnalytics(
+       "failed",
+       "board_dependencies_missing"
+   );
+
             FinishReviveState();
             return;
         }
@@ -69,6 +106,10 @@ public class MatchBoardRevive : MonoBehaviour
 
         if (placedTiles.Count == 0)
         {
+            LogReviveAnalytics(
+        "failed",
+        "empty_tray"
+    );
             FinishReviveState();
             return;
         }
@@ -137,7 +178,15 @@ public class MatchBoardRevive : MonoBehaviour
 
         if (tileParent == null)
         {
-            Debug.LogWarning("REVIVE: Main board tile parent is null.");
+            LogReviveAnalytics(
+                "failed",
+                "tile_parent_missing"
+            );
+
+            Debug.LogWarning(
+                "REVIVE: Main board tile parent is null."
+            );
+
             FinishReviveState();
             return;
         }
@@ -211,7 +260,16 @@ public class MatchBoardRevive : MonoBehaviour
 
         if (validMatchBoardTilesToRemove.Count == 0)
         {
-            Debug.LogWarning("REVIVE: No valid complete tile group could be removed.");
+            LogReviveAnalytics(
+                "failed",
+                "no_valid_group"
+            );
+
+            Debug.LogWarning(
+                "REVIVE: No valid complete tile group " +
+                "could be removed."
+            );
+
             FinishReviveState();
             return;
         }
@@ -254,6 +312,10 @@ public class MatchBoardRevive : MonoBehaviour
 
         // Rearrange remaining MatchBoard tiles.
         MatchBoard.instance.RearrangeBoard();
+        LogReviveAnalytics(
+    "completed",
+    "success"
+);
 
         // Resume gameplay.
         Time.timeScale = 1f;
@@ -297,5 +359,28 @@ public class MatchBoardRevive : MonoBehaviour
         {
             MatchBoard.instance.isInputLocked = false;
         }
+    }
+
+    private int GetCurrentLevelNumber()
+    {
+        if (SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
+            return -1;
+        }
+
+        return SaveManager.instance.data.level + 1;
+    }
+
+    private void LogReviveAnalytics(
+        string action,
+        string result)
+    {
+        AnalyticsManager.Instance?.LogReviveEvent(
+            action: action,
+            method: "rewarded_ad",
+            levelNumber: GetCurrentLevelNumber(),
+            result: result
+        );
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using System.Collections;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -36,6 +37,34 @@ public class TutorialManager : MonoBehaviour
     private Vector3 currentTargetOriginalScale;
 
     private const int TOTAL_STEPS = 3;
+    private Vector3 activeBoosterOriginalScale;
+    private Tween tutorialDelayedCall;
+
+    private const string MainTutorialAnalyticsName =
+    "main_gameplay_tutorial";
+
+    private string currentSoftTutorialAnalyticsName =
+        string.Empty;
+
+    private const int MatchBoardFocusOrder = 100;
+    private const int TargetFocusOrder = 101;
+    private const int PointerFocusOrder = 102;
+    private const int PopupFocusOrder = 105;
+
+    private class FocusState
+    {
+        public Canvas canvas;
+        public bool canvasWasAdded;
+        public bool previousOverrideSorting;
+        public int previousSortingOrder;
+
+        public GraphicRaycaster raycaster;
+        public bool raycasterWasAdded;
+    }
+
+    private readonly System.Collections.Generic.Dictionary<GameObject, FocusState>
+        focusedObjects =
+            new System.Collections.Generic.Dictionary<GameObject, FocusState>();
 
     void Awake()
     {
@@ -57,24 +86,180 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    private void SetUIFocus(GameObject target, bool isFocused, int sortOrder = 30000)
+    private void OnDisable()
     {
-        if (target == null) return;
+        if (isTutorialActive ||
+            isSoftTutorialActive)
+        {
+            TutorialAnalyticsTracker.Instance
+                ?.CancelCurrentTutorial();
+        }
 
-        Canvas canvas = target.GetComponent<Canvas>();
+        tutorialDelayedCall?.Kill();
+        tutorialDelayedCall = null;
+
+        ClearAllUIFocus();
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance
+                .SetTutorialBannerSuppressed(false);
+        }
+    }
+
+    private void SetUIFocus(
+    GameObject target,
+    bool isFocused,
+    int sortOrder = TargetFocusOrder)
+    {
+        if (target == null)
+            return;
 
         if (isFocused)
         {
-            if (canvas == null) canvas = target.AddComponent<Canvas>();
-            if (target.GetComponent<GraphicRaycaster>() == null) target.AddComponent<GraphicRaycaster>();
+            // The object is already being focused.
+            if (focusedObjects.TryGetValue(
+                    target,
+                    out FocusState existingState))
+            {
+                if (existingState.canvas != null)
+                {
+                    existingState.canvas.overrideSorting = true;
+                    existingState.canvas.sortingOrder = sortOrder;
+                }
+
+                return;
+            }
+
+            FocusState state = new FocusState();
+
+            Canvas canvas = target.GetComponent<Canvas>();
+
+            if (canvas == null)
+            {
+                canvas = target.AddComponent<Canvas>();
+                state.canvasWasAdded = true;
+            }
+            else
+            {
+                state.previousOverrideSorting =
+                    canvas.overrideSorting;
+
+                state.previousSortingOrder =
+                    canvas.sortingOrder;
+            }
+
+            state.canvas = canvas;
+
+            GraphicRaycaster raycaster =
+                target.GetComponent<GraphicRaycaster>();
+
+            if (raycaster == null)
+            {
+                raycaster =
+                    target.AddComponent<GraphicRaycaster>();
+
+                state.raycasterWasAdded = true;
+            }
+
+            state.raycaster = raycaster;
+
+            focusedObjects[target] = state;
 
             canvas.overrideSorting = true;
             canvas.sortingOrder = sortOrder;
         }
         else
         {
-            if (canvas != null) canvas.overrideSorting = false;
+            if (!focusedObjects.TryGetValue(
+                    target,
+                    out FocusState state))
+            {
+                Canvas existingCanvas =
+     target.GetComponent<Canvas>();
+
+                if (existingCanvas != null)
+                {
+                    existingCanvas.overrideSorting = false;
+                    existingCanvas.sortingOrder = 0;
+                }
+
+                return;
+            }
+
+            // Restore an existing Canvas immediately.
+            if (state.canvas != null &&
+                !state.canvasWasAdded)
+            {
+                state.canvas.overrideSorting =
+                    state.previousOverrideSorting;
+
+                state.canvas.sortingOrder =
+                    state.previousSortingOrder;
+            }
+
+            // Disable sorting immediately so the object stops rendering
+            // above the rest of the gameplay UI.
+            if (state.canvasWasAdded &&
+                state.canvas != null)
+            {
+                state.canvas.overrideSorting = false;
+                state.canvas.sortingOrder = 0;
+            }
+
+            // GraphicRaycaster depends on Canvas, so remove it first.
+            if (state.raycasterWasAdded &&
+                state.raycaster != null)
+            {
+                Destroy(state.raycaster);
+            }
+
+            // Canvas must be removed on a later frame, after Unity has
+            // finished removing the GraphicRaycaster.
+            if (state.canvasWasAdded &&
+                state.canvas != null)
+            {
+                if (isActiveAndEnabled)
+                {
+                    StartCoroutine(
+                        RemoveAddedCanvasNextFrame(state.canvas)
+                    );
+                }
+            }
+
+            focusedObjects.Remove(target);
         }
+    }
+
+    private IEnumerator RemoveAddedCanvasNextFrame(
+    Canvas canvas)
+    {
+        // Destroy() removes the GraphicRaycaster at the end
+        // of the current frame.
+        yield return null;
+
+        if (canvas == null)
+            yield break;
+
+        // Safety check: never remove a Canvas while another
+        // GraphicRaycaster still depends on it.
+        GraphicRaycaster remainingRaycaster =
+            canvas.GetComponent<GraphicRaycaster>();
+
+        if (remainingRaycaster != null)
+        {
+            Debug.LogWarning(
+                $"Tutorial cleanup kept Canvas on " +
+                $"{canvas.gameObject.name} because a " +
+                $"GraphicRaycaster is still attached."
+            );
+
+            canvas.overrideSorting = false;
+            canvas.sortingOrder = 0;
+            yield break;
+        }
+
+        Destroy(canvas);
     }
 
     public void CheckAndStartTutorial()
@@ -86,6 +271,10 @@ public class TutorialManager : MonoBehaviour
 
             isTutorialActive = true;
             tutorialStep = 0;
+
+            TutorialAnalyticsTracker.Instance?.BeginTutorial(
+        MainTutorialAnalyticsName
+    );
 
             tutorialOverlay.gameObject.SetActive(true);
 
@@ -101,16 +290,28 @@ public class TutorialManager : MonoBehaviour
                 tutorialPopupImage.gameObject.SetActive(true);
                 tutorialPopupImage.alpha = 1f;
                 UpdateTutorialText(0);
-                SetUIFocus(tutorialPopupImage.gameObject, true, 30005);
+                SetUIFocus(tutorialPopupImage.gameObject, true, PopupFocusOrder);
             }
 
             if (MatchBoard.instance != null)
             {
-                SetUIFocus(MatchBoard.instance.gameObject, true, 29999);
+                SetUIFocus(MatchBoard.instance.gameObject, true, MatchBoardFocusOrder);
             }
 
             tutorialOverlay.DOFade(0.7f, 0.5f);
-            DOVirtual.DelayedCall(0.5f, () => ShowNextStep());
+
+            tutorialDelayedCall?.Kill();
+            tutorialDelayedCall = DOVirtual.DelayedCall(0.5f, () =>
+            {
+                tutorialDelayedCall = null;
+
+                if (isTutorialActive)
+                {
+                    ShowNextStep();
+                }
+            }
+    )
+    .SetUpdate(true);
         }
         else
         {
@@ -162,8 +363,8 @@ public class TutorialManager : MonoBehaviour
         pointer.localScale = Vector3.one;
         pointer.DOScale(1.2f, 0.45f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.OutQuad);
 
-        SetUIFocus(currentTargetTile, true, 30000);
-        SetUIFocus(pointer.gameObject, true, 30001);
+        SetUIFocus(currentTargetTile, true, TargetFocusOrder);
+        SetUIFocus(pointer.gameObject, true, PointerFocusOrder);
 
         currentTargetTile.transform.DOKill();
 
@@ -217,11 +418,11 @@ public class TutorialManager : MonoBehaviour
 
         if (clickedTile == currentTargetTile)
         {
-            Debug.Log("Tutorial Step Before = " + tutorialStep);
+            // Debug.Log("Tutorial Step Before = " + tutorialStep);
 
             tutorialStep++;
 
-            Debug.Log("Tutorial Step After = " + tutorialStep);
+            //Debug.Log("Tutorial Step After = " + tutorialStep);
 
             if (tutorialStep < stepMessages.Length)
             {
@@ -239,7 +440,22 @@ public class TutorialManager : MonoBehaviour
                 SetUIFocus(currentTargetTile, false);
             }
 
-            DOVirtual.DelayedCall(0.4f, () => ShowNextStep());
+            tutorialDelayedCall?.Kill();
+
+            tutorialDelayedCall =
+                DOVirtual.DelayedCall(
+                    0.4f,
+                    () =>
+                    {
+                        tutorialDelayedCall = null;
+
+                        if (isTutorialActive)
+                        {
+                            ShowNextStep();
+                        }
+                    }
+                )
+                .SetUpdate(true);
             return true;
         }
         return false;
@@ -247,9 +463,16 @@ public class TutorialManager : MonoBehaviour
 
     private void EndTutorial()
     {
+        tutorialDelayedCall?.Kill();
+        tutorialDelayedCall = null;
         isTutorialActive = false;
         SaveManager.instance.data.tutorialCompleted = 1;
         SaveManager.instance.SaveData();
+
+        TutorialAnalyticsTracker.Instance
+    ?.CompleteTutorial(
+        MainTutorialAnalyticsName
+    );
 
         pointer.DOKill();
         pointer.gameObject.SetActive(false);
@@ -276,7 +499,7 @@ public class TutorialManager : MonoBehaviour
         if (currentTargetTile != null)
         {
             currentTargetTile.transform.DOKill();
-            currentTargetTile.transform.localScale = Vector3.one;
+            currentTargetTile.transform.localScale = currentTargetOriginalScale;
             SetUIFocus(currentTargetTile, false);
         }
 
@@ -286,15 +509,35 @@ public class TutorialManager : MonoBehaviour
         }
 
         Debug.Log("Tutorial Ended");
+        ClearAllUIFocus();
     }
 
     public void StartBoosterTutorial(RectTransform boosterRect, string boosterName)
     {
-        if (SaveManager.instance.data.softTutorialsSeen.Contains(boosterName)) return;
+        if (SaveManager.instance.data.softTutorialsSeen.Contains(boosterName))
+        {
+            return;
+        }
+
+        currentSoftTutorialAnalyticsName =
+    boosterName +
+    "_booster_tutorial";
+
+        TutorialAnalyticsTracker.Instance
+            ?.BeginTutorial(
+                currentSoftTutorialAnalyticsName
+            );
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.SetTutorialBannerSuppressed(true);
+        }
 
         isSoftTutorialActive = true;
         currentSoftTutorialKey = boosterName;
         activeBooster = boosterRect.gameObject;
+
+        activeBoosterOriginalScale = activeBooster.transform.localScale;
 
         tutorialOverlay.gameObject.SetActive(true);
 
@@ -327,7 +570,7 @@ public class TutorialManager : MonoBehaviour
             tutorialPopupImage.transform.localScale = Vector3.zero;
             tutorialPopupImage.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
 
-            SetUIFocus(tutorialPopupImage.gameObject, true, 30005);
+            SetUIFocus(tutorialPopupImage.gameObject, true, PopupFocusOrder);
         }
 
         pointer.DOKill();
@@ -340,11 +583,11 @@ public class TutorialManager : MonoBehaviour
         pointer.localScale = Vector3.one;
         pointer.DOScale(1.2f, 0.45f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.OutQuad);
 
-        SetUIFocus(activeBooster, true, 30000);
-        SetUIFocus(pointer.gameObject, true, 30001);
+        SetUIFocus(activeBooster, true, TargetFocusOrder);
+        SetUIFocus(pointer.gameObject, true, PointerFocusOrder);
 
         activeBooster.transform.DOKill();
-        activeBooster.transform.DOScale(1.1f, 0.4f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+        activeBooster.transform.DOScale(activeBoosterOriginalScale * 1.1f, 0.4f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
 
     public void CloseSoftTutorial()
@@ -363,6 +606,20 @@ public class TutorialManager : MonoBehaviour
             SaveManager.instance.SaveData();
         }
 
+        if (!string.IsNullOrEmpty(
+        currentSoftTutorialAnalyticsName))
+        {
+            TutorialAnalyticsTracker.Instance
+                ?.CompleteTutorial(
+                    currentSoftTutorialAnalyticsName
+                );
+        }
+
+        currentSoftTutorialAnalyticsName =
+            string.Empty;
+        currentSoftTutorialKey =
+    string.Empty;
+
         pointer.DOKill();
         pointer.gameObject.SetActive(false);
         SetUIFocus(pointer.gameObject, false);
@@ -375,15 +632,29 @@ public class TutorialManager : MonoBehaviour
         }
 
         tutorialOverlay.DOKill();
-        tutorialOverlay.DOFade(0f, 0.4f).OnComplete(() =>
-        {
-            tutorialOverlay.gameObject.SetActive(false);
-        });
+
+        tutorialOverlay
+            .DOFade(0f, 0.4f)
+            .SetUpdate(true)
+            .OnComplete(() =>
+            {
+                tutorialOverlay.gameObject.SetActive(false);
+
+                // Begin removing any remaining temporary focus components.
+                ClearAllUIFocus();
+
+                // UIManager waits two frames before showing the banner,
+                // allowing Canvas cleanup to complete.
+                if (UIManager.Instance != null)
+                {
+                    UIManager.Instance.SetTutorialBannerSuppressed(false);
+                }
+            });
 
         if (activeBooster != null)
         {
             activeBooster.transform.DOKill();
-            activeBooster.transform.localScale = Vector3.one;
+            activeBooster.transform.localScale = activeBoosterOriginalScale;
             SetUIFocus(activeBooster, false);
             activeBooster = null;
         }
@@ -392,5 +663,26 @@ public class TutorialManager : MonoBehaviour
         {
             MatchBoard.instance.isInputLocked = false;
         }
+    }
+
+    private void ClearAllUIFocus()
+    {
+        GameObject[] targets =
+            new GameObject[focusedObjects.Count];
+
+        focusedObjects.Keys.CopyTo(
+            targets,
+            0
+        );
+
+        foreach (GameObject target in targets)
+        {
+            if (target != null)
+            {
+                SetUIFocus(target, false);
+            }
+        }
+
+        focusedObjects.Clear();
     }
 }

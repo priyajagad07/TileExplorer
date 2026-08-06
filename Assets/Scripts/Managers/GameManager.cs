@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
     public GameObject hardLevelPanel;
     public TextMeshProUGUI hardlevelText;
 
+    private float analyticsLevelStartTime;
+    private bool analyticsLevelSessionActive;
+
     void Awake()
     {
         if (instance == null)
@@ -53,6 +56,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         isGameInProgress = true;
+        BeginLevelAnalyticsSession();
         ApplyDifficultyUI(currentLevelDifficulty);
     }
 
@@ -62,6 +66,7 @@ public class GameManager : MonoBehaviour
             return;
 
         isGameInProgress = false;
+        EndLevelAnalyticsSession(false, "game_over");
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Warning);
         SoundManager.instance.PlaySound(SoundName.GameOver);
         UIManager.Instance.ShowPopup(ScreenType.GameOver);
@@ -72,6 +77,8 @@ public class GameManager : MonoBehaviour
     public void LevelComplete()
     {
         if (levelCompleted) return;
+
+        EndLevelAnalyticsSession(true, "completed");
 
         isGameInProgress = false;
         levelCompleted = true;
@@ -91,6 +98,17 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
 
+        if (isGameInProgress &&
+        analyticsLevelSessionActive)
+        {
+            EndLevelAnalyticsSession(
+                false,
+                "quit"
+            );
+
+            isGameInProgress = false;
+        }
+
         if (levelCompleted && !rewardClaimed)
         {
             rewardClaimed = true;
@@ -104,14 +122,15 @@ public class GameManager : MonoBehaviour
 
             DOVirtual.DelayedCall(1.1f, () =>
             {
-                CoinManager.instance.AddCoins(50);
+                CoinManager.instance.AddCoins(50, source: "level_reward");
 
                 int currentLevel = SaveManager.instance.data.level + 1;
                 WorldData currentWorld = BackgroundManager.Instance.GetCurrentWorld();
                 WorldData nextWorld = WorldManager.Instance.GetWorldForLevel(currentLevel + 1);
 
                 bool worldChanging = nextWorld != currentWorld;
-                bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || worldChanging;
+                bool destinationUnlocking = BackgroundManager.Instance.IsNextDestinationUnlock();
+                bool willUnlock = destinationUnlocking || worldChanging;
 
                 SaveManager.instance.data.level++;
                 SaveManager.instance.SaveData();
@@ -123,6 +142,17 @@ public class GameManager : MonoBehaviour
                     returnToHomeAfterMap = true;
 
                     int nextDestination = BackgroundManager.Instance.GetNextDestinationIndex();
+
+                    LogProgressUnlock(
+                        worldChanging,
+                        destinationUnlocking,
+                        nextWorld,
+                        nextDestination,
+
+                        // Level was already incremented immediately above.
+                        SaveManager.instance.data.level + 1
+                    );
+
                     LevelManager.instance.skipMapRefresh = true;
                     MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
 
@@ -185,6 +215,14 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("========== REPLAY GAME ==========");
 
+        if (analyticsLevelSessionActive)
+        {
+            EndLevelAnalyticsSession(
+                false,
+                "restart"
+            );
+        }
+
         Time.timeScale = 1f;
 
         // Stop previous gameplay state first.
@@ -205,6 +243,7 @@ public class GameManager : MonoBehaviour
         LevelManager.instance.LoadLevel(currentLevel);
 
         UIManager.Instance.ReturnToGameplayFromPopup();
+        BeginLevelAnalyticsSession();
 
         DOVirtual.DelayedCall(0.1f, () =>
         {
@@ -233,28 +272,73 @@ public class GameManager : MonoBehaviour
         ProgressUI.RefreshAll();
     }
 
-    private void CompleteLevelReward(int coinAmount)
+    private void CompleteLevelReward(
+    int coinAmount,
+    string source)
     {
-        SoundManager.instance.PlaySound(SoundName.CoinReach);
-        CoinManager.instance.AddCoins(coinAmount);
+        SoundManager.instance.PlaySound(
+            SoundName.CoinReach
+        );
 
-        int currentLevel = SaveManager.instance.data.level + 1;
-        WorldData currentWorld = BackgroundManager.Instance.GetCurrentWorld();
-        WorldData nextWorld = WorldManager.Instance.GetWorldForLevel(currentLevel + 1);
+        CoinManager.instance.AddCoins(
+            coinAmount,
+            source: source
+        );
 
-        bool worldChanging = nextWorld != currentWorld;
-        bool willUnlock = BackgroundManager.Instance.IsNextDestinationUnlock() || worldChanging;
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        WorldData currentWorld =
+            BackgroundManager.Instance.GetCurrentWorld();
+
+        WorldData nextWorld =
+            WorldManager.Instance.GetWorldForLevel(
+                currentLevel + 1
+            );
+
+        bool worldChanging =
+    nextWorld != currentWorld;
+
+        bool destinationUnlocking =
+            BackgroundManager.Instance
+                .IsNextDestinationUnlock();
+
+        bool willUnlock =
+            destinationUnlocking ||
+            worldChanging;
+
+        // Do not start the next level analytics timer
+        // while the Map screen is showing.
+        LevelManager.instance
+            .delayAnalyticsUntilGameplay =
+                willUnlock;
 
         if (willUnlock)
         {
-            int nextDestination = BackgroundManager.Instance.GetNextDestinationIndex();
+            int nextDestination =
+                BackgroundManager.Instance
+                    .GetNextDestinationIndex();
+
+            LogProgressUnlock(
+                worldChanging,
+                destinationUnlocking,
+                nextWorld,
+                nextDestination,
+                currentLevel + 1
+            );
 
             LevelManager.instance.skipMapRefresh = true;
             LevelManager.instance.loadLevelSilently = true;
+
             LevelManager.instance.NextLevel(false);
 
-            MapScreenUI.DestinationUnlocker.SetPending(nextDestination);
-            UIManager.Instance.Show(ScreenType.MapScreen);
+            MapScreenUI.DestinationUnlocker.SetPending(
+                nextDestination
+            );
+
+            UIManager.Instance.Show(
+                ScreenType.MapScreen
+            );
 
             DOVirtual.DelayedCall(0.8f, () =>
             {
@@ -303,7 +387,7 @@ public class GameManager : MonoBehaviour
 
                         DOVirtual.DelayedCall(
                             1.1f,
-                            () => CompleteLevelReward(200)
+                            () => CompleteLevelReward(200, "double_level_reward")
                         );
                     });
                 },
@@ -316,7 +400,8 @@ public class GameManager : MonoBehaviour
                     Debug.Log(
                         "Double reward ad was not completed."
                     );
-                }
+                },
+                "double_level_reward"
             );
 
         if (adStarted)
@@ -348,7 +433,7 @@ public class GameManager : MonoBehaviour
 
         SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
 
-        DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(50));
+        DOVirtual.DelayedCall(1.1f, () => CompleteLevelReward(50, "level_reward"));
     }
 
     public void ResetLevelState()
@@ -400,9 +485,10 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        UIManager.Instance.ReturnToGameplayFromPopup();
+        // UIManager.Instance.ReturnToGameplayFromPopup();
 
         isGameInProgress = true;
+        BeginLevelAnalyticsSession();
 
         if (MatchBoard.instance != null)
         {
@@ -410,5 +496,114 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("GAME RESUMED AFTER REVIVE");
+    }
+
+    public void BeginLevelAnalyticsSession()
+    {
+        // Prevent duplicate level_start events.
+        if (analyticsLevelSessionActive)
+            return;
+
+        int levelNumber =
+            SaveManager.instance.data.level + 1;
+
+        WorldData world =
+            WorldManager.Instance != null
+                ? WorldManager.Instance.GetWorldForLevel(levelNumber)
+                : null;
+
+        string worldName =
+            world != null
+                ? world.worldName
+                : "unknown";
+
+        analyticsLevelStartTime =
+            Time.realtimeSinceStartup;
+
+        analyticsLevelSessionActive = true;
+
+        AnalyticsManager.Instance?.LogLevelStart(
+            levelNumber,
+            worldName,
+            currentLevelDifficulty
+        );
+    }
+
+    private void EndLevelAnalyticsSession(
+        bool success,
+        string reason)
+    {
+        // Prevent duplicate level_end events.
+        if (!analyticsLevelSessionActive)
+            return;
+
+        int levelNumber =
+            SaveManager.instance.data.level + 1;
+
+        WorldData world =
+            WorldManager.Instance != null
+                ? WorldManager.Instance.GetWorldForLevel(levelNumber)
+                : null;
+
+        string worldName =
+            world != null
+                ? world.worldName
+                : "unknown";
+
+        float duration =
+            Mathf.Max(
+                0f,
+                Time.realtimeSinceStartup -
+                analyticsLevelStartTime
+            );
+
+        AnalyticsManager.Instance?.LogLevelEnd(
+            levelNumber,
+            success,
+            reason,
+            duration,
+            worldName
+        );
+
+        analyticsLevelSessionActive = false;
+    }
+
+    private void LogProgressUnlock(
+    bool worldChanging,
+    bool destinationUnlocking,
+    WorldData nextWorld,
+    int nextDestinationIndex,
+    int nextLevelNumber)
+    {
+        if (!worldChanging &&
+            !destinationUnlocking)
+        {
+            return;
+        }
+
+        // World changes take priority so one transition
+        // does not produce two unlock events.
+        string progressType =
+            worldChanging
+                ? "world"
+                : "destination";
+
+        string worldName =
+            nextWorld != null
+                ? nextWorld.worldName
+                : "unknown";
+
+        AnalyticsManager.Instance?.LogProgressEvent(
+            action: "unlocked",
+            progressType: progressType,
+            worldName: worldName,
+
+            // Convert the internal zero-based index into
+            // a player-facing one-based destination number.
+            destinationIndex:
+                nextDestinationIndex + 1,
+
+            levelNumber: nextLevelNumber
+        );
     }
 }

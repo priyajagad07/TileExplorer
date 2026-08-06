@@ -6,253 +6,79 @@ using System.Collections.Generic;
 
 public class ShopManager : MonoBehaviour
 {
-    [SerializeField] private List<UIParticle> bundleParticles;
-    [SerializeField] private float bundleDelay = 0.8f;
+    private void Buy(string productId)
+    {
+        if (IAPManager.Instance == null)
+        {
+            Debug.LogWarning(
+                "IAPManager is missing."
+            );
 
-    [SerializeField] private UIParticle noAdsRewardParticles;
-    [SerializeField]
-    private List<UIParticle> coinPackParticles;
-    [SerializeField] private float rewardDelay = 0.8f;
+            return;
+        }
 
+        bool started =
+            IAPManager.Instance.BuyProduct(productId);
+
+        if (!started)
+        {
+            Debug.LogWarning(
+                "Purchase could not start: " +
+                productId
+            );
+        }
+    }
+
+    // Coin packs
+    public void BuySmallPack()
+    {
+        Buy(IAPProductIds.SmallPack);
+    }
+
+    public void BuyMediumPack()
+    {
+        Buy(IAPProductIds.MediumPack);
+    }
+
+    public void BuyLargePack()
+    {
+        Buy(IAPProductIds.LargePack);
+    }
+
+    public void BuyExtraLargePack()
+    {
+        Buy(IAPProductIds.ExtraLargePack);
+    }
+
+    public void BuyMegaPack()
+    {
+        Buy(IAPProductIds.MegaPack);
+    }
+
+    public void BuyUltimatePack()
+    {
+        Buy(IAPProductIds.UltimatePack);
+    }
+
+    // Bundles
     public void BuySuperBundle()
     {
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
-
-        // Coins
-        DOVirtual.DelayedCall(0f, () =>
-        {
-            bundleParticles[0]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                CoinManager.instance.AddCoins(1200);
-            }
-             );
-        }
-        );
-
-        // Undo
-        DOVirtual.DelayedCall(0.50f, () =>
-        {
-            bundleParticles[1]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddUndo(3);
-            }
-            );
-
-        }
-        );
-
-        // Magic
-        DOVirtual.DelayedCall(1f, () =>
-        {
-            bundleParticles[2]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddMagic(3);
-            }
-            );
-        }
-        );
-
-        // Shuffle
-        DOVirtual.DelayedCall(1.5f, () =>
-        {
-            bundleParticles[3]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddShuffle(3);
-            }
-            );
-        }
-        );
+        Buy(IAPProductIds.SuperBundle);
     }
 
-     public void BuyMegaBundle()
+    public void BuyMegaBundle()
     {
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
-
-        // Coins
-        DOVirtual.DelayedCall(0f, () =>
-        {
-            bundleParticles[0]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                CoinManager.instance.AddCoins(1200);
-            }
-             );
-        }
-        );
-
-        // Undo
-        DOVirtual.DelayedCall(0.50f, () =>
-        {
-            bundleParticles[1]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddUndo(3);
-            }
-            );
-
-        }
-        );
-
-        // Magic
-        DOVirtual.DelayedCall(1f, () =>
-        {
-            bundleParticles[2]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddMagic(3);
-            }
-            );
-        }
-        );
-
-        // Shuffle
-        DOVirtual.DelayedCall(1.5f, () =>
-        {
-            bundleParticles[3]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddShuffle(3);
-            }
-            );
-        }
-        );
+        Buy(IAPProductIds.MegaBundle);
     }
 
- public void BuyBrillianceBundle()
+    public void BuyBrillianceBundle()
     {
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
-
-        // Coins
-        DOVirtual.DelayedCall(0f, () =>
-        {
-            bundleParticles[0]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                CoinManager.instance.AddCoins(1200);
-            }
-             );
-        }
-        );
-
-        // Undo
-        DOVirtual.DelayedCall(0.50f, () =>
-        {
-            bundleParticles[1]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddUndo(3);
-            }
-            );
-
-        }
-        );
-
-        // Magic
-        DOVirtual.DelayedCall(1f, () =>
-        {
-            bundleParticles[2]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddMagic(3);
-            }
-            );
-        }
-        );
-
-        // Shuffle
-        DOVirtual.DelayedCall(1.5f, () =>
-        {
-            bundleParticles[3]?.Play();
-
-            DOVirtual.DelayedCall(bundleDelay, () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                BoosterManager.instance.AddShuffle(3);
-            }
-            );
-        }
-        );
+        Buy(IAPProductIds.BrillianceBundle);
     }
 
+    // Basic Remove Ads shop offer
     public void BuyRemoveAds()
     {
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
-
-        if (noAdsRewardParticles != null)
-        {
-            noAdsRewardParticles.Play();
-        }
-
-        DOVirtual.DelayedCall(
-            rewardDelay,
-            () =>
-            {
-                SoundManager.instance.PlaySound(SoundName.CoinReach);
-                CoinManager.instance.AddCoins(300);
-            }
-        );
-    }
-
-    public void Buy500Coins()
-    {
-        PlayCoinReward(500, coinPackParticles[0]);
-    }
-
-    public void Buy1500Coins()
-    {
-        PlayCoinReward(1500, coinPackParticles[1]);
-    }
-
-    public void Buy5000Coins()
-    {
-        PlayCoinReward(5000, coinPackParticles[2]);
-    }
-
-    void PlayCoinReward(int amount, UIParticle particle)
-    {
-        SoundManager.instance.PlaySound(SoundName.Coins);
-        SoundManager.instance.PlayHaptic(MOST_HapticFeedback.HapticTypes.Success);
-
-        if (particle != null)
-        {
-            particle.Play();
-        }
-
-        DOVirtual.DelayedCall(rewardDelay, () =>
-        {
-            SoundManager.instance.PlaySound(SoundName.CoinReach);
-            CoinManager.instance.AddCoins(amount);
-        }
-        );
+        Buy(IAPProductIds.RemoveAdsBasic);
     }
 }

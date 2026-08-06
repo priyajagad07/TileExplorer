@@ -28,6 +28,8 @@ public class LevelManager : MonoBehaviour
     private const int FIRST_INSTALL_FREE_LEVELS = 10;
     private const int DAILY_FREE_LEVELS_MIN = 2;
     private const int DAILY_FREE_LEVELS_MAX_EXCLUSIVE = 4;
+    [HideInInspector]
+    public bool delayAnalyticsUntilGameplay;
 
     void Awake()
     {
@@ -156,14 +158,15 @@ public class LevelManager : MonoBehaviour
             AdManager.instance != null)
         {
             bool adStarted =
-                AdManager.instance.ShowInterstitialAd(
-                    () =>
-                    {
-                        StartCoroutine(
-                            NextLevelRoutine(playParticle)
-                        );
-                    }
-                );
+     AdManager.instance.ShowInterstitialAd(
+         () =>
+         {
+             StartCoroutine(
+                 NextLevelRoutine(playParticle)
+             );
+         },
+         "next_level"
+     );
 
             if (adStarted)
             {
@@ -214,8 +217,23 @@ public class LevelManager : MonoBehaviour
         }
 
         loadLevelSilently = false;
+
         GameManager.instance.ResetLevelState();
-        nextLevelButton.interactable = true;
+
+        // A normal next level begins immediately.
+        // A destination/world transition waits until StartGame().
+        if (!delayAnalyticsUntilGameplay)
+        {
+            GameManager.instance.BeginLevelAnalyticsSession();
+        }
+
+        delayAnalyticsUntilGameplay = false;
+
+        if (nextLevelButton != null)
+        {
+            nextLevelButton.interactable = true;
+        }
+
         isLoadingNextLevel = false;
     }
 

@@ -107,7 +107,7 @@ public class SoundManager : MonoBehaviour
 
         sfxSource.pitch = currentTilePitch;
         
-        Debug.Log($"🎵 Clicked Tile ID: {tileID} | Same Tile Chain: {sameTileClickCount} | Pitch: {currentTilePitch}");
+        //Debug.Log($"🎵 Clicked Tile ID: {tileID} | Same Tile Chain: {sameTileClickCount} | Pitch: {currentTilePitch}");
 
         sfxSource.PlayOneShot(soundDict[SoundName.TileClick], sfxVolume);
     }

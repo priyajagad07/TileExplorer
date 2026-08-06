@@ -21,6 +21,9 @@ public class MatchBoardMatch : MonoBehaviour
     [SerializeField] private Transform particleParent;
     [SerializeField] private GameObject slotGlowPrefab;
 
+    [Header("Animation Layer")]
+    [SerializeField] private RectTransform matchAnimationLayer;
+
     private int activeDestroyParticles = 0;
 
     void Awake()
@@ -112,29 +115,22 @@ public class MatchBoardMatch : MonoBehaviour
         return false;
     }
 
-    void ForceTopLayer(GameObject tileObj, int sortOrder)
+    private void MoveToAnimationLayer(GameObject tileObj)
     {
-        if (tileObj == null) return;
-        Canvas canvas = tileObj.GetComponent<Canvas>();
-        if (canvas == null) canvas = tileObj.AddComponent<Canvas>();
-
-        canvas.overrideSorting = true;
-        canvas.sortingOrder = sortOrder;
-    }
-
-    private void ResetTopLayer(GameObject tileObj)
-    {
-        if (tileObj == null)
+        if (tileObj == null || matchAnimationLayer == null)
             return;
 
-        Canvas canvas = tileObj.GetComponent<Canvas>();
+        RectTransform rect =
+            tileObj.GetComponent<RectTransform>();
 
-        if (canvas != null)
-        {
-            canvas.overrideSorting = false;
-            canvas.sortingOrder = 0;
-        }
+        if (rect == null)
+            return;
+
+        // true preserves the tile's current world position.
+        rect.SetParent(matchAnimationLayer, true);
+        rect.SetAsLastSibling();
     }
+
     bool MergeAndDestroy(List<GameObject> matchedTiles)
     {
         if (matchedTiles == null ||
@@ -165,11 +161,17 @@ public class MatchBoardMatch : MonoBehaviour
             return false;
         }
 
-        ForceTopLayer(leftTile, 30000);
-        ForceTopLayer(rightTile, 30000);
-        ForceTopLayer(middleTile, 30005);
-
+        // Capture before changing parent.
         Vector3 glowWorldPos = rectMid.position;
+
+        MoveToAnimationLayer(leftTile);
+        MoveToAnimationLayer(rightTile);
+        MoveToAnimationLayer(middleTile);
+
+        // Keep the middle tile above the other two.
+        rectLeft.SetAsLastSibling();
+        rectRight.SetAsLastSibling();
+        rectMid.SetAsLastSibling();
 
         rectLeft.DOKill();
         rectMid.DOKill();
@@ -210,7 +212,7 @@ public class MatchBoardMatch : MonoBehaviour
 
                 MatchBoard.instance.RemoveTile(tile);
                 MatchBoard.instance.ForgetTrayTile(tile);
-                ResetTopLayer(tile);
+
                 ObjectPoolManager.Instance.Despawn(tile);
             }
 
@@ -365,8 +367,6 @@ public class MatchBoardMatch : MonoBehaviour
             {
                 tile.isMatched = false;
             }
-
-            ResetTopLayer(tileObj);
         }
 
         activePopAnimation = Mathf.Max(0, activePopAnimation - 1);
@@ -395,8 +395,7 @@ public class MatchBoardMatch : MonoBehaviour
         {
             MatchBoard.instance.ForgetTrayTile(tile);
         }
-
-        ResetTopLayer(tile);
+        
         ObjectPoolManager.Instance.Despawn(tile);
     }
 
@@ -490,7 +489,8 @@ public class MatchBoardMatch : MonoBehaviour
         rect.position = worldPos;
         rect.localScale = Vector3.one * 0.5f;
 
-        ForceTopLayer(glow, 30001);
+        //ForceTopLayer(glow, 30001);
+        rect.SetAsLastSibling();
 
         CanvasGroup cg = glow.GetComponent<CanvasGroup>();
 

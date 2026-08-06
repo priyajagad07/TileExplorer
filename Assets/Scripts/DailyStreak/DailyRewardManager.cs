@@ -106,18 +106,43 @@ public class DailyRewardManager : MonoBehaviour
 
     public void GiveRewardForDay(int day)
     {
-        WeeklyReward reward = GetRewardForDay(day);
+        WeeklyReward reward =
+            GetRewardForDay(day);
 
-        if (reward == null) return;
+        if (reward == null)
+            return;
 
         foreach (RewardData rewardData in reward.rewards)
         {
             switch (rewardData.rewardType)
             {
-                case RewardType.Coins: CoinManager.instance.AddCoins(rewardData.amount); break;
-                case RewardType.Undo: BoosterManager.instance.AddUndo(rewardData.amount); break;
-                case RewardType.Shuffle: BoosterManager.instance.AddShuffle(rewardData.amount); break;
-                case RewardType.Magic: BoosterManager.instance.AddMagic(rewardData.amount); break;
+                case RewardType.Coins:
+                    CoinManager.instance.AddCoins(
+                        rewardData.amount,
+                        source: "daily_streak"
+                    );
+                    break;
+
+                case RewardType.Undo:
+                    BoosterManager.instance.AddUndo(
+                        rewardData.amount,
+                        source: "daily_streak"
+                    );
+                    break;
+
+                case RewardType.Shuffle:
+                    BoosterManager.instance.AddShuffle(
+                        rewardData.amount,
+                        source: "daily_streak"
+                    );
+                    break;
+
+                case RewardType.Magic:
+                    BoosterManager.instance.AddMagic(
+                        rewardData.amount,
+                        source: "daily_streak"
+                    );
+                    break;
             }
         }
     }
