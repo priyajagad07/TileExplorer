@@ -46,10 +46,12 @@ public class TutorialManager : MonoBehaviour
     private string currentSoftTutorialAnalyticsName =
         string.Empty;
 
-    private const int MatchBoardFocusOrder = 100;
-    private const int TargetFocusOrder = 101;
-    private const int PointerFocusOrder = 102;
-    private const int PopupFocusOrder = 105;
+    private const int MatchBoardFocusOrder = 29999;
+    private const int TargetFocusOrder = 30000;
+    private const int PointerFocusOrder = 30001;
+    private const int PopupFocusOrder = 30005;
+
+    public bool IsAnyTutorialActive => isTutorialActive || isSoftTutorialActive;
 
     private class FocusState
     {
@@ -75,14 +77,6 @@ public class TutorialManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }
-    }
-
-    void Update()
-    {
-        if (isSoftTutorialActive && Input.GetMouseButtonDown(0))
-        {
-            CloseSoftTutorial();
         }
     }
 
@@ -266,6 +260,11 @@ public class TutorialManager : MonoBehaviour
     {
         if (SaveManager.instance.data.level == 0 && SaveManager.instance.data.tutorialCompleted == 0)
         {
+            if (IdleHintManager.instance != null)
+            {
+                IdleHintManager.instance.StopHints();
+            }
+
             if (topHeaderUI != null) topHeaderUI.SetActive(false);
             if (boosterUI != null) boosterUI.SetActive(false);
 
@@ -414,6 +413,11 @@ public class TutorialManager : MonoBehaviour
 
     public bool IsTileClickAllowed(GameObject clickedTile)
     {
+        // -------------------------
+        // NORMAL GAMEPLAY
+        // -------------------------
+
+
         if (!isTutorialActive) return true;
 
         if (clickedTile == currentTargetTile)
@@ -519,6 +523,11 @@ public class TutorialManager : MonoBehaviour
             return;
         }
 
+        if (IdleHintManager.instance != null)
+        {
+            IdleHintManager.instance.StopHints();
+        }
+
         currentSoftTutorialAnalyticsName =
     boosterName +
     "_booster_tutorial";
@@ -557,7 +566,7 @@ public class TutorialManager : MonoBehaviour
             string msg = "";
             switch (boosterName)
             {
-                case "Undo": msg = "New Booster Unlocked! \n Tap here to undo a mistake."; break;
+                //case "Undo": msg = "New Booster Unlocked! \n Tap here to undo a mistake."; break;
                 case "Shuffle": msg = "New Booster Unlocked! \n Tap here to shuffle the board."; break;
                 case "Magic": msg = "New Booster Unlocked! \n Tap here to auto-match 3 tiles."; break;
                 default: msg = "New Booster Unlocked!"; break;
@@ -634,22 +643,30 @@ public class TutorialManager : MonoBehaviour
         tutorialOverlay.DOKill();
 
         tutorialOverlay
-            .DOFade(0f, 0.4f)
-            .SetUpdate(true)
-            .OnComplete(() =>
-            {
-                tutorialOverlay.gameObject.SetActive(false);
+     .DOFade(0f, 0.4f)
+     .SetUpdate(true)
+     .OnComplete(() =>
+     {
+         tutorialOverlay.gameObject
+             .SetActive(false);
 
-                // Begin removing any remaining temporary focus components.
-                ClearAllUIFocus();
+         ClearAllUIFocus();
 
-                // UIManager waits two frames before showing the banner,
-                // allowing Canvas cleanup to complete.
-                if (UIManager.Instance != null)
-                {
-                    UIManager.Instance.SetTutorialBannerSuppressed(false);
-                }
-            });
+         if (UIManager.Instance != null)
+         {
+             UIManager.Instance
+                 .SetTutorialBannerSuppressed(false);
+         }
+
+         if (IdleHintManager.instance != null &&
+             !IsAnyTutorialActive)
+         {
+             IdleHintManager.instance
+                 .ResetIdleTimer();
+         }
+     });
+       
+        currentTargetTile = null;
 
         if (activeBooster != null)
         {
@@ -684,5 +701,27 @@ public class TutorialManager : MonoBehaviour
         }
 
         focusedObjects.Clear();
+    }
+
+    public bool IsBoosterTutorialRunning(
+    string boosterName)
+    {
+        return
+            isSoftTutorialActive &&
+            currentSoftTutorialKey ==
+                boosterName;
+    }
+
+    private void PlacePointerAtCenter(RectTransform target)
+    {
+        if (pointer == null || target == null)
+            return;
+
+        // Exact visual center of the target rect in world space
+        Vector3 worldCenter =
+            target.TransformPoint(target.rect.center);
+
+        pointer.position = worldCenter;
+        pointer.SetAsLastSibling();
     }
 }

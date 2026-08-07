@@ -406,7 +406,27 @@ public class BoardSpawner : MonoBehaviour
 
             if (IdleHintManager.instance != null)
             {
-                IdleHintManager.instance.ResetIdleTimer();
+                bool tutorialRunning =
+                    (
+                        TutorialManager.instance != null &&
+                        TutorialManager.instance
+                            .IsAnyTutorialActive
+                    )
+                    ||
+                    (
+                        UndoTutorialManager.instance != null &&
+                        UndoTutorialManager.instance
+                            .IsRunning
+                    );
+
+                if (tutorialRunning)
+                {
+                    IdleHintManager.instance.StopHints();
+                }
+                else
+                {
+                    IdleHintManager.instance.ResetIdleTimer();
+                }
             }
         });
 

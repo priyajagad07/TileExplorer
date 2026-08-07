@@ -44,8 +44,10 @@ public class IdleHintManager : MonoBehaviour
             return;
         }
 
-        if (TutorialManager.instance != null &&
-            TutorialManager.instance.isTutorialActive)
+        // Block idle hints while ANY tutorial is active
+        // (Level 1 hard tutorial, Shuffle/Magic soft tutorials,
+        // or Undo soft tutorial). Never show two hint cursors.
+        if (IsAnyTutorialActive())
         {
             ResetIdleTimer();
             return;
@@ -75,8 +77,31 @@ public class IdleHintManager : MonoBehaviour
         }
     }
 
+    private static bool IsAnyTutorialActive()
+    {
+        if (TutorialManager.instance != null &&
+            TutorialManager.instance.IsAnyTutorialActive)
+        {
+            return true;
+        }
+
+        if (UndoTutorialManager.instance != null &&
+            UndoTutorialManager.instance.IsRunning)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     void ShowIdleHint()
     {
+        if (IsAnyTutorialActive())
+        {
+            ResetIdleTimer();
+            return;
+        }
+
         if (BoardSpawner.instance == null)
             return;
 

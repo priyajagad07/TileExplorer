@@ -157,8 +157,21 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         if (isMoved) return;
 
-        if (TutorialManager.instance != null && !TutorialManager.instance.IsTileClickAllowed(this.gameObject))
+        if (TutorialManager.instance != null &&
+            !TutorialManager.instance.IsTileClickAllowed(
+                gameObject))
+        {
             return;
+        }
+
+        // Soft Undo tutorial: target tile continues the flow;
+        // any other tile dismisses the free tutorial use.
+        if (UndoTutorialManager.instance != null &&
+            UndoTutorialManager.instance.IsRunning)
+        {
+            UndoTutorialManager.instance
+                .HandleTileClick(gameObject);
+        }
 
         if (IsBlocked())
         {
@@ -166,14 +179,38 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        // THE FIX 1: Clicking the jelly no longer damages it. It just plays the squish!
+        // Clicking jelly no longer damages it — just the squish.
         if (isJellyLocked)
         {
             PlayJellySquishFeedback();
             return;
         }
 
-        if (IdleHintManager.instance != null) IdleHintManager.instance.ResetIdleTimer();
+        if (IdleHintManager.instance != null)
+        {
+            bool tutorialRunning =
+                (
+                    TutorialManager.instance != null &&
+                    TutorialManager.instance
+                        .IsAnyTutorialActive
+                )
+                ||
+                (
+                    UndoTutorialManager.instance != null &&
+                    UndoTutorialManager.instance
+                        .IsRunning
+                );
+
+            if (!tutorialRunning)
+            {
+                IdleHintManager.instance.ResetIdleTimer();
+            }
+            else
+            {
+                IdleHintManager.instance.StopHints();
+            }
+        }
+
         MoveToBoard();
     }
 
@@ -355,6 +392,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             return;
         }
 
+        if (UndoTutorialManager.instance != null)
+        {
+            UndoTutorialManager.instance
+                .PrepareTargetTileMove(
+                    gameObject
+                );
+        }
+
         // Save the main board parent BEFORE the tile starts moving.
         Transform boardParent = transform.parent;
 
@@ -388,6 +433,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             isMoved = true;
 
             RefreshVisual();
+
+            if (UndoTutorialManager.instance != null)
+            {
+                UndoTutorialManager.instance
+                    .OnTileMovedToTray(
+                        gameObject
+                    );
+            }
 
             // Refresh tiles from the original main board.
             Tile.RefreshAllTileVisuals(boardParent);

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8b1885a04e6304d6c9e4be1ebda57390
+guid: a0cdbe023f929463381c90cfe6ed19d2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5684275778586632658
-    second: JellyOverlay_0
+      213: -4788412142003690989
+    second: 115681_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: JellyOverlay_0
+      name: 115681_0
       rect:
         serializedVersion: 2
-        x: 32
-        y: 36
-        width: 436
-        height: 445
+        x: 63
+        y: 0
+        width: 386
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e2e9cf3cb456d11b0800000000000000
-      internalID: -5684275778586632658
+      spriteID: 312e3b5e6842c8db0800000000000000
+      internalID: -4788412142003690989
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      JellyOverlay_0: -5684275778586632658
+      115681_0: -4788412142003690989
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

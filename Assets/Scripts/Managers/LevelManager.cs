@@ -258,55 +258,58 @@ public class LevelManager : MonoBehaviour
             return false;
         }
 
-        GameData data = SaveManager.instance.data;
-
-        InitializeInterstitialPolicy(data);
-        RefreshDailyInterstitialPolicy(data);
-
-        // Check grace periods before incrementing.
-        bool isInsideFirstInstallGrace =
-            data.interstitialLifetimeNextClicks <
-            FIRST_INSTALL_FREE_LEVELS;
-
-        bool isInsideDailyGrace =
-            data.interstitialDailyNextClicks <
-            data.interstitialDailyFreeLevels;
-
-        bool isDestinationOrWorldChanging =
-            IsDestinationOrWorldChanging();
-
-        // Every successful next-level request counts as one transition,
-        // including destination/world transition levels.
-        data.interstitialLifetimeNextClicks++;
-        data.interstitialDailyNextClicks++;
-
-        // Save immediately, before showing the external ad.
-        SaveManager.instance.SaveData();
-
-        Debug.Log(
-            "Interstitial policy: " +
-            $"LifetimeClicks={data.interstitialLifetimeNextClicks}, " +
-            $"DailyClicks={data.interstitialDailyNextClicks}, " +
-            $"DailyFree={data.interstitialDailyFreeLevels}, " +
-            $"InstallGrace={isInsideFirstInstallGrace}, " +
-            $"DailyGrace={isInsideDailyGrace}, " +
-            $"DestinationChange={isDestinationOrWorldChanging}"
-        );
-
         if (AdManager.instance == null)
+        {
             return false;
+        }
 
         if (AdManager.instance.IsAdsRemoved())
+        {
             return false;
+        }
 
-        if (isInsideFirstInstallGrace)
-            return false;
+        // This is the level that the player has just completed.
+        int completedLevel =
+            SaveManager.instance.data.level + 1;
 
-        if (isInsideDailyGrace)
-            return false;
+        // No interstitial before completing Level 10.
+        if (completedLevel < 10)
+        {
+            Debug.Log(
+                $"Interstitial skipped: Level {completedLevel} " +
+                "is below Level 10."
+            );
 
-        if (isDestinationOrWorldChanging)
             return false;
+        }
+
+        // Starting from Level 10, show every 2 levels:
+        // 10, 12, 14, 16, 18...
+        if (completedLevel % 2 != 0)
+        {
+            Debug.Log(
+                $"Interstitial skipped: Level {completedLevel} " +
+                "is not an interstitial level."
+            );
+
+            return false;
+        }
+
+        // IMPORTANT:
+        // Keep your existing destination/world transition rule.
+        if (IsDestinationOrWorldChanging())
+        {
+            Debug.Log(
+                $"Interstitial skipped after Level {completedLevel}: " +
+                "destination/world is changing."
+            );
+
+            return false;
+        }
+
+        Debug.Log(
+            $"Interstitial eligible after Level {completedLevel}."
+        );
 
         return true;
     }

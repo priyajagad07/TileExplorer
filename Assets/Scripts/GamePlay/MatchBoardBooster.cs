@@ -7,23 +7,69 @@ public class MatchBoardBooster : MonoBehaviour
 
     public void UseUndo()
     {
-        if (isBoosterOnCooldown) return;
+        if (isBoosterOnCooldown)
+            return;
 
-        if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
-        int currentLevel = SaveManager.instance.data.level + 1;
-        bool isUnlocked = currentLevel > 3 || (currentLevel == 3 && SaveManager.instance.data.undoAnimPlayed == 1);
+        bool undoTutorialRunning =
+            UndoTutorialManager.instance != null &&
+            UndoTutorialManager.instance
+                .IsRunning;
+
+        bool freeTutorialUndo =
+            UndoTutorialManager.instance != null &&
+            UndoTutorialManager.instance
+                .IsWaitingForUndoTap;
+
+        /*
+         * Soft tutorial:
+         *
+         * If player presses Undo before doing the
+         * requested tile step, the free opportunity
+         * is lost and normal Undo logic continues.
+         */
+        if (undoTutorialRunning &&
+            !freeTutorialUndo)
+        {
+            UndoTutorialManager.instance
+                .CancelTutorial();
+        }
+
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        bool isUnlocked =
+            currentLevel > 3 ||
+            (
+                currentLevel == 3 &&
+                SaveManager.instance.data
+                    .undoAnimPlayed == 1
+            );
 
         if (!isUnlocked)
         {
-            BoosterManager.instance.ShowBoosterLockedMessage("Unlocks at Level 3!");
+            BoosterManager.instance
+                .ShowBoosterLockedMessage(
+                    "Unlocks at Level 3!"
+                );
+
             return;
         }
 
-        if (MatchBoard.instance.isInputLocked) return;
+        if (MatchBoard.instance.isInputLocked)
+            return;
 
-        if (BoosterManager.instance.undoCount <= 0)
+        /*
+         * Tutorial Undo is temporary and FREE.
+         *
+         * Normal Undo checks inventory.
+         */
+        if (!freeTutorialUndo &&
+            BoosterManager.instance.undoCount <= 0)
         {
-            UIManager.Instance.ShowPopup(ScreenType.BuyUndoScreen);
+            UIManager.Instance.ShowPopup(
+                ScreenType.BuyUndoScreen
+            );
+
             StartCooldown(0.5f);
             return;
         }
@@ -32,98 +78,201 @@ public class MatchBoardBooster : MonoBehaviour
         {
             if (BoosterSystem.instance.justShuffled)
             {
-                BoosterManager.instance.ShowCannotUndoShuffle();
+                BoosterManager.instance
+                    .ShowCannotUndoShuffle();
             }
             else
             {
-                BoosterManager.instance.ShowNothingToUndo();
+                BoosterManager.instance
+                    .ShowNothingToUndo();
             }
+
             return;
         }
 
-        bool success = BoosterSystem.instance.UndoMove();
-        if (success)
+        bool success =
+            BoosterSystem.instance
+                .UndoMove();
+
+        if (!success)
+            return;
+
+        /*
+         * Do NOT consume an Undo
+         * during the tutorial.
+         */
+        if (!freeTutorialUndo)
         {
-            BoosterManager.instance.UseUndo();
-
-            if (TutorialManager.instance != null)
-            {
-                TutorialManager.instance.CloseSoftTutorial();
-            }
-
-            MatchBoard.instance.isInputLocked = false;
-
-            StartCooldown(0.4f);
+            BoosterManager.instance
+                .UseUndo();
         }
-    }
 
+        if (freeTutorialUndo &&
+            UndoTutorialManager.instance != null)
+        {
+            UndoTutorialManager.instance
+                .CompleteFreeUndo();
+        }
+
+        MatchBoard.instance
+            .isInputLocked = false;
+
+        StartCooldown(0.4f);
+    }
     public void ShuffleTiles()
     {
-        if (isBoosterOnCooldown) return;
+        if (isBoosterOnCooldown)
+            return;
 
-        if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
-        int currentLevel = SaveManager.instance.data.level + 1;
-        bool isUnlocked = currentLevel > 5 || (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 1);
+        if (UndoTutorialManager.instance != null &&
+     UndoTutorialManager.instance.IsRunning)
+        {
+            UndoTutorialManager.instance
+                .CancelTutorial();
+        }
+
+        bool freeTutorialUse =
+            TutorialManager.instance != null &&
+            TutorialManager.instance
+                .IsBoosterTutorialRunning(
+                    "Shuffle"
+                );
+
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        bool isUnlocked =
+            currentLevel > 5 ||
+            (
+                currentLevel == 5 &&
+                SaveManager.instance.data
+                    .shuffleAnimPlayed == 1
+            );
 
         if (!isUnlocked)
         {
-            BoosterManager.instance.ShowBoosterLockedMessage("Unlocks at Level 5!");
+            BoosterManager.instance
+                .ShowBoosterLockedMessage(
+                    "Unlocks at Level 5!"
+                );
+
             return;
         }
 
-        if (MatchBoard.instance.isInputLocked) return;
+        if (MatchBoard.instance.isInputLocked)
+            return;
 
-        if (BoosterManager.instance.shuffleCount <= 0)
+        // Tutorial Shuffle is FREE.
+        if (!freeTutorialUse &&
+            BoosterManager.instance.shuffleCount <= 0)
         {
-            UIManager.Instance.ShowPopup(ScreenType.BuyShuffleScreen);
+            UIManager.Instance.ShowPopup(
+                ScreenType.BuyShuffleScreen
+            );
+
             StartCooldown(0.5f);
             return;
         }
 
         if (!BoosterSystem.instance.CanShuffle())
         {
-            BoosterManager.instance.ShowNothingToShuffle();
+            BoosterManager.instance
+                .ShowNothingToShuffle();
+
             return;
         }
 
-        BoosterManager.instance.UseShuffle();
+        if (!freeTutorialUse)
+        {
+            BoosterManager.instance.UseShuffle();
+        }
+
         BoosterSystem.instance.ShuffleTiles();
+
+        if (freeTutorialUse)
+        {
+            TutorialManager.instance
+                .CloseSoftTutorial();
+        }
 
         StartCooldown(1.2f);
     }
 
     public void UseMagic()
     {
-        if (isBoosterOnCooldown) return;
+        if (isBoosterOnCooldown)
+            return;
 
-        if (TutorialManager.instance != null) TutorialManager.instance.CloseSoftTutorial();
+        if (UndoTutorialManager.instance != null && UndoTutorialManager.instance.IsRunning)
+        {
+            UndoTutorialManager.instance
+                .CancelTutorial();
+        }
 
-        int currentLevel = SaveManager.instance.data.level + 1;
-        bool isUnlocked = currentLevel > 7 || (currentLevel == 7 && SaveManager.instance.data.magicAnimPlayed == 1);
+        bool freeTutorialUse =
+            TutorialManager.instance != null &&
+            TutorialManager.instance
+                .IsBoosterTutorialRunning(
+                    "Magic"
+                );
+
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        bool isUnlocked =
+            currentLevel > 7 ||
+            (
+                currentLevel == 7 &&
+                SaveManager.instance.data
+                    .magicAnimPlayed == 1
+            );
 
         if (!isUnlocked)
         {
-            BoosterManager.instance.ShowBoosterLockedMessage("Unlocks at Level 7!");
+            BoosterManager.instance
+                .ShowBoosterLockedMessage(
+                    "Unlocks at Level 7!"
+                );
+
             return;
         }
 
-        if (MatchBoard.instance.isInputLocked) return;
+        if (MatchBoard.instance.isInputLocked)
+            return;
 
-        if (BoosterManager.instance.magicCount <= 0)
+        // Tutorial Magic is FREE.
+        if (!freeTutorialUse &&
+            BoosterManager.instance.magicCount <= 0)
         {
-            UIManager.Instance.ShowPopup(ScreenType.BuyMagicScreen);
+            UIManager.Instance.ShowPopup(
+                ScreenType.BuyMagicScreen
+            );
+
             StartCooldown(0.5f);
             return;
         }
 
         if (!BoosterSystem.instance.CanUseMagic())
         {
-            BoosterManager.instance.ShowNothingToMagic();
+            BoosterManager.instance
+                .ShowNothingToMagic();
+
             return;
         }
 
-        BoosterManager.instance.UseMagic();
-        BoosterSystem.instance.UseMagicBooster();
+        if (!freeTutorialUse)
+        {
+            BoosterManager.instance.UseMagic();
+        }
+
+        BoosterSystem.instance
+            .UseMagicBooster();
+
+        if (freeTutorialUse)
+        {
+            TutorialManager.instance
+                .CloseSoftTutorial();
+        }
 
         StartCooldown(1f);
     }
@@ -132,9 +281,14 @@ public class MatchBoardBooster : MonoBehaviour
     {
         isBoosterOnCooldown = true;
 
-        DOVirtual.DelayedCall(lockDuration, () =>
-        {
-            isBoosterOnCooldown = false;
-        });
+        DOVirtual.DelayedCall(
+            lockDuration,
+            () =>
+            {
+                isBoosterOnCooldown = false;
+            }
+        )
+        .SetUpdate(true);
     }
+
 }

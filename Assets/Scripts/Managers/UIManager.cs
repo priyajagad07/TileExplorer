@@ -246,9 +246,24 @@ public class UIManager : MonoBehaviour
 
     private bool ShouldShowBanner(ScreenType screenType)
     {
-        return screenType == ScreenType.GamePlay;
-    }
+        if (screenType != ScreenType.GamePlay)
+        {
+            return false;
+        }
 
+        if (SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
+            return false;
+        }
+
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        // No banner for Levels 1 - 5.
+        return currentLevel >= 6;
+    }
+    
     private void RefreshBannerVisibility()
     {
         if (AdManager.instance == null)

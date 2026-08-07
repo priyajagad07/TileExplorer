@@ -204,7 +204,12 @@ public class BoosterManager : MonoBehaviour
             PlayUnlockBounce(undoButtonRect, () =>
             {
                 UpdateUI();
-                if (TutorialManager.instance != null) TutorialManager.instance.StartBoosterTutorial(undoButtonRect, "Undo");
+
+                if (UndoTutorialManager.instance != null)
+                {
+                    UndoTutorialManager.instance
+                        .StartTutorial(undoButtonRect);
+                }
             });
         }
         if (currentLevel == 5 && SaveManager.instance.data.shuffleAnimPlayed == 0)

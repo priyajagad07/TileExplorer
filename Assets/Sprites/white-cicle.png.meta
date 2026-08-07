@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8b1885a04e6304d6c9e4be1ebda57390
+guid: 6153602ef20aa43b4a4dd00f58f5de1d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5684275778586632658
-    second: JellyOverlay_0
+      213: 7016654180371237684
+    second: white-cicle_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: JellyOverlay_0
+      name: white-cicle_0
       rect:
         serializedVersion: 2
-        x: 32
-        y: 36
-        width: 436
-        height: 445
+        x: 38
+        y: 47
+        width: 265
+        height: 265
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e2e9cf3cb456d11b0800000000000000
-      internalID: -5684275778586632658
+      spriteID: 43b89cc1dc9206160800000000000000
+      internalID: 7016654180371237684
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      JellyOverlay_0: -5684275778586632658
+      white-cicle_0: 7016654180371237684
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -10216,7 +10216,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a3c77fccdd07ead4f9c23609116517cc, type: 3}
+  m_Sprite: {fileID: 7016654180371237684, guid: 6153602ef20aa43b4a4dd00f58f5de1d, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -25251,7 +25251,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 648e3d1dbe5f64276a234d1e8c4eafd1, type: 3}
+  m_Sprite: {fileID: -7670485267309540912, guid: 969d5a72d2e3b4940b57b9b5b394b0ff, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -31930,6 +31930,7 @@ Transform:
   - {fileID: 1733139430}
   - {fileID: 603572225}
   - {fileID: 198764882}
+  - {fileID: 816878396}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &690818565
@@ -36073,6 +36074,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 815718684}
   m_CullTransparentMesh: 1
+--- !u!1 &816878395
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 816878396}
+  - component: {fileID: 816878397}
+  m_Layer: 0
+  m_Name: UndoTutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &816878396
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816878395}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 690818564}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &816878397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816878395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823b44ae3959947c786d7ad77cb290f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UndoTutorialManager
+  tutorialOverlay: {fileID: 21811568}
+  pointer: {fileID: 1455313924}
+  tutorialPopupImage: {fileID: 357823079}
+  tutorialText: {fileID: 1197209549}
 --- !u!1 &818014412
 GameObject:
   m_ObjectHideFlags: 0
@@ -36537,7 +36586,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 821114558}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -54194,7 +54243,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 648e3d1dbe5f64276a234d1e8c4eafd1, type: 3}
+  m_Sprite: {fileID: -7670485267309540912, guid: 969d5a72d2e3b4940b57b9b5b394b0ff, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -55639,7 +55688,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 648e3d1dbe5f64276a234d1e8c4eafd1, type: 3}
+  m_Sprite: {fileID: -7670485267309540912, guid: 969d5a72d2e3b4940b57b9b5b394b0ff, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -57728,7 +57777,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a3c77fccdd07ead4f9c23609116517cc, type: 3}
+  m_Sprite: {fileID: 7016654180371237684, guid: 6153602ef20aa43b4a4dd00f58f5de1d, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -85183,7 +85232,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a3c77fccdd07ead4f9c23609116517cc, type: 3}
+  m_Sprite: {fileID: 7016654180371237684, guid: 6153602ef20aa43b4a4dd00f58f5de1d, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -92694,7 +92743,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127534001}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
