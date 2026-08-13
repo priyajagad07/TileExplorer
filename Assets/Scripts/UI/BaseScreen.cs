@@ -17,6 +17,12 @@ public class BaseScreen : MonoBehaviour
     private UIScreenAnimation screenAnimation;
     private Vector2 restingAnchoredPosition;
 
+    private bool isModalBlocked;
+    private bool savedInteractable;
+    private bool savedBlocksRaycasts;
+
+    public bool IsModalBlocked => isModalBlocked;
+
     public Canvas ScreenCanvas => canvas;
 
     public RectTransform TransitionRect =>
@@ -79,6 +85,36 @@ public class BaseScreen : MonoBehaviour
 
         screenAnimation.target =
             target;
+    }
+
+    /// <summary>
+    /// While a popup is open, block input on the screen underneath.
+    /// </summary>
+    public void SetModalBlocked(bool blocked)
+    {
+        if (canvasGroup == null)
+            return;
+
+        if (blocked)
+        {
+            if (isModalBlocked)
+                return;
+
+            savedInteractable = canvasGroup.interactable;
+            savedBlocksRaycasts = canvasGroup.blocksRaycasts;
+
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+            isModalBlocked = true;
+            return;
+        }
+
+        if (!isModalBlocked)
+            return;
+
+        canvasGroup.interactable = savedInteractable;
+        canvasGroup.blocksRaycasts = savedBlocksRaycasts;
+        isModalBlocked = false;
     }
 
     public void Show()

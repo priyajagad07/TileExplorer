@@ -2,6 +2,7 @@
   "dependencies": {
     "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git?path=Packages/src",
     "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
+    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
     "com.unity.2d.animation": "13.0.4",
     "com.unity.2d.aseprite": "3.0.1",
     "com.unity.2d.common": "12.0.2",
@@ -11,7 +12,6 @@
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.2d.tilemap.extras": "6.0.1",
     "com.unity.2d.tooling": "1.0.2",
-    "com.unity.ads": "4.17.0",
     "com.unity.bindings.openimageio": "1.0.2",
     "com.unity.burst": "1.8.27",
     "com.unity.collab-proxy": "2.11.3",
@@ -31,7 +31,6 @@
     "com.unity.render-pipelines.universal": "17.3.0",
     "com.unity.render-pipelines.universal-config": "17.0.3",
     "com.unity.searcher": "4.9.4",
-    "com.unity.services.levelplay": "9.4.1",
     "com.unity.shadergraph": "17.3.0",
     "com.unity.test-framework": "1.6.0",
     "com.unity.timeline": "1.8.10",

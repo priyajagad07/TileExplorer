@@ -240,6 +240,24 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    /// <summary>
+    /// Force-clears jelly when the board would otherwise soft-lock.
+    /// </summary>
+    public void ForceUnlockJelly()
+    {
+        if (!isJellyLocked)
+            return;
+
+        jellyHealth = 0;
+
+        if (jellyText != null)
+        {
+            jellyText.text = "0";
+        }
+
+        UnlockJelly();
+    }
+
     void UnlockJelly()
     {
         isJellyLocked = false;
@@ -343,7 +361,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             Tile other = child.GetComponent<Tile>();
             if (other == null || other.IsMoved() || other.layer <= this.layer) continue;
 
-            RectTransform otherRect = other.GetComponent<RectTransform>();
+            // Tile UI objects use RectTransform as their transform;
+            // prefer the Awake-cached rect when available (same component).
+            RectTransform otherRect = other.rect != null
+                ? other.rect
+                : child as RectTransform;
 
             if (otherRect == null)
                 continue;
@@ -442,16 +464,25 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                     );
             }
 
-            // Refresh tiles from the original main board.
-            Tile.RefreshAllTileVisuals(boardParent);
-
-            // Every successful tile entering the MatchBoard
-            // damages currently active Jelly tiles by 1.
+            // Single hierarchy scan: refresh visuals, then apply jelly damage.
+            // Order matches the previous two-pass GetComponentsInChildren flow.
             Tile[] allTiles =
                 boardParent.GetComponentsInChildren<Tile>(false);
 
-            foreach (Tile t in allTiles)
+            for (int i = 0; i < allTiles.Length; i++)
             {
+                Tile tile = allTiles[i];
+                if (tile != null)
+                {
+                    tile.RefreshVisual();
+                }
+            }
+
+            // Every successful tile entering the MatchBoard
+            // damages currently active Jelly tiles by 1.
+            for (int i = 0; i < allTiles.Length; i++)
+            {
+                Tile t = allTiles[i];
                 if (t == null)
                     continue;
 
@@ -461,6 +492,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                 {
                     t.TakeJellyDamage();
                 }
+            }
+
+            if (AutoShuffleManager.instance != null)
+            {
+                AutoShuffleManager.instance
+                    .ResolveJellySoftLockIfNeeded();
             }
 
             if (SoundManager.instance != null)
@@ -540,11 +577,18 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void RefreshVisual()
     {
+        if (tileImages == null)
+            return;
+
         bool blocked = IsBlocked();
         Color targetColor = blocked ? new Color(0.65f, 0.65f, 0.65f, 1f) : Color.white;
 
-        foreach (Image img in tileImages)
+        for (int i = 0; i < tileImages.Length; i++)
         {
+            Image img = tileImages[i];
+            if (img == null)
+                continue;
+
             img.DOKill();
             img.DOColor(targetColor, 0.2f);
         }

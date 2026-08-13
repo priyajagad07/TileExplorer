@@ -161,12 +161,23 @@ public class UIManager : MonoBehaviour
                 if (activePopup != null)
                 {
                     activePopup.Hide();
+                    activePopup = null;
+                }
+
+                if (currentScreen != null)
+                {
+                    currentScreen.SetModalBlocked(true);
                 }
 
                 activePopup = s.screen;
                 activePopup.Show();
 
                 RefreshBannerVisibility();
+
+                if (type == ScreenType.SettingsScreen)
+                {
+                    SettingsScreenUI.RefreshIfOpen();
+                }
 
                 LogScreenView(
                     type,
@@ -193,7 +204,6 @@ public class UIManager : MonoBehaviour
                 if (wasActivePopup)
                 {
                     activePopup = null;
-
                     ScheduleCurrentScreenAnalytics();
                 }
 
@@ -201,6 +211,31 @@ public class UIManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    private void RestoreScreenAfterPopup()
+    {
+        if (currentScreen != null)
+        {
+            currentScreen.SetModalBlocked(false);
+        }
+    }
+
+    private bool IsRegisteredPopup(BaseScreen screen)
+    {
+        if (screen == null)
+            return false;
+
+        foreach (ScreenData entry in screens)
+        {
+            if (entry.isPopup &&
+                entry.screen == screen)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void GoBack()
@@ -297,12 +332,13 @@ public class UIManager : MonoBehaviour
     {
         CancelPendingScreenAnalytics();
 
-        // Close whichever popup is currently registered.
         if (activePopup != null)
         {
             activePopup.Hide();
             activePopup = null;
         }
+
+        RestoreScreenAfterPopup();
 
         Show(ScreenType.GamePlay);
 
@@ -324,10 +360,15 @@ public class UIManager : MonoBehaviour
         if (hiddenScreen == null)
             return;
 
-        if (activePopup != hiddenScreen)
+        if (!IsRegisteredPopup(hiddenScreen))
             return;
 
-        activePopup = null;
+        if (activePopup == hiddenScreen)
+        {
+            activePopup = null;
+        }
+
+        RestoreScreenAfterPopup();
 
         Debug.Log(
             $"POPUP FULLY CLOSED: " +
@@ -779,8 +820,24 @@ public class UIManager : MonoBehaviour
             );
         }
 
+        if (type == ScreenType.SettingsScreen)
+        {
+            SettingsScreenUI.RefreshIfOpen();
+        }
+
+        if (type == ScreenType.HomeScreen ||
+            type == ScreenType.ShopScreen)
+        {
+            PurchaseManager.instance?.RefreshUI();
+        }
+
         if (type == ScreenType.HomeScreen)
         {
+            if (AvatarManager.Instance != null)
+            {
+                AvatarManager.Instance.RefreshUnlockState();
+            }
+
             DOVirtual.DelayedCall(
                 0.5f,
                 () =>

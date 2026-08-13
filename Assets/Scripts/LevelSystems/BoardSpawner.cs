@@ -198,18 +198,51 @@ public class BoardSpawner : MonoBehaviour
 
         if (currentLevelIndex >= 5)
         {
-            Tile[] allSpawnedTiles = tileParent.GetComponentsInChildren<Tile>(false); // 'false' ignores inactive objects
+            Tile[] allSpawnedTiles =
+                tileParent.GetComponentsInChildren<Tile>(false);
 
             if (allSpawnedTiles.Length >= 3)
             {
+                int highestLayer = 0;
+                for (int i = 0; i < allSpawnedTiles.Length; i++)
+                {
+                    if (allSpawnedTiles[i].layer > highestLayer)
+                    {
+                        highestLayer = allSpawnedTiles[i].layer;
+                    }
+                }
+
+                // Jelly must not spawn on the top 2 layers (highest indices).
+                // Levels with fewer than 3 layers skip jelly entirely.
+                List<Tile> availableTilesForJelly = new List<Tile>();
+
+                if (highestLayer >= 2)
+                {
+                    int maxAllowedJellyLayer = highestLayer - 2;
+
+                    for (int i = 0; i < allSpawnedTiles.Length; i++)
+                    {
+                        Tile tile = allSpawnedTiles[i];
+                        if (tile.layer <= maxAllowedJellyLayer)
+                        {
+                            availableTilesForJelly.Add(tile);
+                        }
+                    }
+                }
+
                 int amountOfJellies = Random.Range(2, 4);
-                List<Tile> availableTilesForJelly = new List<Tile>(allSpawnedTiles);
+                amountOfJellies = Mathf.Min(
+                    amountOfJellies,
+                    availableTilesForJelly.Count
+                );
 
                 for (int j = 0; j < amountOfJellies; j++)
                 {
-                    if (availableTilesForJelly.Count == 0) break;
+                    if (availableTilesForJelly.Count == 0)
+                        break;
 
-                    int randomIndex = Random.Range(0, availableTilesForJelly.Count);
+                    int randomIndex =
+                        Random.Range(0, availableTilesForJelly.Count);
                     Tile randomTile = availableTilesForJelly[randomIndex];
 
                     int randomClicks = Random.Range(5, 11);
@@ -402,6 +435,12 @@ public class BoardSpawner : MonoBehaviour
             if (BoosterManager.instance != null)
             {
                 BoosterManager.instance.PlayUnlockAnimationIfNeeded();
+            }
+
+            // First jelly level tip (Level 6+), once only.
+            if (TutorialManager.instance != null)
+            {
+                TutorialManager.instance.TryShowJellyIntroTip();
             }
 
             if (IdleHintManager.instance != null)

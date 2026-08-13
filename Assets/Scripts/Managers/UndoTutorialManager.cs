@@ -34,6 +34,7 @@ public class UndoTutorialManager : MonoBehaviour
 
     private Vector3 targetOriginalScale;
     private Vector3 undoButtonOriginalScale;
+    private bool undoButtonVisualsModified;
 
     private Tween targetPulseTween;
     private Tween undoPulseTween;
@@ -122,6 +123,8 @@ public class UndoTutorialManager : MonoBehaviour
         }
 
         undoButton = undoButtonRect;
+        undoButtonVisualsModified = false;
+        CaptureUndoButtonBaseScale();
         stage = UndoStage.TapWrongTile;
 
         if (IdleHintManager.instance != null)
@@ -368,6 +371,7 @@ public class UndoTutorialManager : MonoBehaviour
         SetUIFocus(pointer.gameObject, true, PointerFocusOrder);
 
         undoButtonOriginalScale = undoButton.localScale;
+        undoButtonVisualsModified = true;
 
         undoPulseTween?.Kill();
         undoPulseTween = undoButton
@@ -427,6 +431,7 @@ public class UndoTutorialManager : MonoBehaviour
 
     private void FinishTutorial()
     {
+        UndoStage finishingStage = stage;
         stage = UndoStage.None;
 
         stepTransitionTween?.Kill();
@@ -447,11 +452,7 @@ public class UndoTutorialManager : MonoBehaviour
             }
         }
 
-        if (undoButton != null)
-        {
-            undoButton.DOKill();
-            undoButton.localScale = undoButtonOriginalScale;
-        }
+        RestoreUndoButtonVisuals(finishingStage);
 
         if (pointer != null)
         {
@@ -486,7 +487,8 @@ public class UndoTutorialManager : MonoBehaviour
                 });
         }
 
-        if (undoButton != null)
+        if (undoButton != null &&
+            finishingStage == UndoStage.TapUndo)
         {
             SetUIFocus(undoButton.gameObject, false);
         }
@@ -711,5 +713,55 @@ public class UndoTutorialManager : MonoBehaviour
         }
 
         focusedObjects.Clear();
+    }
+
+    /// <summary>
+    /// Step 1 dismiss must NOT touch undo scale (mobile-safe).
+    /// Step 2 dismiss restores scale only if we modified it,
+    /// or if scale looks broken (near-zero from interrupted tween).
+    /// </summary>
+    private void RestoreUndoButtonVisuals(UndoStage finishingStage)
+    {
+        if (undoButton == null)
+            return;
+
+        undoButton.DOKill(false);
+
+        Vector3 currentScale = undoButton.localScale;
+        bool scaleLooksBroken =
+            currentScale.sqrMagnitude < 0.01f ||
+            float.IsNaN(currentScale.x) ||
+            float.IsNaN(currentScale.y) ||
+            float.IsNaN(currentScale.z);
+
+        bool shouldRestoreScale =
+            undoButtonVisualsModified ||
+            finishingStage == UndoStage.TapUndo ||
+            scaleLooksBroken;
+
+        if (!shouldRestoreScale)
+            return;
+
+        if (undoButtonOriginalScale.sqrMagnitude < 0.01f)
+        {
+            undoButtonOriginalScale = Vector3.one;
+        }
+
+        undoButton.localScale = undoButtonOriginalScale;
+        undoButton.localRotation = Quaternion.identity;
+        undoButtonVisualsModified = false;
+    }
+
+    private void CaptureUndoButtonBaseScale()
+    {
+        if (undoButton == null)
+            return;
+
+        undoButtonOriginalScale = undoButton.localScale;
+
+        if (undoButtonOriginalScale.sqrMagnitude < 0.01f)
+        {
+            undoButtonOriginalScale = Vector3.one;
+        }
     }
 }

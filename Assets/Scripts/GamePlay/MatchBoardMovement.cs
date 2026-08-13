@@ -18,7 +18,7 @@ public class MatchBoardMovement : MonoBehaviour
         }
 
         RectTransform rect =
-            tile.GetComponent<RectTransform>();
+            tile.transform as RectTransform;
 
         if (rect == null)
         {

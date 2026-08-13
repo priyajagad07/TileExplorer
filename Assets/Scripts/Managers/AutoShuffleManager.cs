@@ -39,7 +39,11 @@ public class AutoShuffleManager : MonoBehaviour
 
     public void CheckForDeadlock()
     {
-        if (MatchBoard.instance == null || BoardSpawner.instance == null) return;
+        if (MatchBoard.instance == null || BoardSpawner.instance == null)
+            return;
+
+        // Jelly-only soft-lock can happen with any tray fill level.
+        ResolveJellySoftLockIfNeeded();
 
         List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
 
@@ -60,20 +64,23 @@ public class AutoShuffleManager : MonoBehaviour
 
             foreach (Transform child in tileParent)
             {
-                if (!child.gameObject.activeSelf) continue;
+                if (!child.gameObject.activeSelf)
+                    continue;
+
                 Tile tile = child.GetComponent<Tile>();
 
-                if (tile == null || tile.IsMoved()) continue;
+                if (tile == null || tile.IsMoved())
+                    continue;
 
-                bool isUnblocked = !tile.IsBlocked();
+                // Jelly cannot enter the tray, so it is never a valid move.
+                if (tile.isJellyLocked)
+                    continue;
 
-                if (isUnblocked)
+                if (!tile.IsBlocked() &&
+                    trayIds.Contains(tile.tileId))
                 {
-                    if (trayIds.Contains(tile.tileId))
-                    {
-                        hasValidMove = true;
-                        break;
-                    }
+                    hasValidMove = true;
+                    break;
                 }
             }
 
@@ -82,6 +89,126 @@ public class AutoShuffleManager : MonoBehaviour
                 TriggerAutoShuffle();
             }
         }
+    }
+
+    /// <summary>
+    /// If every reachable board tile is jelly-locked, unlock jelly so
+    /// the player cannot get permanently stuck.
+    /// </summary>
+    public void ResolveJellySoftLockIfNeeded()
+    {
+        if (BoardSpawner.instance == null)
+            return;
+
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+        if (tileParent == null)
+            return;
+
+        if (HasPlayableNonJellyTile(tileParent))
+            return;
+
+        if (!HasRemainingJelly(tileParent))
+            return;
+
+        Debug.Log(
+            "Jelly soft-lock detected. Unlocking reachable jelly tiles."
+        );
+
+        bool unlockedAny;
+        int safety = 0;
+
+        do
+        {
+            unlockedAny = false;
+            safety++;
+
+            Tile[] tiles =
+                tileParent.GetComponentsInChildren<Tile>(false);
+
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                Tile tile = tiles[i];
+                if (tile == null || tile.IsMoved())
+                    continue;
+
+                if (!tile.isJellyLocked)
+                    continue;
+
+                if (tile.IsBlocked())
+                    continue;
+
+                tile.ForceUnlockJelly();
+                unlockedAny = true;
+            }
+
+            Tile.RefreshAllTileVisuals(tileParent);
+
+            if (HasPlayableNonJellyTile(tileParent))
+                break;
+
+        } while (unlockedAny &&
+                 HasRemainingJelly(tileParent) &&
+                 safety < 32);
+
+        // Absolute fallback: still soft-locked somehow.
+        if (!HasPlayableNonJellyTile(tileParent) &&
+            HasRemainingJelly(tileParent))
+        {
+            Tile[] tiles =
+                tileParent.GetComponentsInChildren<Tile>(false);
+
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                Tile tile = tiles[i];
+                if (tile != null &&
+                    !tile.IsMoved() &&
+                    tile.isJellyLocked)
+                {
+                    tile.ForceUnlockJelly();
+                }
+            }
+
+            Tile.RefreshAllTileVisuals(tileParent);
+        }
+    }
+
+    private static bool HasPlayableNonJellyTile(Transform tileParent)
+    {
+        foreach (Transform child in tileParent)
+        {
+            if (!child.gameObject.activeSelf)
+                continue;
+
+            Tile tile = child.GetComponent<Tile>();
+            if (tile == null || tile.IsMoved())
+                continue;
+
+            if (tile.isJellyLocked)
+                continue;
+
+            if (!tile.IsBlocked())
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool HasRemainingJelly(Transform tileParent)
+    {
+        foreach (Transform child in tileParent)
+        {
+            if (!child.gameObject.activeSelf)
+                continue;
+
+            Tile tile = child.GetComponent<Tile>();
+            if (tile == null || tile.IsMoved())
+                continue;
+
+            if (tile.isJellyLocked)
+                return true;
+        }
+
+        return false;
     }
 
     private void TriggerAutoShuffle()

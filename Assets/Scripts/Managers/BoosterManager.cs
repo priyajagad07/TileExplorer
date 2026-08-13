@@ -72,10 +72,32 @@ public class BoosterManager : MonoBehaviour
 
     void SaveBoosters()
     {
-        SaveManager.instance.data.undoCount = undoCount;
-        SaveManager.instance.data.shuffleCount = shuffleCount;
-        SaveManager.instance.data.magicCount = magicCount;
+        GameData data = SaveManager.instance.data;
+        data.undoCount = undoCount;
+        data.shuffleCount = shuffleCount;
+        data.magicCount = magicCount;
         SaveManager.instance.SaveData();
+    }
+
+    bool CanEarnUndo()
+    {
+        return SaveManager.instance != null &&
+               SaveManager.instance.data != null &&
+               SaveManager.instance.data.undoUnlocked == 1;
+    }
+
+    bool CanEarnShuffle()
+    {
+        return SaveManager.instance != null &&
+               SaveManager.instance.data != null &&
+               SaveManager.instance.data.shuffleUnlocked == 1;
+    }
+
+    bool CanEarnMagic()
+    {
+        return SaveManager.instance != null &&
+               SaveManager.instance.data != null &&
+               SaveManager.instance.data.magicUnlocked == 1;
     }
 
     public void UpdateUI()
@@ -150,47 +172,73 @@ public class BoosterManager : MonoBehaviour
 
     public void CheckUnlockRewards()
     {
-        int currentLevel = SaveManager.instance.data.level + 1;
-
-        if (currentLevel >= 3 && SaveManager.instance.data.undoUnlocked == 0)
+        if (SaveManager.instance == null ||
+            SaveManager.instance.data == null)
         {
-            undoCount += 3;
+            return;
+        }
+
+        // Always sync from save first so we never overwrite saved
+        // counts with stale in-memory 0, and unlock flags stay accurate.
+        LoadBoosters();
+
+        int currentLevel =
+            SaveManager.instance.data.level + 1;
+
+        bool changed = false;
+
+        if (currentLevel >= 3 &&
+            SaveManager.instance.data.undoUnlocked == 0)
+        {
+            undoCount = 3;
             SaveManager.instance.data.undoUnlocked = 1;
+            changed = true;
+
             AnalyticsManager.Instance?.LogBoosterEvent(
-        "unlocked",
-        "undo",
-        3,
-        currentLevel,
-        "level_unlock"
-    );
+                "unlocked",
+                "undo",
+                3,
+                currentLevel,
+                "level_unlock"
+            );
         }
-        if (currentLevel >= 5 && SaveManager.instance.data.shuffleUnlocked == 0)
+
+        if (currentLevel >= 5 &&
+            SaveManager.instance.data.shuffleUnlocked == 0)
         {
-            shuffleCount += 3;
+            shuffleCount = 3;
             SaveManager.instance.data.shuffleUnlocked = 1;
+            changed = true;
 
             AnalyticsManager.Instance?.LogBoosterEvent(
-        "unlocked",
-        "shuffle",
-        3,
-        currentLevel,
-        "level_unlock"
-    );
+                "unlocked",
+                "shuffle",
+                3,
+                currentLevel,
+                "level_unlock"
+            );
         }
-        if (currentLevel >= 7 && SaveManager.instance.data.magicUnlocked == 0)
+
+        if (currentLevel >= 7 &&
+            SaveManager.instance.data.magicUnlocked == 0)
         {
-            magicCount += 3;
+            magicCount = 3;
             SaveManager.instance.data.magicUnlocked = 1;
+            changed = true;
 
             AnalyticsManager.Instance?.LogBoosterEvent(
-        "unlocked",
-        "magic",
-        3,
-        currentLevel,
-        "level_unlock"
-    );
+                "unlocked",
+                "magic",
+                3,
+                currentLevel,
+                "level_unlock"
+            );
         }
-        SaveBoosters();
+
+        if (changed)
+        {
+            SaveBoosters();
+        }
     }
 
     public void PlayUnlockAnimationIfNeeded()
@@ -204,6 +252,13 @@ public class BoosterManager : MonoBehaviour
             PlayUnlockBounce(undoButtonRect, () =>
             {
                 UpdateUI();
+
+                if (undoButtonRect != null)
+                {
+                    undoButtonRect.DOKill(true);
+                    undoButtonRect.localScale = Vector3.one;
+                    undoButtonRect.localRotation = Quaternion.identity;
+                }
 
                 if (UndoTutorialManager.instance != null)
                 {
@@ -495,9 +550,23 @@ public class BoosterManager : MonoBehaviour
             return;
         }
 
-        undoCount += undo;
-        shuffleCount += shuffle;
-        magicCount += magic;
+        if (undo > 0 && CanEarnUndo())
+            undoCount += undo;
+        else
+            undo = 0;
+
+        if (shuffle > 0 && CanEarnShuffle())
+            shuffleCount += shuffle;
+        else
+            shuffle = 0;
+
+        if (magic > 0 && CanEarnMagic())
+            magicCount += magic;
+        else
+            magic = 0;
+
+        if (undo == 0 && shuffle == 0 && magic == 0)
+            return;
 
         SaveBoosters();
 
@@ -548,7 +617,7 @@ public class BoosterManager : MonoBehaviour
     bool refreshUI = true,
     string source = "reward")
     {
-        if (amount <= 0)
+        if (amount <= 0 || !CanEarnUndo())
             return;
 
         undoCount += amount;
@@ -572,7 +641,7 @@ public class BoosterManager : MonoBehaviour
         bool refreshUI = true,
         string source = "reward")
     {
-        if (amount <= 0)
+        if (amount <= 0 || !CanEarnShuffle())
             return;
 
         shuffleCount += amount;
@@ -596,7 +665,7 @@ public class BoosterManager : MonoBehaviour
         bool refreshUI = true,
         string source = "reward")
     {
-        if (amount <= 0)
+        if (amount <= 0 || !CanEarnMagic())
             return;
 
         magicCount += amount;

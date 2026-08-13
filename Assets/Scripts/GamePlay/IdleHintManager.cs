@@ -12,9 +12,17 @@ public class IdleHintManager : MonoBehaviour
     private float idleTimer = 0f;
     private bool isHinting = false;
 
-    private List<Tile> currentlyHintedTiles = new List<Tile>();
-    private Dictionary<Tile, int> originalSiblingIndices = new Dictionary<Tile, int>();
-    private Dictionary<Tile, Vector3> originalScales = new Dictionary<Tile, Vector3>();
+    private readonly List<Tile> currentlyHintedTiles = new List<Tile>();
+    private readonly Dictionary<Tile, int> originalSiblingIndices = new Dictionary<Tile, int>();
+    private readonly Dictionary<Tile, Vector3> originalScales = new Dictionary<Tile, Vector3>();
+
+    // Reused buffers to avoid per-hint allocations (cleared before each use).
+    private readonly Dictionary<int, int> trayCounts = new Dictionary<int, int>();
+    private readonly List<Tile> unblockedTiles = new List<Tile>();
+    private readonly List<int> sortedTrayIds = new List<int>();
+    private readonly Dictionary<int, int> boardCounts = new Dictionary<int, int>();
+
+    private System.Comparison<int> trayCountDescendingComparer;
 
     void Awake()
     {
@@ -26,12 +34,21 @@ public class IdleHintManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // Cache once so Sort does not allocate a new delegate each hint.
+        trayCountDescendingComparer = CompareTrayCountsDescending;
     }
 
     void Update()
     {
-        if (BoardSpawner.instance == null ||
-            BoardSpawner.instance.GetTileParent().childCount == 0)
+        if (BoardSpawner.instance == null)
+        {
+            ResetIdleTimer();
+            return;
+        }
+
+        Transform tileParent = BoardSpawner.instance.GetTileParent();
+        if (tileParent == null || tileParent.childCount == 0)
         {
             ResetIdleTimer();
             return;
@@ -102,15 +119,19 @@ public class IdleHintManager : MonoBehaviour
             return;
         }
 
-        if (BoardSpawner.instance == null)
+        if (BoardSpawner.instance == null || MatchBoard.instance == null)
             return;
 
         Transform tileParent = BoardSpawner.instance.GetTileParent();
-        List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
-        Dictionary<int, int> trayCounts = new Dictionary<int, int>();
+        if (tileParent == null)
+            return;
 
-        foreach (GameObject pTile in placedTiles)
+        List<GameObject> placedTiles = MatchBoard.instance.GetPlacedTiles();
+
+        trayCounts.Clear();
+        for (int i = 0; i < placedTiles.Count; i++)
         {
+            GameObject pTile = placedTiles[i];
             if (pTile == null)
                 continue;
 
@@ -118,17 +139,18 @@ public class IdleHintManager : MonoBehaviour
 
             if (tile != null && !tile.isMatched)
             {
-                if (!trayCounts.ContainsKey(tile.tileId))
+                if (trayCounts.TryGetValue(tile.tileId, out int count))
                 {
-                    trayCounts[tile.tileId] = 0;
+                    trayCounts[tile.tileId] = count + 1;
                 }
-
-                trayCounts[tile.tileId]++;
+                else
+                {
+                    trayCounts[tile.tileId] = 1;
+                }
             }
         }
 
-        List<Tile> unblockedTiles = new List<Tile>();
-
+        unblockedTiles.Clear();
         foreach (Transform child in tileParent)
         {
             if (child == null)
@@ -148,16 +170,22 @@ public class IdleHintManager : MonoBehaviour
 
         int targetTileId = -1;
 
-        List<int> sortedTrayIds = new List<int>(trayCounts.Keys);
-        sortedTrayIds.Sort((a, b) => trayCounts[b].CompareTo(trayCounts[a]));
-
-        foreach (int id in sortedTrayIds)
+        sortedTrayIds.Clear();
+        foreach (int id in trayCounts.Keys)
         {
+            sortedTrayIds.Add(id);
+        }
+
+        sortedTrayIds.Sort(trayCountDescendingComparer);
+
+        for (int i = 0; i < sortedTrayIds.Count; i++)
+        {
+            int id = sortedTrayIds[i];
             int availableOnBoard = 0;
 
-            foreach (Tile t in unblockedTiles)
+            for (int t = 0; t < unblockedTiles.Count; t++)
             {
-                if (t.tileId == id)
+                if (unblockedTiles[t].tileId == id)
                 {
                     availableOnBoard++;
                 }
@@ -172,15 +200,19 @@ public class IdleHintManager : MonoBehaviour
 
         if (targetTileId == -1)
         {
-            Dictionary<int, int> boardCounts = new Dictionary<int, int>();
+            boardCounts.Clear();
 
-            foreach (Tile t in unblockedTiles)
+            for (int t = 0; t < unblockedTiles.Count; t++)
             {
-                if (!boardCounts.ContainsKey(t.tileId))
+                int id = unblockedTiles[t].tileId;
+                if (boardCounts.TryGetValue(id, out int count))
                 {
-                    boardCounts[t.tileId] = 0;
+                    boardCounts[id] = count + 1;
                 }
-                boardCounts[t.tileId]++;
+                else
+                {
+                    boardCounts[id] = 1;
+                }
             }
 
             foreach (var kvp in boardCounts)
@@ -207,20 +239,28 @@ public class IdleHintManager : MonoBehaviour
 
         int highlighted = 0;
 
-        int needed = trayCounts.ContainsKey(targetTileId) ? 3 - trayCounts[targetTileId] : 3;
+        int needed = trayCounts.TryGetValue(targetTileId, out int trayCount)
+            ? 3 - trayCount
+            : 3;
 
-        foreach (Tile t in unblockedTiles)
+        for (int t = 0; t < unblockedTiles.Count; t++)
         {
-            if (t.tileId == targetTileId && highlighted < needed)
+            Tile tile = unblockedTiles[t];
+            if (tile.tileId == targetTileId && highlighted < needed)
             {
-                currentlyHintedTiles.Add(t);
-                originalSiblingIndices[t] = t.transform.GetSiblingIndex();
-                originalScales[t] = t.transform.localScale;
-                t.transform.SetAsLastSibling();
-                AnimateHint(t.transform);
+                currentlyHintedTiles.Add(tile);
+                originalSiblingIndices[tile] = tile.transform.GetSiblingIndex();
+                originalScales[tile] = tile.transform.localScale;
+                tile.transform.SetAsLastSibling();
+                AnimateHint(tile.transform);
                 highlighted++;
             }
         }
+    }
+
+    private int CompareTrayCountsDescending(int a, int b)
+    {
+        return trayCounts[b].CompareTo(trayCounts[a]);
     }
 
     void AnimateHint(Transform tileTransform)
@@ -234,8 +274,9 @@ public class IdleHintManager : MonoBehaviour
     {
         isHinting = false;
 
-        foreach (Tile t in currentlyHintedTiles)
+        for (int i = 0; i < currentlyHintedTiles.Count; i++)
         {
+            Tile t = currentlyHintedTiles[i];
             if (t == null || t.transform == null)
                 continue;
 
@@ -244,17 +285,14 @@ public class IdleHintManager : MonoBehaviour
 
             DOTween.Kill(tweenId);
 
-            if (originalScales.ContainsKey(t))
+            if (originalScales.TryGetValue(t, out Vector3 originalScale))
             {
-                t.transform.localScale =
-                    originalScales[t];
+                t.transform.localScale = originalScale;
             }
 
-            if (originalSiblingIndices.ContainsKey(t))
+            if (originalSiblingIndices.TryGetValue(t, out int siblingIndex))
             {
-                t.transform.SetSiblingIndex(
-                    originalSiblingIndices[t]
-                );
+                t.transform.SetSiblingIndex(siblingIndex);
             }
         }
 

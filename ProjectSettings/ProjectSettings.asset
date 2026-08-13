@@ -55,7 +55,7 @@ PlayerSettings:
   mipStripping: 0
   numberOfMipsStripped: 0
   numberOfMipsStrippedPerMipmapLimitGroup: {}
-  m_StackTraceTypes: 010000000100000001000000010000000100000001000000
+  m_StackTraceTypes: 000000000000000000000000000000000000000001000000
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosUseCustomAppBackgroundBehavior: 0
@@ -89,7 +89,7 @@ PlayerSettings:
   Force IOS Speakers When Recording: 0
   audioSpatialExperience: 0
   deferSystemGesturesMode: 0
-  hideHomeButton: 0
+  hideHomeButton: 1
   submitAnalytics: 1
   usePlayerLog: 1
   dedicatedServerOptimizations: 0
@@ -170,13 +170,14 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.zudolabs.taptileconnect
     Standalone: com.ZudoLabs.Tap-Tile-Connect
+    iPhone: com.zudolabs.taptileconnect
   buildNumber:
     Standalone: 0
     VisionOS: 0
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 1
+  AndroidBundleVersionCode: 5
   AndroidMinSdkVersion: 25
   AndroidTargetSdkVersion: 36
   AndroidPreferredInstallLocation: 1
@@ -272,7 +273,7 @@ PlayerSettings:
   AndroidAllowedArchitectures: -13
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: /Users/yudiz/Desktop/user.keystore
+  AndroidKeystoreName: '{inproject}: Assets/GeneratedLocalRepo/user.keystore'
   AndroidKeyaliasName: tap tile connect
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidEnableArm64MTE: 0
@@ -301,7 +302,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 780d7ef7ddd6f4173967452807272daa, type: 3}
+      m_Icon: {fileID: 2800000, guid: cae11037551e34b8e89179ac499a0f64, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -405,95 +406,119 @@ PlayerSettings:
       m_SubKind: App Store
   - m_BuildTarget: Android
     m_Icons:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: cae11037551e34b8e89179ac499a0f64, type: 3}
+      m_Width: 192
+      m_Height: 192
+      m_Kind: 0
+      m_SubKind: 
+    - m_Textures:
+      - {fileID: 2800000, guid: cae11037551e34b8e89179ac499a0f64, type: 3}
+      m_Width: 144
+      m_Height: 144
+      m_Kind: 0
+      m_SubKind: 
+    - m_Textures:
+      - {fileID: 2800000, guid: cae11037551e34b8e89179ac499a0f64, type: 3}
+      m_Width: 96
+      m_Height: 96
+      m_Kind: 0
+      m_SubKind: 
+    - m_Textures:
+      - {fileID: 2800000, guid: cae11037551e34b8e89179ac499a0f64, type: 3}
+      m_Width: 72
+      m_Height: 72
+      m_Kind: 0
+      m_SubKind: 
+    - m_Textures:
+      - {fileID: 2800000, guid: cae11037551e34b8e89179ac499a0f64, type: 3}
+      m_Width: 48
+      m_Height: 48
+      m_Kind: 0
+      m_SubKind: 
+    - m_Textures:
+      - {fileID: 2800000, guid: cae11037551e34b8e89179ac499a0f64, type: 3}
+      m_Width: 36
+      m_Height: 36
+      m_Kind: 0
+      m_SubKind: 
+    - m_Textures:
+      - {fileID: 2800000, guid: b12669a7e84f240c4834f1d8c1647025, type: 3}
+      - {fileID: 2800000, guid: b12669a7e84f240c4834f1d8c1647025, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: df74dd9fb2a654daeb2c002544034b4e, type: 3}
+      - {fileID: 2800000, guid: df74dd9fb2a654daeb2c002544034b4e, type: 3}
       m_Width: 324
       m_Height: 324
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: ee8fe2ad293484d44be6e0ad0eb50805, type: 3}
+      - {fileID: 2800000, guid: ee8fe2ad293484d44be6e0ad0eb50805, type: 3}
       m_Width: 216
       m_Height: 216
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: c3f4b218c777948ce89266a67166fa35, type: 3}
+      - {fileID: 2800000, guid: c3f4b218c777948ce89266a67166fa35, type: 3}
       m_Width: 162
       m_Height: 162
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: a31965d1ff77c4a45b151c70dff805b2, type: 3}
+      - {fileID: 2800000, guid: a31965d1ff77c4a45b151c70dff805b2, type: 3}
       m_Width: 108
       m_Height: 108
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 6ecd4f020fcf846b2b8998e6977b3ec7, type: 3}
+      - {fileID: 2800000, guid: 6ecd4f020fcf846b2b8998e6977b3ec7, type: 3}
       m_Width: 81
       m_Height: 81
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 7e08e5a402da440e1a35d48cf49a97b6, type: 3}
       m_Width: 192
       m_Height: 192
       m_Kind: 1
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: af8035b1535144176aee8604197f4704, type: 3}
       m_Width: 144
       m_Height: 144
       m_Kind: 1
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 5752aa9a0c746461bb302a0012987b11, type: 3}
       m_Width: 96
       m_Height: 96
       m_Kind: 1
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: ee8fe2ad293484d44be6e0ad0eb50805, type: 3}
       m_Width: 72
       m_Height: 72
       m_Kind: 1
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: b12669a7e84f240c4834f1d8c1647025, type: 3}
       m_Width: 48
       m_Height: 48
       m_Kind: 1
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: b12669a7e84f240c4834f1d8c1647025, type: 3}
       m_Width: 36
       m_Height: 36
       m_Kind: 1
-      m_SubKind: 
-    - m_Textures: []
-      m_Width: 192
-      m_Height: 192
-      m_Kind: 0
-      m_SubKind: 
-    - m_Textures: []
-      m_Width: 144
-      m_Height: 144
-      m_Kind: 0
-      m_SubKind: 
-    - m_Textures: []
-      m_Width: 96
-      m_Height: 96
-      m_Kind: 0
-      m_SubKind: 
-    - m_Textures: []
-      m_Width: 72
-      m_Height: 72
-      m_Kind: 0
-      m_SubKind: 
-    - m_Textures: []
-      m_Width: 48
-      m_Height: 48
-      m_Kind: 0
-      m_SubKind: 
-    - m_Textures: []
-      m_Width: 36
-      m_Height: 36
-      m_Kind: 0
       m_SubKind: 
   - m_BuildTarget: VisionOS
     m_Icons:
@@ -504,6 +529,9 @@ PlayerSettings:
       m_SubKind: 
   m_BuildTargetBatching:
   - m_BuildTarget: Android
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
+  - m_BuildTarget: iPhone
     m_StaticBatching: 1
     m_DynamicBatching: 0
   m_BuildTargetShaderSettings: []
@@ -535,6 +563,9 @@ PlayerSettings:
   - serializedVersion: 3
     m_BuildTarget: WebGL
     m_Formats: 05000000
+  - serializedVersion: 3
+    m_BuildTarget: iOS
+    m_Formats: 03000000
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
   actionOnDotNetUnhandledException: 1
@@ -817,7 +848,7 @@ PlayerSettings:
     WebGL: DOTWEEN;DOTWEEN_EPO
     Windows Store Apps: DOTWEEN;DOTWEEN_EPO
     XboxOne: DOTWEEN;DOTWEEN_EPO
-    iPhone: DOTWEEN;DOTWEEN_EPO
+    iPhone: DOTWEEN;DOTWEEN_EPO;LEVELPLAY_DEPENDENCIES_INSTALLED
     tvOS: DOTWEEN;DOTWEEN_EPO
   additionalCompilerArguments: {}
   platformArchitecture: {}

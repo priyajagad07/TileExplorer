@@ -16,6 +16,10 @@ public class MatchBoardMatch : MonoBehaviour
     private readonly List<GameObject> activeGlowObjects = new List<GameObject>();
     private readonly List<GameObject> activeParticleObjects = new List<GameObject>();
 
+    // Reused per CheckMatch to avoid allocating match candidate lists every call.
+    private readonly List<GameObject> matchedBuffer = new List<GameObject>(8);
+    private readonly List<GameObject> tilesToMergeBuffer = new List<GameObject>(3);
+
     [Header("Effects")]
     [SerializeField] private GameObject destroyParticle;
     [SerializeField] private Transform particleParent;
@@ -40,10 +44,11 @@ public class MatchBoardMatch : MonoBehaviour
 
     public bool CheckMatch(List<GameObject> placedTiles, int tileID)
     {
-        List<GameObject> matched = new List<GameObject>();
+        matchedBuffer.Clear();
 
-        foreach (GameObject tile in placedTiles)
+        for (int i = 0; i < placedTiles.Count; i++)
         {
+            GameObject tile = placedTiles[i];
             if (tile == null)
                 continue;
 
@@ -54,11 +59,11 @@ public class MatchBoardMatch : MonoBehaviour
 
             if (t.tileId == tileID && !t.isMatched)
             {
-                matched.Add(tile);
+                matchedBuffer.Add(tile);
             }
         }
 
-        if (matched.Count >= 3)
+        if (matchedBuffer.Count >= 3)
         {
             if (SoundManager.instance != null)
             {
@@ -67,11 +72,15 @@ public class MatchBoardMatch : MonoBehaviour
                 );
             }
 
-            List<GameObject> tilesToMerge = new List<GameObject>();
+            tilesToMergeBuffer.Clear();
+
+            Tile mergeTile0 = null;
+            Tile mergeTile1 = null;
+            Tile mergeTile2 = null;
 
             for (int i = 0; i < 3; i++)
             {
-                GameObject tileObj = matched[i];
+                GameObject tileObj = matchedBuffer[i];
 
                 if (tileObj == null)
                     return false;
@@ -80,16 +89,23 @@ public class MatchBoardMatch : MonoBehaviour
                 if (tileScript == null)
                     return false;
 
-                tilesToMerge.Add(tileObj);
+                tilesToMergeBuffer.Add(tileObj);
+
+                if (i == 0) mergeTile0 = tileScript;
+                else if (i == 1) mergeTile1 = tileScript;
+                else mergeTile2 = tileScript;
             }
 
-            foreach (GameObject tileObj in tilesToMerge)
-            {
-                Tile tileScript = tileObj.GetComponent<Tile>();
-                tileScript.isMatched = true;
-            }
+            mergeTile0.isMatched = true;
+            mergeTile1.isMatched = true;
+            mergeTile2.isMatched = true;
 
             activePopAnimation++;
+
+            // Pass a snapshot list into the async merge so reused buffers
+            // cannot be mutated while the DOTween sequence is running.
+            List<GameObject> tilesToMerge =
+                new List<GameObject>(tilesToMergeBuffer);
 
             bool matchStarted =
                 MergeAndDestroy(tilesToMerge);
@@ -121,7 +137,7 @@ public class MatchBoardMatch : MonoBehaviour
             return;
 
         RectTransform rect =
-            tileObj.GetComponent<RectTransform>();
+            tileObj.transform as RectTransform;
 
         if (rect == null)
             return;
@@ -151,9 +167,9 @@ public class MatchBoardMatch : MonoBehaviour
             return false;
         }
 
-        RectTransform rectLeft = leftTile.GetComponent<RectTransform>();
-        RectTransform rectMid = middleTile.GetComponent<RectTransform>();
-        RectTransform rectRight = rightTile.GetComponent<RectTransform>();
+        RectTransform rectLeft = leftTile.transform as RectTransform;
+        RectTransform rectMid = middleTile.transform as RectTransform;
+        RectTransform rectRight = rightTile.transform as RectTransform;
 
         if (rectLeft == null || rectMid == null || rectRight == null)
         {
@@ -410,7 +426,7 @@ public class MatchBoardMatch : MonoBehaviour
             return;
         }
 
-        RectTransform tileRect = tileObj.GetComponent<RectTransform>();
+        RectTransform tileRect = tileObj.transform as RectTransform;
 
         if (tileRect == null)
         {
@@ -477,7 +493,7 @@ public class MatchBoardMatch : MonoBehaviour
 
         activeGlowObjects.Add(glow);
 
-        RectTransform rect = glow.GetComponent<RectTransform>();
+        RectTransform rect = glow.transform as RectTransform;
 
         if (rect == null)
         {

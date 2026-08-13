@@ -7,26 +7,26 @@ public class AdManager : MonoBehaviour
 {
     public static AdManager instance;
 
-    [Header("Google AdMob Test IDs")]
+    [Header("Google AdMob Production IDs")]
 #if UNITY_ANDROID
     private string bannerId =
-           "ca-app-pub-3940256099942544/9214589741";
+        "ca-app-pub-5794596913812731/5137241176";
 
     private string interstitialId =
-        "ca-app-pub-3940256099942544/1033173712";
+        "ca-app-pub-5794596913812731/3787400402";
 
     private string rewardedId =
-        "ca-app-pub-3940256099942544/5224354917";
+        "ca-app-pub-5794596913812731/9268057873";
 
 #elif UNITY_IOS
     private string bannerId =
-        "ca-app-pub-3940256099942544/2435281174";
+        "ca-app-pub-5794596913812731/1424960940";
 
     private string interstitialId =
-        "ca-app-pub-3940256099942544/4411468910";
+        "ca-app-pub-5794596913812731/5472017165";
 
     private string rewardedId =
-        "ca-app-pub-3940256099942544/1712485313";
+        "ca-app-pub-5794596913812731/7790344730";
 
 #else
     private string bannerId = "unexpected_platform";

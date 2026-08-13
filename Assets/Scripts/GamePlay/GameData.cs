@@ -11,6 +11,7 @@ public class GameData
     public int coins = 300;
     public int avatarIndex = 0;
     public string playerName = "";
+    public List<int> avatarUnlockAnimsSeen = new List<int>();
 
     // Core States
     public int firstGameplayLaunch = 0;

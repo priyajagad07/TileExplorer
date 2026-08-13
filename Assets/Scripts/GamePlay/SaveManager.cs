@@ -72,5 +72,96 @@ public class SaveManager : MonoBehaviour
         {
             SaveData();
         }
+
+        MigrateBoosterUnlockFlags(data);
+    }
+
+    /// <summary>
+    /// Cleans up inflated booster counts from duplicate unlock grants
+    /// and daily rewards earned before the booster was unlocked.
+    /// </summary>
+    private void MigrateBoosterUnlockFlags(GameData saveData)
+    {
+        if (saveData == null)
+            return;
+
+        bool changed = false;
+        int displayLevel = saveData.level + 1;
+
+        if (displayLevel < 3 && saveData.undoCount != 0)
+        {
+            saveData.undoCount = 0;
+            changed = true;
+        }
+
+        if (displayLevel < 5 && saveData.shuffleCount != 0)
+        {
+            saveData.shuffleCount = 0;
+            changed = true;
+        }
+
+        if (displayLevel < 7 && saveData.magicCount != 0)
+        {
+            saveData.magicCount = 0;
+            changed = true;
+        }
+
+        // Duplicate unlock grants before the first unlock tutorial.
+        if (displayLevel >= 3 &&
+            saveData.undoAnimPlayed == 0 &&
+            saveData.undoUnlocked == 0 &&
+            saveData.undoCount > 0)
+        {
+            saveData.undoCount = 0;
+            changed = true;
+        }
+
+        if (displayLevel >= 5 &&
+            saveData.shuffleAnimPlayed == 0 &&
+            saveData.shuffleUnlocked == 0 &&
+            saveData.shuffleCount > 0)
+        {
+            saveData.shuffleCount = 0;
+            changed = true;
+        }
+
+        if (displayLevel >= 7 &&
+            saveData.magicAnimPlayed == 0 &&
+            saveData.magicUnlocked == 0 &&
+            saveData.magicCount > 0)
+        {
+            saveData.magicCount = 0;
+            changed = true;
+        }
+
+        // Backfill unlock flags for saves that already finished the unlock tutorial.
+        if (displayLevel >= 3 &&
+            saveData.undoUnlocked == 0 &&
+            saveData.undoAnimPlayed == 1)
+        {
+            saveData.undoUnlocked = 1;
+            changed = true;
+        }
+
+        if (displayLevel >= 5 &&
+            saveData.shuffleUnlocked == 0 &&
+            saveData.shuffleAnimPlayed == 1)
+        {
+            saveData.shuffleUnlocked = 1;
+            changed = true;
+        }
+
+        if (displayLevel >= 7 &&
+            saveData.magicUnlocked == 0 &&
+            saveData.magicAnimPlayed == 1)
+        {
+            saveData.magicUnlocked = 1;
+            changed = true;
+        }
+
+        if (changed)
+        {
+            SaveData();
+        }
     }
 }

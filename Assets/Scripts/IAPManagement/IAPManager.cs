@@ -160,6 +160,8 @@ public class IAPManager : MonoBehaviour
             }
         }
 
+        PurchaseManager.instance?.RefreshUI();
+
         Debug.Log(
             "Existing IAP purchases processed."
         );
@@ -272,6 +274,48 @@ public class IAPManager : MonoBehaviour
             "Purchase rewards saved. " +
             "Confirmation requested: " +
             transactionId
+        );
+    }
+
+    /// <summary>
+    /// Manually restore non-consumable purchases (e.g. Remove Ads).
+    /// Store callbacks route through HandlePurchasesFetched.
+    /// </summary>
+    public void RestorePurchases(
+        Action<bool, string> onComplete = null)
+    {
+        if (!IsReady || storeController == null)
+        {
+            Debug.LogWarning(
+                "IAP is not ready yet."
+            );
+
+            onComplete?.Invoke(false, "iap_not_ready");
+            return;
+        }
+
+        storeController.RestoreTransactions(
+            (success, message) =>
+            {
+                if (success)
+                {
+                    Debug.Log(
+                        "Restore purchases completed. " +
+                        (message ?? string.Empty)
+                    );
+
+                    PurchaseManager.instance?.RefreshUI();
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        "Restore purchases failed: " +
+                        (message ?? "unknown_error")
+                    );
+                }
+
+                onComplete?.Invoke(success, message);
+            }
         );
     }
 

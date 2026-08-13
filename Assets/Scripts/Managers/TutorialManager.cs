@@ -599,19 +599,159 @@ public class TutorialManager : MonoBehaviour
         activeBooster.transform.DOScale(activeBoosterOriginalScale * 1.1f, 0.4f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
 
+    /// <summary>
+    /// One-time jelly intro tip (Level 6+).
+    /// Popup only — no hand cursor, no blocking overlay.
+    /// Auto-dismisses after a few seconds (or when CloseSoftTutorial runs).
+    /// </summary>
+    public void TryShowJellyIntroTip()
+    {
+        const string jellyKey = "Jelly";
+
+        if (isTutorialActive || isSoftTutorialActive)
+            return;
+
+        if (SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
+            return;
+        }
+
+        if (SaveManager.instance.data.softTutorialsSeen
+            .Contains(jellyKey))
+        {
+            return;
+        }
+
+        if (!BoardHasJellyTile())
+            return;
+
+        if (IdleHintManager.instance != null)
+        {
+            IdleHintManager.instance.StopHints();
+        }
+
+        currentSoftTutorialAnalyticsName =
+            "jelly_feature_tutorial";
+
+        TutorialAnalyticsTracker.Instance
+            ?.BeginTutorial(
+                currentSoftTutorialAnalyticsName
+            );
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance
+                .SetTutorialBannerSuppressed(true);
+        }
+
+        isSoftTutorialActive = true;
+        currentSoftTutorialKey = jellyKey;
+        activeBooster = null;
+
+        // Keep gameplay fully interactive — no dark overlay.
+        if (tutorialOverlay != null)
+        {
+            tutorialOverlay.DOKill();
+            tutorialOverlay.alpha = 0f;
+            tutorialOverlay.blocksRaycasts = false;
+            tutorialOverlay.gameObject.SetActive(false);
+        }
+
+        if (pointer != null)
+        {
+            pointer.DOKill();
+            pointer.gameObject.SetActive(false);
+        }
+
+        if (tutorialPopupImage != null &&
+            tutorialText != null)
+        {
+            tutorialPopupImage.gameObject.SetActive(true);
+            tutorialPopupImage.alpha = 1f;
+            tutorialText.text =
+                "Jelly tiles are locked! Clear other tiles to break them.";
+
+            tutorialPopupImage.transform.DOKill();
+            tutorialPopupImage.transform.localScale =
+                Vector3.zero;
+            tutorialPopupImage.transform
+                .DOScale(Vector3.one, 0.45f)
+                .SetEase(Ease.OutBack)
+                .SetUpdate(true);
+
+            SetUIFocus(
+                tutorialPopupImage.gameObject,
+                true,
+                PopupFocusOrder
+            );
+        }
+
+        tutorialDelayedCall?.Kill();
+        tutorialDelayedCall = DOVirtual.DelayedCall(
+            2.5f,
+            () =>
+            {
+                tutorialDelayedCall = null;
+                CloseSoftTutorial();
+            }
+        ).SetUpdate(true);
+    }
+
+    private static bool BoardHasJellyTile()
+    {
+        if (BoardSpawner.instance == null)
+            return false;
+
+        Transform tileParent =
+            BoardSpawner.instance.GetTileParent();
+
+        if (tileParent == null)
+            return false;
+
+        Tile[] tiles =
+            tileParent.GetComponentsInChildren<Tile>(false);
+
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            if (tiles[i] != null &&
+                tiles[i].isJellyLocked)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void CloseSoftTutorial()
     {
         if (!isSoftTutorialActive) return;
 
         isSoftTutorialActive = false;
 
-        tutorialOverlay.blocksRaycasts = false;
-        Image overlayImg = tutorialOverlay.GetComponent<Image>();
-        if (overlayImg != null) overlayImg.raycastTarget = false;
+        tutorialDelayedCall?.Kill();
+        tutorialDelayedCall = null;
 
-        if (!SaveManager.instance.data.softTutorialsSeen.Contains(currentSoftTutorialKey))
+        if (tutorialOverlay != null)
         {
-            SaveManager.instance.data.softTutorialsSeen.Add(currentSoftTutorialKey);
+            tutorialOverlay.blocksRaycasts = false;
+            Image overlayImg =
+                tutorialOverlay.GetComponent<Image>();
+            if (overlayImg != null)
+            {
+                overlayImg.raycastTarget = false;
+            }
+        }
+
+        if (SaveManager.instance != null &&
+            SaveManager.instance.data != null &&
+            !string.IsNullOrEmpty(currentSoftTutorialKey) &&
+            !SaveManager.instance.data.softTutorialsSeen
+                .Contains(currentSoftTutorialKey))
+        {
+            SaveManager.instance.data.softTutorialsSeen
+                .Add(currentSoftTutorialKey);
             SaveManager.instance.SaveData();
         }
 
@@ -629,9 +769,12 @@ public class TutorialManager : MonoBehaviour
         currentSoftTutorialKey =
     string.Empty;
 
-        pointer.DOKill();
-        pointer.gameObject.SetActive(false);
-        SetUIFocus(pointer.gameObject, false);
+        if (pointer != null)
+        {
+            pointer.DOKill();
+            pointer.gameObject.SetActive(false);
+            SetUIFocus(pointer.gameObject, false);
+        }
 
         if (tutorialPopupImage != null)
         {
@@ -640,31 +783,42 @@ public class TutorialManager : MonoBehaviour
             tutorialPopupImage.DOFade(0f, 0.4f).OnComplete(() => tutorialPopupImage.gameObject.SetActive(false));
         }
 
-        tutorialOverlay.DOKill();
+        void FinishSoftTutorialCleanup()
+        {
+            ClearAllUIFocus();
 
-        tutorialOverlay
-     .DOFade(0f, 0.4f)
-     .SetUpdate(true)
-     .OnComplete(() =>
-     {
-         tutorialOverlay.gameObject
-             .SetActive(false);
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance
+                    .SetTutorialBannerSuppressed(false);
+            }
 
-         ClearAllUIFocus();
+            if (IdleHintManager.instance != null &&
+                !IsAnyTutorialActive)
+            {
+                IdleHintManager.instance
+                    .ResetIdleTimer();
+            }
+        }
 
-         if (UIManager.Instance != null)
-         {
-             UIManager.Instance
-                 .SetTutorialBannerSuppressed(false);
-         }
-
-         if (IdleHintManager.instance != null &&
-             !IsAnyTutorialActive)
-         {
-             IdleHintManager.instance
-                 .ResetIdleTimer();
-         }
-     });
+        if (tutorialOverlay != null &&
+            tutorialOverlay.gameObject.activeSelf)
+        {
+            tutorialOverlay.DOKill();
+            tutorialOverlay
+                .DOFade(0f, 0.4f)
+                .SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    tutorialOverlay.gameObject
+                        .SetActive(false);
+                    FinishSoftTutorialCleanup();
+                });
+        }
+        else
+        {
+            FinishSoftTutorialCleanup();
+        }
        
         currentTargetTile = null;
 

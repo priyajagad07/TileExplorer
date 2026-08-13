@@ -1,13 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 public class BoardGenerator : MonoBehaviour
 {
     public static BoardGenerator instance;
     public static int totalTilesInLevel;
     private ProceduralLevelData proceduralData;
+
+    [Header("Tile Prefabs")]
+    [Tooltip(
+        "Order matters. Index 0 unlocks first. " +
+        "Later indices unlock as the player progresses."
+    )]
     [SerializeField] private GameObject[] tilePrefabs;
+
+    [Header("Progressive Unlock")]
+    [Tooltip("How many tile types are available from Level 1.")]
+    [SerializeField] private int startingUnlockedCount = 10;
+
+    [Tooltip(
+        "A new tile type unlocks every N levels. " +
+        "Example: 3 means Level 1-3 use the starting set, " +
+        "Level 4 adds tile index 10, Level 7 adds index 11, etc."
+    )]
+    [SerializeField] private int levelsPerNewTile = 3;
 
     void Awake()
     {
@@ -72,6 +88,7 @@ public class BoardGenerator : MonoBehaviour
         BoardSpawner.instance.ClearBoard();
         GenerateProceduralTiles();
     }
+
     void GenerateProceduralTiles()
     {
         List<GameObject> tilesToSpawn = new List<GameObject>();
@@ -86,6 +103,17 @@ public class BoardGenerator : MonoBehaviour
             return;
         }
 
+        GameObject[] availablePrefabs =
+            GetAvailableTilePrefabs();
+
+        if (availablePrefabs.Length == 0)
+        {
+            Debug.LogError(
+                "BoardGenerator: No unlocked tile prefabs available."
+            );
+            return;
+        }
+
         int typeCount = totalTilesNeeded / 3;
 
         List<GameObject> deepPool = new List<GameObject>();
@@ -96,15 +124,30 @@ public class BoardGenerator : MonoBehaviour
 
         if (proceduralData.difficulty > 1)
         {
-            trapProbability = (proceduralData.difficulty - 1) * 0.15f;
+            trapProbability =
+                (proceduralData.difficulty - 1) * 0.15f;
         }
 
-        Debug.Log("Loaded Level Difficulty is: " + proceduralData.difficulty);
-        Debug.Log("Current Trap Probability is: " + trapProbability);
+        Debug.Log(
+            "Loaded Level Difficulty is: " +
+            proceduralData.difficulty
+        );
+        Debug.Log(
+            "Current Trap Probability is: " +
+            trapProbability
+        );
+        Debug.Log(
+            "Unlocked tile types: " +
+            availablePrefabs.Length +
+            " / " +
+            (tilePrefabs != null ? tilePrefabs.Length : 0)
+        );
 
         for (int i = 0; i < typeCount; i++)
         {
-            GameObject prefab = tilePrefabs[Random.Range(0, tilePrefabs.Length)];
+            GameObject prefab = availablePrefabs[
+                Random.Range(0, availablePrefabs.Length)
+            ];
 
             if (Random.value < trapProbability)
             {
@@ -129,12 +172,74 @@ public class BoardGenerator : MonoBehaviour
         tilesToSpawn.AddRange(shallowPool);
 
         totalTilesInLevel = tilesToSpawn.Count;
-        BoardSpawner.instance.SpawnTiles(tilesToSpawn, proceduralData);
+        BoardSpawner.instance.SpawnTiles(
+            tilesToSpawn,
+            proceduralData
+        );
 
         Debug.Log(
-    $"GENERATOR: Expected {totalTilesNeeded} tiles. " +
-    $"Sending {tilesToSpawn.Count} tiles to BoardSpawner."
-);
+            $"GENERATOR: Expected {totalTilesNeeded} tiles. " +
+            $"Sending {tilesToSpawn.Count} tiles to BoardSpawner."
+        );
+    }
+
+    /// <summary>
+    /// Growing pool: Level 1 starts with startingUnlockedCount
+    /// types. Every levelsPerNewTile levels, one more prefab
+    /// from the array becomes available. Older tiles stay in
+    /// the pool. Add new prefabs to the end of tilePrefabs.
+    /// </summary>
+    private GameObject[] GetAvailableTilePrefabs()
+    {
+        if (tilePrefabs == null || tilePrefabs.Length == 0)
+            return new GameObject[0];
+
+        int displayLevel = GetDisplayLevel();
+        int unlockedCount = GetUnlockedTileCount(displayLevel);
+
+        GameObject[] available = new GameObject[unlockedCount];
+
+        for (int i = 0; i < unlockedCount; i++)
+        {
+            available[i] = tilePrefabs[i];
+        }
+
+        return available;
+    }
+
+    private int GetUnlockedTileCount(int displayLevel)
+    {
+        if (tilePrefabs == null || tilePrefabs.Length == 0)
+            return 0;
+
+        int startCount = Mathf.Clamp(
+            startingUnlockedCount,
+            1,
+            tilePrefabs.Length
+        );
+
+        int perUnlock = Mathf.Max(1, levelsPerNewTile);
+
+        // Level 1..perUnlock → startCount
+        // Next band adds +1, and so on.
+        int extraUnlocks =
+            Mathf.Max(0, displayLevel - 1) / perUnlock;
+
+        return Mathf.Min(
+            tilePrefabs.Length,
+            startCount + extraUnlocks
+        );
+    }
+
+    private int GetDisplayLevel()
+    {
+        if (SaveManager.instance == null ||
+            SaveManager.instance.data == null)
+        {
+            return 1;
+        }
+
+        return SaveManager.instance.data.level + 1;
     }
 
     void ShuffleList(List<GameObject> list)

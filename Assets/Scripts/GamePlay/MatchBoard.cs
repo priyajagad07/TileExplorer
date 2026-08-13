@@ -111,6 +111,7 @@ public class MatchBoard : MonoBehaviour
 
         return true;
     }
+
     void ProcessBoard()
     {
         CleanBoard();
@@ -141,8 +142,10 @@ public class MatchBoard : MonoBehaviour
             int id = currentTile.tileId;
             int count = 0;
 
-            foreach (GameObject otherTileObj in placedTiles)
+            for (int j = 0; j < placedTiles.Count; j++)
             {
+                GameObject otherTileObj = placedTiles[j];
+
                 if (otherTileObj == null)
                     continue;
 
@@ -185,28 +188,13 @@ public class MatchBoard : MonoBehaviour
             CheckGameOver();
         }
     }
+
     void CheckGameOver()
     {
         CleanBoard();
 
-        bool isAnimating = false;
-
-        foreach (GameObject tileObj in placedTiles)
-        {
-            if (tileObj == null)
-                continue;
-
-            Tile tile = tileObj.GetComponent<Tile>();
-
-            if (tile != null && tile.isMatched)
-            {
-                isAnimating = true;
-                break;
-            }
-        }
-
         if (placedTiles.Count < slots.Count ||
-            isAnimating)
+            HasAnimatingMatchedTile())
         {
             return;
         }
@@ -219,30 +207,38 @@ public class MatchBoard : MonoBehaviour
         {
             gameOverTimer = null;
             CleanBoard();
-            bool stillAnimating = false;
-
-            foreach (GameObject tileObj in placedTiles)
-            {
-                if (tileObj == null)
-                    continue;
-
-                Tile tile = tileObj.GetComponent<Tile>();
-
-                if (tile != null && tile.isMatched)
-                {
-                    stillAnimating = true;
-                    break;
-                }
-            }
 
             if (placedTiles.Count >= slots.Count &&
-                !stillAnimating &&
+                !HasAnimatingMatchedTile() &&
                 GameManager.instance != null &&
                 GameManager.instance.isGameInProgress)
             {
                 GameManager.instance.GameOver();
             }
         });
+    }
+
+    /// <summary>
+    /// True if any tray tile is currently mid-match animation.
+    /// </summary>
+    private bool HasAnimatingMatchedTile()
+    {
+        for (int i = 0; i < placedTiles.Count; i++)
+        {
+            GameObject tileObj = placedTiles[i];
+
+            if (tileObj == null)
+                continue;
+
+            Tile tile = tileObj.GetComponent<Tile>();
+
+            if (tile != null && tile.isMatched)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void RearrangeBoard()
@@ -296,6 +292,7 @@ public class MatchBoard : MonoBehaviour
         gameOverTimer?.Kill();
         gameOverTimer = null;
 
+        // Copy then clear — same observable order as before (clear tray, then despawn).
         List<GameObject> tilesToRemove = new List<GameObject>(placedTiles);
 
         placedTiles.Clear();
@@ -305,13 +302,14 @@ public class MatchBoard : MonoBehaviour
             movement.ResetMovementState();
         }
 
-        foreach (GameObject tile in tilesToRemove)
+        for (int i = 0; i < tilesToRemove.Count; i++)
         {
+            GameObject tile = tilesToRemove[i];
             if (tile == null)
                 continue;
 
             tile.transform.DOKill();
-            RectTransform rect = tile.GetComponent<RectTransform>();
+            RectTransform rect = tile.transform as RectTransform;
 
             if (rect != null)
             {
@@ -351,7 +349,14 @@ public class MatchBoard : MonoBehaviour
 
     public void CleanBoard()
     {
-        placedTiles.RemoveAll(tile => tile == null);
+        // Reverse scan avoids RemoveAll lambda / delegate allocation.
+        for (int i = placedTiles.Count - 1; i >= 0; i--)
+        {
+            if (placedTiles[i] == null)
+            {
+                placedTiles.RemoveAt(i);
+            }
+        }
     }
 
     public void CancelPendingBoardChecks()
